@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+
+# IDEs and Editors
+.vscode/
+.idea/
+
+# Build outputs
+dist/
+out-tsc/
+.angular/
+
+# Test coverage
+coverage/
+
+# Auto-generated files
+package-lock.json
+
