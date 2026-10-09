@@ -1,7 +1,4 @@
 .toolbar {
-  position: sticky;
-  top: 0;
-  z-index: 10;
   gap: 8px;
   background: var(--mat-sys-surface-container);
 }
@@ -12,6 +9,14 @@
   margin-right: 16px;
   text-decoration: none;
   color: inherit;
+}
+
+.container {
+  height: calc(100vh - 64px);
+}
+
+.sidenav {
+  width: 240px;
 }
 
 .active {

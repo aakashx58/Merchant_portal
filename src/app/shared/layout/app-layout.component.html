@@ -1,0 +1,51 @@
+<mat-toolbar class="toolbar">
+  <button mat-icon-button type="button" aria-label="Toggle navigation" (click)="sidenav.toggle()">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <a class="brand" routerLink="/">TechKraft</a>
+
+  <span class="spacer"></span>
+
+  <button mat-button type="button" class="profile" [matMenuTriggerFor]="menu">
+    <mat-icon>account_circle</mat-icon>
+    <span class="name">{{ auth.user()?.username }}</span>
+  </button>
+  <mat-menu #menu="matMenu">
+    <div class="menu-head">
+      <strong>{{ auth.user()?.username }}</strong>
+      <span class="role">{{ auth.roles().join(', ') }}</span>
+    </div>
+    <button mat-menu-item type="button" (click)="confirmSignOut()">
+      <mat-icon>logout</mat-icon>
+      <span>Sign out</span>
+    </button>
+  </mat-menu>
+</mat-toolbar>
+
+<mat-sidenav-container class="container">
+  <mat-sidenav
+    #sidenav
+    class="sidenav"
+    [mode]="isMobile() ? 'over' : 'side'"
+    [opened]="!isMobile()"
+  >
+    <mat-nav-list (click)="isMobile() && sidenav.close()">
+      <a mat-list-item routerLink="/dashboard" routerLinkActive="active">
+        <mat-icon matListItemIcon>dashboard</mat-icon>
+        <span matListItemTitle>Dashboard</span>
+      </a>
+      @if (auth.can(permission.application_create)) {
+        <a mat-list-item routerLink="/wizard" routerLinkActive="active">
+          <mat-icon matListItemIcon>add_circle</mat-icon>
+          <span matListItemTitle>New application</span>
+        </a>
+      }
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <main class="content">
+      <router-outlet />
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>

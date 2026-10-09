@@ -111,6 +111,7 @@ function handle(req: HttpRequest<unknown>, url: URL): Reply {
 
     const rows = applications
       .filter((a) => canSee(user, a))
+      .filter((a) => p.get('mine') !== 'true' || a.ownerId === user.id)
       .filter((a) => !status || a.status === status)
       .filter(
         (a) =>
@@ -140,11 +141,20 @@ function handle(req: HttpRequest<unknown>, url: URL): Reply {
       taxId: '',
       accountNumber: '',
       monthlyVolume: 0,
+      documentType: '',
+      documentName: '',
       createdAt: now,
       updatedAt: now,
     };
     applications.push(created);
     return { status: 201, body: mask(created), headers: etag(created) };
+  }
+
+  if (path === '/applications/check-tax-id' && req.method === 'GET') {
+    const taken = applications.some(
+      (a) => a.taxId === req.params.get('value') && a.id !== req.params.get('exclude'),
+    );
+    return ok({ available: !taken });
   }
 
   const m = path.match(/^\/applications\/([^/]+)(?:\/(submit|decision|reveal))?$/);
@@ -169,6 +179,8 @@ function handle(req: HttpRequest<unknown>, url: URL): Reply {
         'taxId',
         'accountNumber',
         'monthlyVolume',
+        'documentType',
+        'documentName',
       ] as const;
       for (const k of editable) {
         // A masked value means "unchanged"; never overwrite real data with the mask.

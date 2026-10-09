@@ -1,0 +1,49 @@
+:host {
+  display: block;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 480px;
+  padding-top: 16px;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.save-status {
+  min-height: 1.5em;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.file {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.error {
+  min-height: 1.5em;
+  margin: 0;
+  color: var(--mat-sys-error);
+}
+
+.summary {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 4px 24px;
+  padding-top: 16px;
+
+  dt {
+    font-weight: 500;
+  }
+
+  dd {
+    margin: 0;
+  }
+}

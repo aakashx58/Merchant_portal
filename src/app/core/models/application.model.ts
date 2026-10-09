@@ -12,6 +12,8 @@ export interface Application {
   taxId: string;
   accountNumber: string;
   monthlyVolume: number;
+  documentType: string;
+  documentName: string;
   reviewNote?: string;
   createdAt: string;
   updatedAt: string;

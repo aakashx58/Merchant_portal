@@ -2,12 +2,16 @@
   display: block;
 }
 
-:host h1 {
-  margin: 0 0 16px;
-}
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
 
-.new {
-  margin-right: auto;
+  h1 {
+    margin: 0;
+  }
 }
 
 .filters {

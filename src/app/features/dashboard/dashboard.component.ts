@@ -11,15 +11,15 @@ import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { AuthService } from '../../core/auth/auth.service';
 import { PermissionEnum } from '../../core/enums/permission.enum';
 import { ApplicationQuery, ApplicationsService } from '../../core/services/applications.service';
-import { CellDef } from '../../shared/data-table/cell-def';
-import { DataTable, TableColumn } from '../../shared/data-table/data-table';
+import { CellDefDirective } from '../../shared/data-table/cell-def.directive';
+import { DataTableComponent, TableColumn } from '../../shared/data-table/data-table.component';
 
 @Component({
   selector: 'app-dashboard',
   imports: [
-    CellDef,
+    CellDefDirective,
     CurrencyPipe,
-    DataTable,
+    DataTableComponent,
     DatePipe,
     ReactiveFormsModule,
     RouterLink,
@@ -28,10 +28,10 @@ import { DataTable, TableColumn } from '../../shared/data-table/data-table';
     MatInputModule,
     MatSelectModule,
   ],
-  templateUrl: './dashboard.html',
-  styleUrl: './dashboard.scss',
+  templateUrl: './dashboard.component.html',
+  styleUrl: './dashboard.component.scss',
 })
-export class Dashboard {
+export class DashboardComponent {
   private readonly api = inject(ApplicationsService);
   protected readonly auth = inject(AuthService);
 
@@ -53,7 +53,6 @@ export class Dashboard {
   });
 
   protected readonly canReview = computed(() => this.auth.can(PermissionEnum.application_review));
-  protected readonly canCreate = computed(() => this.auth.can(PermissionEnum.application_create));
   protected readonly columns = computed<TableColumn[]>(() => [
     { key: 'businessName', header: 'Business', sortable: true },
     { key: 'contactName', header: 'Contact' },

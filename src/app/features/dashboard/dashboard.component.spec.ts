@@ -4,7 +4,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { Dashboard } from './dashboard';
+import { DashboardComponent } from './dashboard.component';
 
 const emptyPage = { items: [], total: 0, page: 1, pageSize: 10 };
 
@@ -22,7 +22,7 @@ describe('Dashboard', () => {
   afterEach(() => vi.useRealTimers());
 
   it('debounces search and goes back to page 1', async () => {
-    const fixture = TestBed.createComponent(Dashboard);
+    const fixture = TestBed.createComponent(DashboardComponent);
     fixture.detectChanges();
     httpMock.expectOne((r) => r.params.get('page') === '1').flush(emptyPage);
 

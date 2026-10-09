@@ -1,22 +1,20 @@
-<h1>Dashboard</h1>
-
-<div class="filters">
-  @if (canCreate()) {
-    <a mat-flat-button class="new" routerLink="/wizard">New application</a>
-  }
-  <mat-form-field>
-    <mat-label>Search</mat-label>
-    <input matInput [formControl]="search" placeholder="Business or contact" />
-  </mat-form-field>
-  <mat-form-field>
-    <mat-label>Status</mat-label>
-    <mat-select [value]="query().status" (selectionChange)="setStatus($event.value)">
-      <mat-option value="">All</mat-option>
-      @for (s of statuses; track s) {
-        <mat-option [value]="s">{{ s }}</mat-option>
-      }
-    </mat-select>
-  </mat-form-field>
+<div class="bar">
+  <h1>Dashboard</h1>
+  <div class="filters">
+    <mat-form-field>
+      <mat-label>Search</mat-label>
+      <input matInput [formControl]="search" placeholder="Business or contact" />
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Status</mat-label>
+      <mat-select [value]="query().status" (selectionChange)="setStatus($event.value)">
+        <mat-option value="">All</mat-option>
+        @for (s of statuses; track s) {
+          <mat-option [value]="s">{{ s }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </div>
 </div>
 
 <app-data-table

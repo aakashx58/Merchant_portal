@@ -7,7 +7,7 @@ import { AuthService } from '../../core/auth/auth.service';
 import { authInterceptor } from '../../core/interceptors/auth.interceptor';
 import { mockBackendInterceptor } from '../../core/mock-backend/mock-backend.interceptor';
 import { mockToggles } from '../../core/mock-backend/mock-toggles';
-import { Dashboard } from './dashboard';
+import { DashboardComponent } from './dashboard.component';
 
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -25,7 +25,7 @@ describe('Dashboard with mock backend', () => {
         .login('reviewer', 'password')
         .subscribe(() => res()),
     );
-    const fixture = TestBed.createComponent(Dashboard);
+    const fixture = TestBed.createComponent(DashboardComponent);
     const cmp = fixture.componentInstance as any;
     fixture.detectChanges();
     await wait(50);

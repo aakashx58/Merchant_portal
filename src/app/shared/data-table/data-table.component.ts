@@ -5,7 +5,7 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
-import { CellDef } from './cell-def';
+import { CellDefDirective } from './cell-def.directive';
 
 export interface TableColumn {
   key: string;
@@ -23,10 +23,10 @@ export interface TableColumn {
     MatSortModule,
     MatTableModule,
   ],
-  templateUrl: './data-table.html',
-  styleUrl: './data-table.scss',
+  templateUrl: './data-table.component.html',
+  styleUrl: './data-table.component.scss',
 })
-export class DataTable<T extends object> {
+export class DataTableComponent<T extends object> {
   readonly columns = input.required<TableColumn[]>();
   readonly rows = input<T[]>([]);
   readonly total = input(0);
@@ -43,7 +43,7 @@ export class DataTable<T extends object> {
   readonly sortChange = output<{ sort: string; dir: 'asc' | 'desc' | '' }>();
   readonly retry = output<void>();
 
-  private readonly cellDefs = contentChildren(CellDef);
+  private readonly cellDefs = contentChildren(CellDefDirective);
 
   protected readonly keys = computed(() => this.columns().map((c) => c.key));
   protected readonly templates = computed(

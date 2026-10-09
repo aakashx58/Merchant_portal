@@ -44,6 +44,8 @@ export const applications: Application[] = Array.from({ length: 36 }, (_, i) => 
     taxId: `${100 + i}-${10 + (i % 80)}-${String(1000 + i * 7).slice(-4)}`,
     accountNumber: String(10_000_000 + i * 12_345),
     monthlyVolume: 5_000 + i * 1_250,
+    documentType: i % 4 === 0 ? '' : 'business_license',
+    documentName: i % 4 === 0 ? '' : 'license.pdf',
     createdAt: at,
     updatedAt: at,
   };
