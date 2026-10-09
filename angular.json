@@ -44,7 +44,13 @@
                   "maximumError": "8kB"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "fileReplacements": [
+                {
+                  "replace": "src/app/core/mock-backend/mock.providers.ts",
+                  "with": "src/app/core/mock-backend/mock.providers.prod.ts"
+                }
+              ]
             },
             "development": {
               "optimization": false,
