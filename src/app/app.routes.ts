@@ -1,11 +1,13 @@
 import { Routes } from '@angular/router';
 import { PermissionEnum } from './core/enums/permission.enum';
+import { AppLayout } from './shared/layout/app-layout';
 import { authGuard, permissionGuard } from './core/guards/auth.guards';
 
 export const routes: Routes = [
   { path: 'login', loadComponent: () => import('./features/auth/login').then((m) => m.Login) },
   {
     path: '',
+    component: AppLayout,
     canActivate: [authGuard],
     children: [
       { path: '', pathMatch: 'full', redirectTo: 'dashboard' },

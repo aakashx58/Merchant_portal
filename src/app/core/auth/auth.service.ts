@@ -6,6 +6,8 @@ import { PermissionEnum } from '../enums/permission.enum';
 import { User } from '../models/user.model';
 import { hasPermission } from '../utils/permission.utils';
 
+const SESSION_KEY = 'session';
+
 interface Tokens {
   token: string;
   refreshToken: string;
@@ -16,7 +18,9 @@ export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
 
-  private readonly session = signal<User | null>(null);
+  private readonly session = signal<User | null>(
+    JSON.parse(sessionStorage.getItem(SESSION_KEY) ?? 'null'),
+  );
   private inflightRefresh: Observable<string> | null = null;
 
   readonly user = this.session.asReadonly();
@@ -34,14 +38,14 @@ export class AuthService {
   login(username: string, password: string): Observable<User> {
     return this.http
       .post<User>('/api/auth/login', { username, password })
-      .pipe(tap((user) => this.session.set(user)));
+      .pipe(tap((user) => this.setSession(user)));
   }
 
   refresh(): Observable<string> {
     return (this.inflightRefresh ??= this.http
       .post<Tokens>('/api/auth/refresh', { refreshToken: this.session()?.refreshToken })
       .pipe(
-        tap((t) => this.session.update((u) => u && { ...u, ...t })),
+        tap((t) => this.setSession({ ...this.session()!, ...t })),
         map((t) => t.token),
         catchError((err) => {
           this.logout();
@@ -53,7 +57,13 @@ export class AuthService {
   }
 
   logout(): void {
-    this.session.set(null);
+    this.setSession(null);
     this.router.navigate(['/login']);
+  }
+
+  private setSession(user: User | null) {
+    this.session.set(user);
+    if (user) sessionStorage.setItem(SESSION_KEY, JSON.stringify(user));
+    else sessionStorage.removeItem(SESSION_KEY);
   }
 }

@@ -9,37 +9,8 @@ import { AuthService } from '../../core/auth/auth.service';
 @Component({
   selector: 'app-login',
   imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule],
-  template: `
-    <form [formGroup]="form" (ngSubmit)="submit()" class="login">
-      <h1>Sign in</h1>
-      <mat-form-field>
-        <mat-label>Username</mat-label>
-        <input matInput formControlName="username" autocomplete="username" />
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label>Password</mat-label>
-        <input
-          matInput
-          type="password"
-          formControlName="password"
-          autocomplete="current-password"
-        />
-      </mat-form-field>
-      @if (error()) {
-        <p role="alert">{{ error() }}</p>
-      }
-      <button mat-flat-button type="submit" [disabled]="form.invalid || busy()">Sign in</button>
-    </form>
-  `,
-  styles: `
-    .login {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      max-width: 320px;
-      margin: 15vh auto;
-    }
-  `,
+  templateUrl: './login.html',
+  styleUrl: './login.scss',
 })
 export class Login {
   private readonly auth = inject(AuthService);

@@ -1,0 +1,47 @@
+<h1>Dashboard</h1>
+
+<div class="filters">
+  @if (canCreate()) {
+    <a mat-flat-button class="new" routerLink="/wizard">New application</a>
+  }
+  <mat-form-field>
+    <mat-label>Search</mat-label>
+    <input matInput [formControl]="search" placeholder="Business or contact" />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Status</mat-label>
+    <mat-select [value]="query().status" (selectionChange)="setStatus($event.value)">
+      <mat-option value="">All</mat-option>
+      @for (s of statuses; track s) {
+        <mat-option [value]="s">{{ s }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+</div>
+
+<app-data-table
+  [columns]="columns()"
+  [rows]="applications.value()?.items ?? []"
+  [total]="applications.value()?.total ?? 0"
+  [page]="query().page"
+  [pageSize]="query().pageSize"
+  [sort]="query().sort"
+  [sortDir]="query().dir"
+  [loading]="applications.isLoading()"
+  [error]="!!applications.error()"
+  emptyMessage="No applications match your filters."
+  errorMessage="Could not load applications."
+  (pageChange)="onPage($event)"
+  (sortChange)="onSort($event)"
+  (retry)="applications.reload()"
+>
+  <ng-template appCell="monthlyVolume" let-a>
+    {{ a.monthlyVolume | currency: 'USD' : 'symbol' : '1.0-0' }}
+  </ng-template>
+  <ng-template appCell="updatedAt" let-a>{{ a.updatedAt | date: 'mediumDate' }}</ng-template>
+  <ng-template appCell="actions" let-a>
+    @if (a.status === 'submitted') {
+      <a mat-button [routerLink]="['/review', a.id]">Review</a>
+    }
+  </ng-template>
+</app-data-table>

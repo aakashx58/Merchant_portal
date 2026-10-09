@@ -1,0 +1,19 @@
+:host {
+  display: block;
+}
+
+:host h1 {
+  margin: 0 0 16px;
+}
+
+.new {
+  margin-right: auto;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 16px;
+  align-items: center;
+}

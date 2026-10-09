@@ -15,8 +15,16 @@ export const users: MockUser[] = [
   { id: 'u-admin', username: 'admin', password: 'password', roles: [RoleEnum.admin] },
 ];
 
-export const accessTokens = new Map<string, string>();
-export const refreshTokens = new Map<string, string>();
+const load = (key: string) =>
+  new Map<string, string>(JSON.parse(sessionStorage.getItem(key) ?? '[]'));
+
+export const accessTokens = load('mock-access');
+export const refreshTokens = load('mock-refresh');
+
+export const saveTokens = () => {
+  sessionStorage.setItem('mock-access', JSON.stringify([...accessTokens]));
+  sessionStorage.setItem('mock-refresh', JSON.stringify([...refreshTokens]));
+};
 
 export const revealLog: { userId: string; applicationId: string; field: string; at: string }[] = [];
 

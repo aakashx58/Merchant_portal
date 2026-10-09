@@ -1,0 +1,49 @@
+@if (loading()) {
+  <mat-progress-bar mode="indeterminate" />
+}
+
+@if (error()) {
+  <div class="state" role="alert">
+    <p>{{ errorMessage() }}</p>
+    <button mat-stroked-button type="button" (click)="retry.emit()">Retry</button>
+  </div>
+} @else {
+  @if (rows().length === 0 && !loading()) {
+    <p class="state">{{ emptyMessage() }}</p>
+  } @else {
+    <table
+      mat-table
+      matSort
+      [dataSource]="rows()"
+      [matSortActive]="sort()"
+      [matSortDirection]="sortDir()"
+      (matSortChange)="onSort($event)"
+    >
+      @for (col of columns(); track col.key) {
+        <ng-container [matColumnDef]="col.key">
+          <th mat-header-cell mat-sort-header [disabled]="!col.sortable" *matHeaderCellDef>
+            {{ col.header }}
+          </th>
+          <td mat-cell *matCellDef="let row">
+            @if (templates().get(col.key); as tpl) {
+              <ng-container *ngTemplateOutlet="tpl; context: { $implicit: row }" />
+            } @else {
+              {{ value(row, col.key) }}
+            }
+          </td>
+        </ng-container>
+      }
+
+      <tr mat-header-row *matHeaderRowDef="keys()"></tr>
+      <tr mat-row *matRowDef="let row; columns: keys()"></tr>
+    </table>
+  }
+
+  <mat-paginator
+    [length]="total()"
+    [pageIndex]="page() - 1"
+    [pageSize]="pageSize()"
+    [pageSizeOptions]="[10, 25, 50]"
+    (page)="onPage($event)"
+  />
+}

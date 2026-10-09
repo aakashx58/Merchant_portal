@@ -20,6 +20,7 @@ import {
   MockUser,
   refreshTokens,
   revealLog,
+  saveTokens,
   users,
 } from './mock-db';
 import { mockToggles } from './mock-toggles';
@@ -40,11 +41,13 @@ function issueTokens(user: MockUser) {
   const refreshToken = newToken('rt');
   accessTokens.set(token, user.id);
   refreshTokens.set(refreshToken, user.id);
+  saveTokens();
   return { token, refreshToken };
 }
 
 export function expireAccessTokens() {
   accessTokens.clear();
+  saveTokens();
 }
 
 function currentUser(req: HttpRequest<unknown>): MockUser | undefined {
@@ -85,6 +88,7 @@ function handle(req: HttpRequest<unknown>, url: URL): Reply {
     const user = users.find((u) => u.id === refreshTokens.get(body['refreshToken']));
     if (!user || mockToggles.refreshFails) return fail(401, 'Refresh token invalid');
     refreshTokens.delete(body['refreshToken']);
+    saveTokens();
     return ok(issueTokens(user));
   }
 
@@ -97,7 +101,7 @@ function handle(req: HttpRequest<unknown>, url: URL): Reply {
       !can(user, PermissionEnum.application_view_all)
     )
       return fail(403, 'Forbidden');
-    const p = url.searchParams;
+    const p = req.params;
     const page = Math.max(1, Number(p.get('page') ?? 1));
     const pageSize = Math.min(100, Math.max(1, Number(p.get('pageSize') ?? 10)));
     const status = p.get('status');
