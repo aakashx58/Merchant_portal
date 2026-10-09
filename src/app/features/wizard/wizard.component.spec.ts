@@ -20,6 +20,9 @@ const draft: Application = {
   monthlyVolume: 1000,
   documentType: 'business_license',
   documentName: 'license.pdf',
+  assigneeId: null,
+  assigneeName: null,
+  history: [],
   createdAt: '',
   updatedAt: '',
 };

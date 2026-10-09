@@ -10,7 +10,7 @@ import {
 import { mergeMap, Observable, of, throwError, timer } from 'rxjs';
 import { PermissionEnum } from '../enums/permission.enum';
 import { RoleEnum } from '../enums/role.enum';
-import { Application, SensitiveField } from '../models/application.model';
+import { Application, HistoryEntry, SensitiveField } from '../models/application.model';
 import { hasPermission } from '../utils/permission.utils';
 import {
   accessTokens,
@@ -21,6 +21,7 @@ import {
   refreshTokens,
   revealLog,
   saveTokens,
+  userName,
   users,
 } from './mock-db';
 import { mockToggles } from './mock-toggles';
@@ -60,9 +61,26 @@ const can = (u: MockUser, p: PermissionEnum) => hasPermission(u.roles, p);
 const isAdmin = (u: MockUser) => u.roles.includes(RoleEnum.admin);
 const canSee = (u: MockUser, a: Application) =>
   can(u, PermissionEnum.application_view_all) ||
-  (can(u, PermissionEnum.application_view_own) && a.ownerId === u.id);
+  (can(u, PermissionEnum.application_view_own) && a.ownerId === u.id) ||
+  (can(u, PermissionEnum.application_view_assigned) && a.assigneeId === u.id);
 const canEdit = (u: MockUser, a: Application) =>
   can(u, PermissionEnum.application_edit) && (a.ownerId === u.id || isAdmin(u));
+
+const decisions = new Map<string, Reply>();
+
+const log = (
+  a: Application,
+  u: MockUser,
+  action: HistoryEntry['action'],
+  extra: Partial<HistoryEntry> = {},
+) =>
+  a.history.push({
+    at: new Date().toISOString(),
+    actorId: u.id,
+    actorName: u.username,
+    action,
+    ...extra,
+  });
 
 const touch = (a: Application) => {
   a.version++;
@@ -98,6 +116,7 @@ function handle(req: HttpRequest<unknown>, url: URL): Reply {
   if (path === '/applications' && req.method === 'GET') {
     if (
       !can(user, PermissionEnum.application_view_own) &&
+      !can(user, PermissionEnum.application_view_assigned) &&
       !can(user, PermissionEnum.application_view_all)
     )
       return fail(403, 'Forbidden');
@@ -143,21 +162,38 @@ function handle(req: HttpRequest<unknown>, url: URL): Reply {
       monthlyVolume: 0,
       documentType: '',
       documentName: '',
+      assigneeId: null,
+      assigneeName: null,
+      history: [],
       createdAt: now,
       updatedAt: now,
     };
+    log(created, user, 'created');
     applications.push(created);
     return { status: 201, body: mask(created), headers: etag(created) };
   }
 
   if (path === '/applications/check-tax-id' && req.method === 'GET') {
     const taken = applications.some(
-      (a) => a.taxId === req.params.get('value') && a.id !== req.params.get('exclude'),
+      (a) =>
+        canSee(user, a) &&
+        a.taxId === req.params.get('value') &&
+        a.id !== req.params.get('exclude'),
     );
     return ok({ available: !taken });
   }
 
-  const m = path.match(/^\/applications\/([^/]+)(?:\/(submit|decision|reveal))?$/);
+  if (path === '/users' && req.method === 'GET') {
+    if (!can(user, PermissionEnum.application_assign)) return fail(403, 'Forbidden');
+    const role = req.params.get('role');
+    return ok(
+      users
+        .filter((u) => !role || u.roles.includes(role as RoleEnum))
+        .map((u) => ({ id: u.id, username: u.username })),
+    );
+  }
+
+  const m = path.match(/^\/applications\/([^/]+)(?:\/(submit|decision|reveal|assignment))?$/);
   if (!m) return fail(404, 'Not found');
   const app = applications.find((a) => a.id === m[1]);
   if (!app) return fail(404, 'Application not found');
@@ -193,17 +229,47 @@ function handle(req: HttpRequest<unknown>, url: URL): Reply {
     case 'POST submit':
       if (!canEdit(user, app)) return fail(403, 'Forbidden');
       if (app.status !== 'draft') return fail(409, 'Already submitted');
+      if (app.taxId && applications.some((a) => a.id !== app.id && a.taxId === app.taxId))
+        return fail(409, 'This application conflicts with an existing one');
       app.status = 'submitted';
+      log(app, user, 'submitted');
       return touch(app);
 
-    case 'POST decision':
+    case 'PUT assignment': {
+      if (!can(user, PermissionEnum.application_assign)) return fail(403, 'Forbidden');
+      if (app.status !== 'submitted')
+        return fail(409, 'Only submitted applications can be assigned');
+      const assignee = users.find(
+        (u) => u.id === body['assigneeId'] && u.roles.includes(RoleEnum.reviewer),
+      );
+      if (!assignee) return fail(400, 'Choose a valid reviewer');
+      app.assigneeId = assignee.id;
+      app.assigneeName = userName(assignee.id);
+      log(app, user, 'assigned', { note: `Assigned to ${assignee.username}` });
+      return touch(app);
+    }
+
+    case 'POST decision': {
       if (!can(user, PermissionEnum.application_review)) return fail(403, 'Forbidden');
+      if (app.ownerId === user.id) return fail(403, 'You cannot review your own application');
+      if (app.assigneeId !== user.id) return fail(403, 'This application is not assigned to you');
+      const key = req.headers.get('Idempotency-Key');
+      const previous = key && decisions.get(`${app.id}:${key}`);
+      if (previous) return previous;
       if (app.status !== 'submitted') return fail(409, 'Not awaiting review');
       if (body['decision'] !== 'approved' && body['decision'] !== 'rejected')
         return fail(400, 'decision must be approved or rejected');
+      if (!String(body['note'] ?? '').trim()) return fail(400, 'A note is required');
+      if (!['low', 'medium', 'high'].includes(body['riskLevel']))
+        return fail(400, 'A risk level is required');
       app.status = body['decision'];
-      app.reviewNote = body['note'];
-      return touch(app);
+      app.reviewNote = String(body['note']).trim();
+      app.riskLevel = body['riskLevel'];
+      log(app, user, body['decision'], { riskLevel: body['riskLevel'], note: app.reviewNote });
+      const reply = touch(app);
+      if (key) decisions.set(`${app.id}:${key}`, reply);
+      return reply;
+    }
 
     case 'POST reveal': {
       if (!can(user, PermissionEnum.sensitive_reveal)) return fail(403, 'Forbidden');

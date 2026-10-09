@@ -1,11 +1,22 @@
-import { Component, DestroyRef, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import {
+  afterNextRender,
+  Component,
+  DestroyRef,
+  ElementRef,
+  inject,
+  Injector,
+  OnDestroy,
+  OnInit,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { MatStepperModule } from '@angular/material/stepper';
+import { MatStepper, MatStepperModule } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import {
   catchError,
@@ -22,6 +33,7 @@ import {
   switchMap,
   tap,
 } from 'rxjs';
+import { ViewportService } from '../../core/services/viewport.service';
 import { ToastService } from '../../core/services/toast.service';
 import { Application } from '../../core/models/application.model';
 import { ApplicationsService, DraftPayload } from '../../core/services/applications.service';
@@ -47,6 +59,10 @@ export class WizardComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly toast = inject(ToastService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly injector = inject(Injector);
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly stepper = viewChild(MatStepper);
+  protected readonly isMobile = inject(ViewportService).isMobile;
 
   private draftId: string | null = null;
   private version = 0;
@@ -144,6 +160,7 @@ export class WizardComponent implements OnInit, OnDestroy {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       this.toast.show('Please fix the highlighted fields first.');
+      this.focusFirstInvalid();
       return;
     }
     this.submitting.set(true);
@@ -175,6 +192,25 @@ export class WizardComponent implements OnInit, OnDestroy {
       documentType: documents.documentType,
       documentName: documents.document?.name ?? this.storedDocumentName,
     };
+  }
+
+  private focusFirstInvalid() {
+    const { business, financial, documents } = this.form.controls;
+    const step = [business, financial, documents].findIndex((group) => group.invalid);
+    const stepper = this.stepper();
+    if (step >= 0 && stepper) stepper.selectedIndex = step;
+
+    afterNextRender(
+      () => {
+        const fields = this.host.nativeElement.querySelectorAll<HTMLElement>(
+          'input.ng-invalid, mat-select.ng-invalid, input[aria-invalid="true"]',
+        );
+        Array.from(fields)
+          .find((field) => field.offsetParent !== null)
+          ?.focus();
+      },
+      { injector: this.injector },
+    );
   }
 
   private isDirty() {

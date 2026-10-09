@@ -12,6 +12,9 @@ export enum PermissionEnum {
   /** View only the applications created by the current user. */
   application_view_own = 'application_view_own',
 
+  /** View only the applications assigned to the current reviewer. */
+  application_view_assigned = 'application_view_assigned',
+
   /** View all applications across all users. */
   application_view_all = 'application_view_all',
 

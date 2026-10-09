@@ -12,7 +12,7 @@ export const ROLE_PERMISSIONS: Record<RoleEnum, PermissionEnum[]> = {
     PermissionEnum.application_view_own,
   ],
   [RoleEnum.reviewer]: [
-    PermissionEnum.application_view_all,
+    PermissionEnum.application_view_assigned,
     PermissionEnum.application_review,
     PermissionEnum.sensitive_reveal,
   ],
@@ -21,7 +21,6 @@ export const ROLE_PERMISSIONS: Record<RoleEnum, PermissionEnum[]> = {
     PermissionEnum.application_edit,
     PermissionEnum.application_view_own,
     PermissionEnum.application_view_all,
-    PermissionEnum.application_review,
     PermissionEnum.application_assign,
     PermissionEnum.sensitive_reveal,
     PermissionEnum.dashboard_counts,

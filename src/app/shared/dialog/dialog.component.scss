@@ -1,0 +1,14 @@
+:host {
+  display: block;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-right: 8px;
+}
+
+mat-dialog-actions:empty {
+  display: none;
+}

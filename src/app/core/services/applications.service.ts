@@ -2,7 +2,13 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { handledInline } from '../interceptors/http-error.interceptor';
-import { Application, ApplicationStatus, Page } from '../models/application.model';
+import {
+  Application,
+  ApplicationStatus,
+  Page,
+  RiskLevel,
+  SensitiveField,
+} from '../models/application.model';
 
 export interface ApplicationQuery {
   page: number;
@@ -83,5 +89,43 @@ export class ApplicationsService {
       params,
       context: handledInline(),
     });
+  }
+
+  get(id: string): Observable<Application> {
+    return this.http.get<Application>(`/api/applications/${id}`, { context: handledInline() });
+  }
+
+  reveal(id: string, field: SensitiveField): Observable<string> {
+    return this.http
+      .post<{ value: string }>(`/api/applications/${id}/reveal`, { field })
+      .pipe(map((res) => res.value));
+  }
+
+  decide(
+    id: string,
+    decision: 'approved' | 'rejected',
+    riskLevel: RiskLevel,
+    note: string,
+    idempotencyKey: string,
+  ): Observable<Application> {
+    const headers = new HttpHeaders({ 'Idempotency-Key': idempotencyKey });
+    return this.http.post<Application>(
+      `/api/applications/${id}/decision`,
+      { decision, riskLevel, note },
+      { headers, context: handledInline() },
+    );
+  }
+
+  reviewers(): Observable<{ id: string; username: string }[]> {
+    const params = new HttpParams().set('role', 'reviewer');
+    return this.http.get<{ id: string; username: string }[]>('/api/users', { params });
+  }
+
+  assign(id: string, assigneeId: string): Observable<Application> {
+    return this.http.put<Application>(
+      `/api/applications/${id}/assignment`,
+      { assigneeId },
+      { context: handledInline() },
+    );
   }
 }

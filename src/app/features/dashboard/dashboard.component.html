@@ -37,9 +37,10 @@
     {{ a.monthlyVolume | currency: 'USD' : 'symbol' : '1.0-0' }}
   </ng-template>
   <ng-template appCell="updatedAt" let-a>{{ a.updatedAt | date: 'mediumDate' }}</ng-template>
+  <ng-template appCell="assigneeName" let-a>{{ a.assigneeName || 'Unassigned' }}</ng-template>
   <ng-template appCell="actions" let-a>
-    @if (a.status === 'submitted') {
-      <a mat-button [routerLink]="['/review', a.id]">Review</a>
-    }
+    <button mat-button type="button" (click)="openDetails(a.id)">
+      {{ canReview() && a.status === 'submitted' ? 'Review' : 'View' }}
+    </button>
   </ng-template>
 </app-data-table>

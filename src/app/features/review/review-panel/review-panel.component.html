@@ -1,0 +1,30 @@
+<h2>Review</h2>
+
+<mat-form-field class="note">
+  <mat-label>Risk level</mat-label>
+  <mat-select [formControl]="risk">
+    @for (level of riskLevels; track level) {
+      <mat-option [value]="level">{{ level }}</mat-option>
+    }
+  </mat-select>
+  <mat-error>Select a risk level</mat-error>
+</mat-form-field>
+
+<mat-form-field class="note">
+  <mat-label>Decision note</mat-label>
+  <textarea matInput rows="3" [formControl]="note"></textarea>
+  <mat-error>A note is required</mat-error>
+</mat-form-field>
+
+@if (error()) {
+  <p class="error" role="alert">{{ error() }}</p>
+}
+
+<div class="actions">
+  <button mat-flat-button type="button" [disabled]="submitting()" (click)="decide('approved')">
+    Approve
+  </button>
+  <button mat-stroked-button type="button" [disabled]="submitting()" (click)="decide('rejected')">
+    Reject
+  </button>
+</div>

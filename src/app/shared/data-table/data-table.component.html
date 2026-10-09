@@ -11,32 +11,39 @@
   @if (rows().length === 0 && !loading()) {
     <p class="state">{{ emptyMessage() }}</p>
   } @else {
-    <table
-      mat-table
-      matSort
-      [dataSource]="rows()"
-      [matSortActive]="sort()"
-      [matSortDirection]="sortDir()"
-      (matSortChange)="onSort($event)"
+    <div
+      class="scroll"
+      tabindex="0"
+      role="region"
+      aria-label="Table, scrolls horizontally on small screens"
     >
-      @for (col of columns(); track col.key) {
-        <ng-container [matColumnDef]="col.key">
-          <th mat-header-cell mat-sort-header [disabled]="!col.sortable" *matHeaderCellDef>
-            {{ col.header }}
-          </th>
-          <td mat-cell *matCellDef="let row">
-            @if (templates().get(col.key); as tpl) {
-              <ng-container *ngTemplateOutlet="tpl; context: { $implicit: row }" />
-            } @else {
-              {{ value(row, col.key) }}
-            }
-          </td>
-        </ng-container>
-      }
+      <table
+        mat-table
+        matSort
+        [dataSource]="rows()"
+        [matSortActive]="sort()"
+        [matSortDirection]="sortDir()"
+        (matSortChange)="onSort($event)"
+      >
+        @for (col of columns(); track col.key) {
+          <ng-container [matColumnDef]="col.key">
+            <th mat-header-cell mat-sort-header [disabled]="!col.sortable" *matHeaderCellDef>
+              {{ col.header }}
+            </th>
+            <td mat-cell *matCellDef="let row">
+              @if (templates().get(col.key); as tpl) {
+                <ng-container *ngTemplateOutlet="tpl; context: { $implicit: row }" />
+              } @else {
+                {{ value(row, col.key) }}
+              }
+            </td>
+          </ng-container>
+        }
 
-      <tr mat-header-row *matHeaderRowDef="keys()"></tr>
-      <tr mat-row *matRowDef="let row; columns: keys()"></tr>
-    </table>
+        <tr mat-header-row *matHeaderRowDef="keys()"></tr>
+        <tr mat-row *matRowDef="let row; columns: keys()"></tr>
+      </table>
+    </div>
   }
 
   <mat-paginator

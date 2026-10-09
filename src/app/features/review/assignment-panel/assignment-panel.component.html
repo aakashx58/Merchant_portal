@@ -1,0 +1,16 @@
+<div class="row">
+  <mat-form-field>
+    <mat-label>Assign to reviewer</mat-label>
+    <mat-select [formControl]="reviewer">
+      @for (r of reviewers.value() ?? []; track r.id) {
+        <mat-option [value]="r.id" [disabled]="r.id === assigneeId()">{{ r.username }}</mat-option>
+      }
+    </mat-select>
+    <mat-error>Select a reviewer</mat-error>
+  </mat-form-field>
+  <button mat-flat-button type="button" [disabled]="saving()" (click)="save()">Assign</button>
+</div>
+
+@if (error()) {
+  <p class="error" role="alert">{{ error() }}</p>
+}

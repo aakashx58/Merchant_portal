@@ -1,0 +1,21 @@
+<dt>{{ label() }}</dt>
+<dd>
+  <span class="value" aria-live="polite">{{ value() ?? masked() }}</span>
+  @if (revealable()) {
+    @if (value()) {
+      <button mat-button type="button" [attr.aria-label]="'Hide ' + label()" (click)="hide()">
+        Hide
+      </button>
+    } @else {
+      <button
+        mat-button
+        type="button"
+        [attr.aria-label]="'Reveal ' + label()"
+        [disabled]="loading()"
+        (click)="show()"
+      >
+        Reveal
+      </button>
+    }
+  }
+</dd>

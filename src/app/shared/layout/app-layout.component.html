@@ -1,12 +1,26 @@
+<a class="skip-link" href="#main" (click)="focusMain($event)">Skip to main content</a>
+
 <mat-toolbar class="toolbar">
-  <button mat-icon-button type="button" aria-label="Toggle navigation" (click)="sidenav.toggle()">
+  <button
+    mat-icon-button
+    type="button"
+    aria-label="Toggle navigation"
+    [attr.aria-expanded]="sidenav.opened"
+    (click)="sidenav.toggle()"
+  >
     <mat-icon>menu</mat-icon>
   </button>
   <a class="brand" routerLink="/">TechKraft</a>
 
   <span class="spacer"></span>
 
-  <button mat-button type="button" class="profile" [matMenuTriggerFor]="menu">
+  <button
+    mat-button
+    type="button"
+    class="profile"
+    [attr.aria-label]="'Account menu for ' + auth.user()?.username"
+    [matMenuTriggerFor]="menu"
+  >
     <mat-icon>account_circle</mat-icon>
     <span class="name">{{ auth.user()?.username }}</span>
   </button>
@@ -29,13 +43,23 @@
     [mode]="isMobile() ? 'over' : 'side'"
     [opened]="!isMobile()"
   >
-    <mat-nav-list (click)="isMobile() && sidenav.close()">
-      <a mat-list-item routerLink="/dashboard" routerLinkActive="active">
+    <mat-nav-list aria-label="Main navigation" (click)="isMobile() && sidenav.close()">
+      <a
+        mat-list-item
+        routerLink="/dashboard"
+        routerLinkActive="active"
+        ariaCurrentWhenActive="page"
+      >
         <mat-icon matListItemIcon>dashboard</mat-icon>
         <span matListItemTitle>Dashboard</span>
       </a>
       @if (auth.can(permission.application_create)) {
-        <a mat-list-item routerLink="/wizard" routerLinkActive="active">
+        <a
+          mat-list-item
+          routerLink="/wizard"
+          routerLinkActive="active"
+          ariaCurrentWhenActive="page"
+        >
           <mat-icon matListItemIcon>add_circle</mat-icon>
           <span matListItemTitle>New application</span>
         </a>
@@ -44,7 +68,7 @@
   </mat-sidenav>
 
   <mat-sidenav-content>
-    <main class="content">
+    <main #main id="main" class="content" tabindex="-1">
       <router-outlet />
     </main>
   </mat-sidenav-content>

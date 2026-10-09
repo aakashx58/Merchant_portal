@@ -4,6 +4,11 @@
 
 table {
   width: 100%;
+  min-width: 640px;
+}
+
+.scroll {
+  overflow-x: auto;
 }
 
 .state {

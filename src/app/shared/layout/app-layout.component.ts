@@ -1,6 +1,5 @@
-import { BreakpointObserver } from '@angular/cdk/layout';
-import { Component, inject } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { Component, ElementRef, inject, viewChild } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -8,10 +7,11 @@ import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { map } from 'rxjs';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { filter } from 'rxjs';
 import { AuthService } from '../../core/auth/auth.service';
 import { PermissionEnum } from '../../core/enums/permission.enum';
+import { ViewportService } from '../../core/services/viewport.service';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 
 @Component({
@@ -34,12 +34,23 @@ export class AppLayoutComponent {
   protected readonly auth = inject(AuthService);
   private readonly dialog = inject(MatDialog);
   protected readonly permission = PermissionEnum;
-  protected readonly isMobile = toSignal(
-    inject(BreakpointObserver)
-      .observe('(max-width: 800px)')
-      .pipe(map((state) => state.matches)),
-    { initialValue: false },
-  );
+  protected readonly isMobile = inject(ViewportService).isMobile;
+
+  private readonly main = viewChild.required<ElementRef<HTMLElement>>('main');
+
+  constructor() {
+    inject(Router)
+      .events.pipe(
+        filter((event) => event instanceof NavigationEnd),
+        takeUntilDestroyed(),
+      )
+      .subscribe(() => this.focusMain());
+  }
+
+  protected focusMain(event?: Event) {
+    event?.preventDefault();
+    this.main().nativeElement.focus();
+  }
 
   protected confirmSignOut() {
     this.dialog

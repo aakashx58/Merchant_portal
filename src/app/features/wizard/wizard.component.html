@@ -23,8 +23,9 @@
   </p>
 
   <mat-stepper
+    #stepper
     aria-label="Application steps"
-    orientation="horizontal"
+    [orientation]="isMobile() ? 'vertical' : 'horizontal'"
     [linear]="false"
     (selectionChange)="onStepChange()"
   >
@@ -119,6 +120,7 @@
             accept="application/pdf,image/png,image/jpeg"
             (change)="onFile($event)"
             [attr.aria-describedby]="'document-error'"
+            [attr.aria-invalid]="form.controls.documents.controls.document.invalid"
           />
           <p id="document-error" class="error" role="alert">
             @if (form.controls.documents.controls.document.hasError('fileType')) {

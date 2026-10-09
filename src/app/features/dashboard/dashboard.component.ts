@@ -3,10 +3,10 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { RouterLink } from '@angular/router';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { AuthService } from '../../core/auth/auth.service';
 import { PermissionEnum } from '../../core/enums/permission.enum';
@@ -22,7 +22,6 @@ import { DataTableComponent, TableColumn } from '../../shared/data-table/data-ta
     DataTableComponent,
     DatePipe,
     ReactiveFormsModule,
-    RouterLink,
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
@@ -34,6 +33,7 @@ import { DataTableComponent, TableColumn } from '../../shared/data-table/data-ta
 export class DashboardComponent {
   private readonly api = inject(ApplicationsService);
   protected readonly auth = inject(AuthService);
+  private readonly dialog = inject(MatDialog);
 
   protected readonly search = new FormControl('', { nonNullable: true });
   protected readonly statuses = ['draft', 'submitted', 'approved', 'rejected'] as const;
@@ -52,6 +52,7 @@ export class DashboardComponent {
     stream: ({ params }) => this.api.list(params),
   });
 
+  protected readonly canAssign = computed(() => this.auth.can(PermissionEnum.application_assign));
   protected readonly canReview = computed(() => this.auth.can(PermissionEnum.application_review));
   protected readonly columns = computed<TableColumn[]>(() => [
     { key: 'businessName', header: 'Business', sortable: true },
@@ -59,7 +60,8 @@ export class DashboardComponent {
     { key: 'status', header: 'Status' },
     { key: 'monthlyVolume', header: 'Monthly volume', sortable: true },
     { key: 'updatedAt', header: 'Updated', sortable: true },
-    ...(this.canReview() ? [{ key: 'actions', header: '' }] : []),
+    ...(this.canAssign() ? [{ key: 'assigneeName', header: 'Reviewer' }] : []),
+    { key: 'actions', header: '' },
   ]);
 
   constructor() {
@@ -82,5 +84,13 @@ export class DashboardComponent {
 
   private patch(change: Partial<ApplicationQuery>) {
     this.query.update((q) => ({ ...q, ...change, page: 1 }));
+  }
+
+  protected async openDetails(id: string) {
+    const { ApplicationDetailComponent } = await import('../review/application-detail.component');
+    this.dialog
+      .open(ApplicationDetailComponent, { data: { id }, width: '720px', maxWidth: '95vw' })
+      .afterClosed()
+      .subscribe(() => this.applications.reload());
   }
 }

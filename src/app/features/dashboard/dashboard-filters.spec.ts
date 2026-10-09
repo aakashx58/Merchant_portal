@@ -22,7 +22,7 @@ describe('Dashboard with mock backend', () => {
     });
     await new Promise<void>((res) =>
       TestBed.inject(AuthService)
-        .login('reviewer', 'password')
+        .login('admin', 'password')
         .subscribe(() => res()),
     );
     const fixture = TestBed.createComponent(DashboardComponent);

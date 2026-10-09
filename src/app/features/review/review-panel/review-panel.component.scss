@@ -1,0 +1,16 @@
+:host {
+  display: block;
+}
+
+.note {
+  width: 100%;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.error {
+  color: var(--mat-sys-error);
+}
