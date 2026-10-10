@@ -27,7 +27,7 @@ export const saveTokens = () => {
   sessionStorage.setItem('mock-refresh', JSON.stringify([...refreshTokens]));
 };
 
-export const userName = (id: string) => users.find((u) => u.id === id)?.username ?? id;
+export const userName = (id: string) => users.find((userItem) => userItem.id === id)?.username ?? id;
 
 export const revealLog: { userId: string; applicationId: string; field: string; at: string }[] = [];
 
@@ -90,14 +90,14 @@ export const applications: Application[] = Array.from({ length: 36 }, (_, i) => 
   };
 });
 
-const last4 = (v: string) => v.slice(-4);
+const last4 = (value: string) => value.slice(-4);
 
-export function mask(a: Application): Application {
+export function mask(application: Application): Application {
   return {
-    ...a,
-    taxId: `***-**-${last4(a.taxId)}`,
-    accountNumber: `****${last4(a.accountNumber)}`,
+    ...application,
+    taxId: `***-**-${last4(application.taxId)}`,
+    accountNumber: `****${last4(application.accountNumber)}`,
   };
 }
 
-export const isMasked = (v: string) => v.includes('*');
+export const isMasked = (value: string) => value.includes('*');

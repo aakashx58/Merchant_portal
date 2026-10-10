@@ -7,7 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { finalize } from 'rxjs';
 import { RiskLevel } from '../../../core/models/application.model';
-import { ApplicationsService } from '../../../core/services/applications.service';
+import { ApplicationReviewService } from '../../../core/services/application-review.service';
 import { ToastService } from '../../../core/services/toast.service';
 
 type Decision = 'approved' | 'rejected';
@@ -27,7 +27,7 @@ export const RISK_LEVELS: RiskLevel[] = ['low', 'medium', 'high'];
   styleUrl: './review-panel.component.scss',
 })
 export class ReviewPanelComponent {
-  private readonly api = inject(ApplicationsService);
+  private readonly api = inject(ApplicationReviewService);
   private readonly toast = inject(ToastService);
 
   readonly applicationId = input.required<string>();

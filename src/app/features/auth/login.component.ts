@@ -1,14 +1,12 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule],
+  imports: [ReactiveFormsModule, MatIconModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
@@ -23,6 +21,11 @@ export class LoginComponent {
   });
   protected readonly busy = signal(false);
   protected readonly error = signal('');
+  protected readonly showPassword = signal(false);
+
+  protected togglePassword() {
+    this.showPassword.update(v => !v);
+  }
 
   protected submit() {
     const { username, password } = this.form.getRawValue();

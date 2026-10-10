@@ -1,0 +1,16 @@
+/* Angular Material Form Field Overrides */
+mat-form-field {
+  --mdc-outlined-text-field-container-shape: var(--radius-md);
+  --mdc-outlined-text-field-outline-color: var(--border);
+  --mdc-outlined-text-field-focus-outline-color: var(--border-focus);
+  --mdc-outlined-text-field-hover-outline-color: var(--border-hover);
+  --mdc-outlined-text-field-label-text-color: var(--text-muted);
+  --mdc-outlined-text-field-focus-label-text-color: var(--border-focus);
+
+  width: 100%;
+
+  .mat-mdc-text-field-wrapper {
+    border-radius: var(--radius-md) !important;
+  }
+}
+

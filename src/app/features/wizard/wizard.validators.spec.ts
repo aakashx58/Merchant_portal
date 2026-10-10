@@ -1,7 +1,7 @@
 import { FormControl } from '@angular/forms';
 import { of, throwError } from 'rxjs';
 import { describe, expect, it, vi } from 'vitest';
-import { ApplicationsService } from '../../core/services/applications.service';
+import { ApplicationDraftService } from '../../core/services/application-draft.service';
 import {
   ACCOUNT_PATTERN,
   documentFile,
@@ -34,11 +34,11 @@ describe('wizard validators', () => {
   });
 
   describe('uniqueTaxId', () => {
-    const validate = (api: Partial<ApplicationsService>, value: string) =>
+    const validate = (api: Partial<ApplicationDraftService>, value: string) =>
       new Promise((resolve) => {
         vi.useFakeTimers();
         const result$ = uniqueTaxId(
-          api as ApplicationsService,
+          api as ApplicationDraftService,
           () => 'app-1',
         )(new FormControl(value)) as ReturnType<typeof of>;
         result$.subscribe(resolve);

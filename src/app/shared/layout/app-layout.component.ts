@@ -1,7 +1,7 @@
 import { Component, ElementRef, inject, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
@@ -11,8 +11,8 @@ import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } fro
 import { filter } from 'rxjs';
 import { AuthService } from '../../core/auth/auth.service';
 import { PermissionEnum } from '../../core/enums/permission.enum';
+import { DialogService } from '../../core/services/dialog.service';
 import { ViewportService } from '../../core/services/viewport.service';
-import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-layout',
@@ -21,6 +21,7 @@ import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.compone
     RouterLink,
     RouterLinkActive,
     MatButtonModule,
+    MatDividerModule,
     MatIconModule,
     MatListModule,
     MatMenuModule,
@@ -32,7 +33,7 @@ import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.compone
 })
 export class AppLayoutComponent {
   protected readonly auth = inject(AuthService);
-  private readonly dialog = inject(MatDialog);
+  private readonly dialog = inject(DialogService);
   protected readonly permission = PermissionEnum;
   protected readonly isMobile = inject(ViewportService).isMobile;
 
@@ -54,9 +55,7 @@ export class AppLayoutComponent {
 
   protected confirmSignOut() {
     this.dialog
-      .open(ConfirmDialogComponent, {
-        data: { title: 'Sign out', message: 'Do you want to sign out?', confirmText: 'Sign out' },
-      })
+      .confirm({ title: 'Sign out', message: 'Do you want to sign out?', confirmText: 'Sign out' })
       .afterClosed()
       .subscribe((confirmed) => confirmed && this.auth.logout());
   }

@@ -1,3 +1,4 @@
+import { CurrencyPipe } from '@angular/common';
 import {
   afterNextRender,
   Component,
@@ -36,7 +37,8 @@ import {
 import { ViewportService } from '../../core/services/viewport.service';
 import { ToastService } from '../../core/services/toast.service';
 import { Application } from '../../core/models/application.model';
-import { ApplicationsService, DraftPayload } from '../../core/services/applications.service';
+import { ApplicationDraftService } from '../../core/services/application-draft.service';
+import { DraftPayload } from '../../core/services/applications.service';
 import { ACCOUNT_PATTERN, documentFile, TAX_ID_PATTERN, uniqueTaxId } from './wizard.validators';
 
 export type SaveStatus = 'idle' | 'saving' | 'saved' | 'failed';
@@ -44,6 +46,7 @@ export type SaveStatus = 'idle' | 'saving' | 'saved' | 'failed';
 @Component({
   selector: 'app-wizard',
   imports: [
+    CurrencyPipe,
     ReactiveFormsModule,
     MatButtonModule,
     MatFormFieldModule,
@@ -55,7 +58,7 @@ export type SaveStatus = 'idle' | 'saving' | 'saved' | 'failed';
   styleUrl: './wizard.component.scss',
 })
 export class WizardComponent implements OnInit, OnDestroy {
-  private readonly api = inject(ApplicationsService);
+  private readonly api = inject(ApplicationDraftService);
   private readonly router = inject(Router);
   private readonly toast = inject(ToastService);
   private readonly destroyRef = inject(DestroyRef);

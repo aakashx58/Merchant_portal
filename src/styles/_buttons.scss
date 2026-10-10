@@ -1,0 +1,81 @@
+/* Primary Flat Buttons & Submit buttons */
+button[mat-flat-button],
+button.btn-primary,
+button.submit-button {
+  background-color: var(--primary) !important;
+  color: var(--primary-text) !important;
+  border: none !important;
+  border-radius: var(--radius-md) !important;
+  height: var(--button-height);
+  padding: 0 var(--space-xl) !important;
+  font-size: var(--text-base);
+  font-weight: var(--font-medium);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.15s ease, opacity 0.15s ease;
+
+  &:hover:not(:disabled) {
+    background-color: var(--primary-hover) !important;
+  }
+
+  &:active:not(:disabled) {
+    background-color: var(--primary-active) !important;
+  }
+
+  &:disabled {
+    opacity: 0.65 !important;
+    cursor: not-allowed !important;
+  }
+}
+
+/* Stroked / Secondary Buttons */
+button[mat-stroked-button],
+button.btn-secondary {
+  background-color: var(--bg-surface) !important;
+  color: var(--primary) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-md) !important;
+  height: var(--button-height);
+  padding: 0 var(--space-xl) !important;
+  font-size: var(--text-base);
+  font-weight: var(--font-medium);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+
+  &:hover:not(:disabled) {
+    background-color: var(--bg-subtle) !important;
+    border-color: var(--border-hover) !important;
+  }
+
+  &:active:not(:disabled) {
+    background-color: var(--border) !important;
+  }
+
+  &:disabled {
+    opacity: 0.65 !important;
+    cursor: not-allowed !important;
+  }
+}
+
+/* Text / Basic Buttons */
+button[mat-button],
+button.btn-text {
+  color: var(--primary) !important;
+  border-radius: var(--radius-sm) !important;
+  padding: 0 var(--space-lg) !important;
+  font-weight: var(--font-medium) !important;
+  transition: background-color 0.15s ease;
+
+  &:hover:not(:disabled) {
+    background-color: var(--bg-subtle) !important;
+  }
+
+  &:disabled {
+    opacity: 0.65 !important;
+  }
+}

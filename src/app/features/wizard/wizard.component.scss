@@ -14,6 +14,7 @@
   display: flex;
   gap: 8px;
   margin-top: 8px;
+  justify-content: flex-end;
 }
 
 .save-status {
@@ -21,29 +22,146 @@
   color: var(--mat-sys-on-surface-variant);
 }
 
-.file {
+// ──────────────────────────────────────────────
+// Titled field group
+// ──────────────────────────────────────────────
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field-title {
+  font-size: var(--text-sm);
+  font-weight: var(--font-normal);
+  color: var(--text-main);
+}
+
+.required {
+  color: var(--error);
+  margin-left: 2px;
+}
+
+.field-hint {
+  margin: 0;
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.field-input {
+  width: 100%;
+}
+
+// Mat-select styled like a native input
+.field-select {
+  display: block;
+  box-sizing: border-box;
+  height: var(--input-height);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 0 var(--space-md);
+  background: var(--bg-surface);
+  font-size: var(--text-base);
+  font-family: inherit;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &.mat-focused {
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 0.125rem var(--focus-ring);
+  }
+
+  // Remove built-in underline
+  .mdc-line-ripple { display: none; }
+  .mat-mdc-form-field-infix { padding: 0; border: none; }
+}
+
+// File input
+.field-file {
+  font-size: var(--text-sm);
+  color: var(--text-main);
+  cursor: pointer;
+
+  &::file-selector-button {
+    height: 2.25rem;
+    padding: 0 var(--space-md);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--bg-subtle);
+    font-size: var(--text-sm);
+    font-family: inherit;
+    font-weight: var(--font-medium);
+    color: var(--text-main);
+    cursor: pointer;
+    margin-right: var(--space-sm);
+    transition: background 0.15s ease;
+
+    &:hover {
+      background: var(--border-subtle);
+    }
+  }
+}
+
+.field-error {
+  font-size: var(--text-xs);
+  color: var(--error);
+  min-height: 1.2em;
+}
+
+// Review step – grouped cards
+.review {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 16px;
+  max-width: 600px;
+}
+
+.review-card {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md, 8px);
+  overflow: hidden;
+}
+
+.review-card-title {
+  margin: 0;
+  padding: 12px 20px;
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  background-color: var(--bg-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.review-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0;
+}
+
+.review-field {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  padding: 14px 20px;
+  border-right: 1px solid var(--border-subtle);
+
+  &:last-child {
+    border-right: none;
+  }
 }
 
-.error {
-  min-height: 1.5em;
-  margin: 0;
-  color: var(--mat-sys-error);
+.review-field-title {
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+  color: var(--text-muted);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
 }
 
-.summary {
-  display: grid;
-  grid-template-columns: max-content 1fr;
-  gap: 4px 24px;
-  padding-top: 16px;
-
-  dt {
-    font-weight: 500;
-  }
-
-  dd {
-    margin: 0;
-  }
+.review-field-value {
+  font-size: var(--text-base);
+  color: var(--text-main);
+  font-weight: var(--font-medium);
 }

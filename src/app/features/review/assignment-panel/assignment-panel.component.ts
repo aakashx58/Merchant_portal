@@ -5,7 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { finalize } from 'rxjs';
-import { ApplicationsService } from '../../../core/services/applications.service';
+import { ApplicationAssignmentService } from '../../../core/services/application-assignment.service';
 import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
@@ -15,7 +15,7 @@ import { ToastService } from '../../../core/services/toast.service';
   styleUrl: './assignment-panel.component.scss',
 })
 export class AssignmentPanelComponent {
-  private readonly api = inject(ApplicationsService);
+  private readonly api = inject(ApplicationAssignmentService);
   private readonly toast = inject(ToastService);
 
   readonly applicationId = input.required<string>();

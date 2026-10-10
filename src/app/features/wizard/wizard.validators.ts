@@ -1,6 +1,6 @@
 import { AbstractControl, AsyncValidatorFn, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { catchError, map, Observable, of, switchMap, timer } from 'rxjs';
-import { ApplicationsService } from '../../core/services/applications.service';
+import { ApplicationDraftService } from '../../core/services/application-draft.service';
 
 const PLAIN_TAX_ID = /^\d{3}-\d{2}-\d{4}$/;
 export const TAX_ID_PATTERN = /^(\d{3}-\d{2}-\d{4}|\*{3}-\*{2}-\d{4})$/;
@@ -18,7 +18,7 @@ export const documentFile: ValidatorFn = (control: AbstractControl): ValidationE
 };
 
 export function uniqueTaxId(
-  api: ApplicationsService,
+  api: ApplicationDraftService,
   excludeId: () => string | null,
 ): AsyncValidatorFn {
   return (control: AbstractControl): Observable<ValidationErrors | null> => {

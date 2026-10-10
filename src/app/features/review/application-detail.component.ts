@@ -8,6 +8,7 @@ import { AuthService } from '../../core/auth/auth.service';
 import { PermissionEnum } from '../../core/enums/permission.enum';
 import { Application } from '../../core/models/application.model';
 import { ApplicationsService } from '../../core/services/applications.service';
+import { ApplicationReviewService } from '../../core/services/application-review.service';
 import { DialogComponent } from '../../shared/dialog/dialog.component';
 import { MaskedFieldComponent } from '../../shared/masked-field/masked-field.component';
 import { AssignmentPanelComponent } from './assignment-panel/assignment-panel.component';
@@ -30,6 +31,7 @@ import { ReviewPanelComponent } from './review-panel/review-panel.component';
 })
 export class ApplicationDetailComponent {
   private readonly api = inject(ApplicationsService);
+  private readonly reviewApi = inject(ApplicationReviewService);
   private readonly auth = inject(AuthService);
 
   private readonly id = inject<{ id: string }>(MAT_DIALOG_DATA).id;
@@ -52,6 +54,6 @@ export class ApplicationDetailComponent {
     () => this.application.value()?.ownerId === this.auth.user()?.id,
   );
 
-  protected readonly revealTaxId = () => this.api.reveal(this.id, 'taxId');
-  protected readonly revealAccount = () => this.api.reveal(this.id, 'accountNumber');
+  protected readonly revealTaxId = () => this.reviewApi.reveal(this.id, 'taxId');
+  protected readonly revealAccount = () => this.reviewApi.reveal(this.id, 'accountNumber');
 }

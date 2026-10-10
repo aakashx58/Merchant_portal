@@ -1,4 +1,4 @@
-import { CurrencyPipe, DatePipe } from '@angular/common';
+import { CurrencyPipe, DatePipe, TitleCasePipe } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
 import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
@@ -6,11 +6,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { AuthService } from '../../core/auth/auth.service';
 import { PermissionEnum } from '../../core/enums/permission.enum';
 import { ApplicationQuery, ApplicationsService } from '../../core/services/applications.service';
+import { DialogService } from '../../core/services/dialog.service';
 import { CellDefDirective } from '../../shared/data-table/cell-def.directive';
 import { DataTableComponent, TableColumn } from '../../shared/data-table/data-table.component';
 
@@ -21,11 +23,13 @@ import { DataTableComponent, TableColumn } from '../../shared/data-table/data-ta
     CurrencyPipe,
     DataTableComponent,
     DatePipe,
+    TitleCasePipe,
     ReactiveFormsModule,
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
-    MatSelectModule,
+    MatIconModule,
+    MatMenuModule,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
@@ -33,7 +37,7 @@ import { DataTableComponent, TableColumn } from '../../shared/data-table/data-ta
 export class DashboardComponent {
   private readonly api = inject(ApplicationsService);
   protected readonly auth = inject(AuthService);
-  private readonly dialog = inject(MatDialog);
+  private readonly dialog = inject(DialogService);
 
   protected readonly search = new FormControl('', { nonNullable: true });
   protected readonly statuses = ['draft', 'submitted', 'approved', 'rejected'] as const;
@@ -61,13 +65,13 @@ export class DashboardComponent {
     { key: 'monthlyVolume', header: 'Monthly volume', sortable: true },
     { key: 'updatedAt', header: 'Updated', sortable: true },
     ...(this.canAssign() ? [{ key: 'assigneeName', header: 'Reviewer' }] : []),
-    { key: 'actions', header: '' },
+    { key: 'actions', header: 'Action' },
   ]);
 
   constructor() {
     this.search.valueChanges
       .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed())
-      .subscribe((q) => this.patch({ q: q.trim() }));
+      .subscribe((searchTerm) => this.patch({ q: searchTerm.trim() }));
   }
 
   protected setStatus(status: ApplicationQuery['status']) {
@@ -89,7 +93,7 @@ export class DashboardComponent {
   protected async openDetails(id: string) {
     const { ApplicationDetailComponent } = await import('../review/application-detail.component');
     this.dialog
-      .open(ApplicationDetailComponent, { data: { id }, width: '720px', maxWidth: '95vw' })
+      .openSideSheet(ApplicationDetailComponent, { data: { id } })
       .afterClosed()
       .subscribe(() => this.applications.reload());
   }

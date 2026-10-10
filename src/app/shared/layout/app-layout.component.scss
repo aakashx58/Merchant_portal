@@ -1,26 +1,58 @@
 .toolbar {
-  gap: 8px;
-  background: var(--mat-sys-surface-container);
+  gap: var(--space-sm);
+  background-color: var(--bg-surface);
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-main);
 }
 
 .brand {
-  font-weight: 500;
-  font-size: 1.1rem;
-  margin-right: 16px;
+  font-weight: var(--font-semibold);
+  font-size: var(--text-lg);
+  margin-right: var(--space-lg);
   text-decoration: none;
   color: inherit;
+  letter-spacing: -0.01em;
 }
 
 .container {
   height: calc(100vh - 64px);
+  background-color: var(--bg-page);
 }
 
 .sidenav {
-  width: 240px;
+  width: 16rem; /* 256px */
+  background-color: var(--bg-surface);
+  border-right: 1px solid var(--border-subtle);
+}
+
+mat-nav-list {
+  padding: var(--space-md) !important;
+}
+
+mat-nav-list a[mat-list-item] {
+  margin-bottom: var(--space-xs);
+  border-radius: 2rem !important; /* Fully rounded pill */
+  color: var(--text-muted) !important;
+  transition: all 0.15s ease;
+
+  mat-icon {
+    color: var(--text-muted);
+  }
+
+  &:hover {
+    background-color: var(--bg-subtle) !important;
+    color: var(--text-main) !important;
+  }
 }
 
 .active {
-  background: var(--mat-sys-secondary-container);
+  background-color: var(--bg-subtle) !important;
+  color: var(--text-main) !important;
+  font-weight: var(--font-medium);
+
+  mat-icon {
+    color: var(--text-main) !important;
+  }
 }
 
 .spacer {
@@ -28,41 +60,106 @@
 }
 
 .content {
-  max-width: 1100px;
   margin: 0 auto;
-  padding: 16px;
+  padding: var(--space-2xl);
 }
 
 @media (max-width: 600px) {
-  .name {
-    display: none;
+  .content {
+    padding: var(--space-md);
   }
 }
 
+// ──────────────────────────────────────────────
+// Profile trigger button
+// ──────────────────────────────────────────────
+.profile-trigger {
+  margin-left: var(--space-xs);
+}
+
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background-color: var(--primary);
+  color: var(--primary-text, #fff);
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+
+// ──────────────────────────────────────────────
+// Profile dropdown menu
+// ──────────────────────────────────────────────
 .menu-head {
   display: flex;
-  flex-direction: column;
-  padding: 8px 16px;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  min-width: 13rem;
+
+  .menu-avatar {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background-color: var(--primary);
+    color: var(--primary-text, #fff);
+    font-size: var(--text-base);
+    font-weight: var(--font-semibold);
+  }
+
+  .menu-user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .menu-username {
+    font-size: var(--text-base);
+    font-weight: var(--font-semibold);
+    color: var(--text-main);
+  }
 }
 
 .role {
-  font-size: 0.875rem;
+  font-size: var(--text-xs);
   text-transform: capitalize;
-  color: var(--mat-sys-on-surface-variant);
+  color: var(--text-muted);
+}
+
+.signout-item {
+  color: var(--text-main);
+
+  mat-icon {
+    color: var(--text-muted);
+  }
+
+  &:hover mat-icon {
+    color: var(--text-main);
+  }
 }
 
 .skip-link {
   position: absolute;
-  left: 8px;
-  top: -48px;
+  left: var(--space-sm);
+  top: -3rem;
   z-index: 100;
-  padding: 8px 16px;
-  border-radius: 4px;
-  background: var(--mat-sys-primary);
-  color: var(--mat-sys-on-primary);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-sm);
+  background-color: var(--primary);
+  color: var(--primary-text);
+  font-size: var(--text-sm);
 
   &:focus {
-    top: 8px;
+    top: var(--space-sm);
   }
 }
 

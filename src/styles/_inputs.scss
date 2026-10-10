@@ -1,0 +1,44 @@
+/* Native inputs, textareas, selects and custom input classes */
+input[type='text'],
+input[type='email'],
+input[type='password'],
+input[type='number'],
+input[type='search'],
+input[type='tel'],
+input[type='url'],
+select,
+textarea,
+.custom-input {
+  box-sizing: border-box;
+  font-family: inherit;
+  font-size: var(--text-base);
+  font-weight: var(--font-normal);
+  color: var(--text-main);
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 0 var(--space-md);
+  height: var(--input-height);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &::placeholder {
+    color: var(--text-placeholder);
+  }
+
+  &:focus {
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 0.125rem var(--focus-ring);
+  }
+
+  &:disabled {
+    background-color: var(--bg-disabled);
+    color: var(--text-disabled);
+    cursor: not-allowed;
+  }
+}
+
+textarea {
+  height: auto;
+  padding: var(--space-sm) var(--space-md);
+}

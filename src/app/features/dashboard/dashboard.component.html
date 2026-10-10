@@ -1,19 +1,22 @@
 <div class="bar">
   <h1>Dashboard</h1>
   <div class="filters">
-    <mat-form-field>
-      <mat-label>Search</mat-label>
-      <input matInput [formControl]="search" placeholder="Business or contact" />
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Status</mat-label>
-      <mat-select [value]="query().status" (selectionChange)="setStatus($event.value)">
-        <mat-option value="">All</mat-option>
-        @for (s of statuses; track s) {
-          <mat-option [value]="s">{{ s }}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
+    <div class="search-wrapper">
+      <mat-icon class="search-icon">search</mat-icon>
+      <input class="custom-input search-input" type="text" [formControl]="search" placeholder="Filter by technology..." />
+    </div>
+
+    <button mat-stroked-button class="filter-btn" [matMenuTriggerFor]="statusMenu">
+      <mat-icon>filter_list</mat-icon>
+      Status: {{ query().status || 'All' | titlecase }}
+    </button>
+
+    <mat-menu #statusMenu="matMenu">
+      <button mat-menu-item (click)="setStatus('')">All</button>
+      @for (s of statuses; track s) {
+        <button mat-menu-item (click)="setStatus(s)">{{ s | titlecase }}</button>
+      }
+    </mat-menu>
   </div>
 </div>
 
