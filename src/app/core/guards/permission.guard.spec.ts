@@ -8,7 +8,7 @@ describe('permissionGuard', () => {
 
   it('blocks users without the permission', () => {
     const { run, url } = setupGuardTest({ can: () => false });
-    expect(url(run(guard))).toBe('/');
+    expect(url(run(guard))).toBe('/unauthorized');
   });
 
   it('lets users with the permission through', () => {

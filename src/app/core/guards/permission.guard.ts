@@ -6,4 +6,4 @@ import { PermissionEnum } from '../constants/permission.enum';
 export const permissionGuard =
   (permission: PermissionEnum): CanActivateFn =>
   () =>
-    inject(AuthService).can(permission) || inject(Router).createUrlTree(['/']);
+    inject(AuthService).can(permission) || inject(Router).createUrlTree(['/unauthorized']);

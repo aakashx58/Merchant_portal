@@ -13,6 +13,11 @@ export const routes: Routes = [
       import('./features/auth/components/login.component').then((m) => m.LoginComponent),
   },
   {
+    path: 'unauthorized',
+    title: 'Access Denied - TechKraft',
+    loadChildren: () => import('./features/error-pages/error-pages.routes').then((m) => m.ROUTES),
+  },
+  {
     path: '',
     loadComponent: () =>
       import('./shared/components/layout/app-layout.component').then((m) => m.AppLayoutComponent),
@@ -31,5 +36,13 @@ export const routes: Routes = [
         loadChildren: () => import('./features/wizard/wizard.routes').then((m) => m.ROUTES),
       },
     ],
+  },
+  {
+    path: '**',
+    title: 'Not Found - TechKraft',
+    loadComponent: () =>
+      import('./features/error-pages/not-found/not-found.component').then(
+        (m) => m.NotFoundComponent,
+      ),
   },
 ];

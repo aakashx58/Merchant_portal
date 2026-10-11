@@ -1,0 +1,24 @@
+<div class="error-page-container">
+  <mat-card class="error-card">
+    <mat-card-content>
+      <div class="error-icon">
+        <mat-icon>search_off</mat-icon>
+      </div>
+      <h1 class="error-code">404</h1>
+      <h2 class="error-title">Page Not Found</h2>
+      <p class="error-message">
+        The page you're looking for doesn't exist or has been moved.
+      </p>
+      <div class="error-actions">
+        <button mat-flat-button color="primary" (click)="goToDashboard()">
+          <mat-icon>dashboard</mat-icon>
+          Go to Dashboard
+        </button>
+        <button mat-stroked-button (click)="goToLogin()">
+          <mat-icon>login</mat-icon>
+          Sign In
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
