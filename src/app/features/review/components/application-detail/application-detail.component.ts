@@ -6,15 +6,15 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { AuthService } from '../../../core/services/auth.service';
-import { PermissionEnum } from '../../../core/constants/permission.enum';
-import { Application } from '../../../core/models/application.model';
-import { ApplicationsService } from '../../../core/services/applications.service';
-import { ApplicationReviewService } from '../../../core/services/application-review.service';
-import { DialogComponent } from '../../../shared/components/dialog/dialog.component';
-import { MaskedFieldComponent } from '../../../shared/components/masked-field/masked-field.component';
-import { AssignmentPanelComponent } from './assignment-panel.component';
-import { ReviewPanelComponent } from './review-panel.component';
+import { PermissionEnum } from '../../../../core/constants/permission.enum';
+import { Application } from '../../../../core/models/application.model';
+import { ApplicationReviewService } from '../../../../core/services/application-review.service';
+import { ApplicationsService } from '../../../../core/services/applications.service';
+import { AuthService } from '../../../../core/services/auth.service';
+import { DialogComponent } from '../../../../shared/components/dialog/dialog.component';
+import { MaskedFieldComponent } from '../../../../shared/components/masked-field/masked-field.component';
+import { AssignmentPanelComponent } from '../application-panel/assignment-panel.component';
+import { ReviewPanelComponent } from '../review-panel/review-panel.component';
 
 @Component({
   selector: 'app-application-detail',

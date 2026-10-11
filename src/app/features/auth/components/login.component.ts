@@ -23,14 +23,19 @@ export class LoginComponent {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
+  private readonly fb = inject(FormBuilder);
 
-  protected readonly form = inject(FormBuilder).nonNullable.group({
+  protected readonly form = this.fb.nonNullable.group({
     username: ['', Validators.required],
     password: ['', Validators.required],
   });
   protected readonly busy = signal(false);
   protected readonly error = signal('');
   protected readonly showPassword = signal(false);
+
+  ngOnInit() {
+    this.form.reset();
+  }
 
   protected togglePassword() {
     this.showPassword.update((v) => !v);

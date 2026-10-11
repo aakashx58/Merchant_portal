@@ -14,6 +14,16 @@ function issueTokens(user: MockUser) {
   return { token, refreshToken };
 }
 
+function clearUserTokens(userId: string) {
+  for (const [token, uid] of accessTokens.entries()) {
+    if (uid === userId) accessTokens.delete(token);
+  }
+  for (const [token, uid] of refreshTokens.entries()) {
+    if (uid === userId) refreshTokens.delete(token);
+  }
+  saveTokens();
+}
+
 export function expireAccessTokens() {
   accessTokens.clear();
   saveTokens();
@@ -39,5 +49,16 @@ export function handleAuth(req: HttpRequest<unknown>, path: string): Reply | nul
     return ok(issueTokens(user));
   }
 
+  if (req.method === 'POST' && path === '/auth/logout') {
+    const token = req.headers.get('Authorization')?.replace('Bearer ', '');
+    const userId = token && accessTokens.get(token);
+    if (userId) {
+      clearUserTokens(userId);
+    }
+    return ok({ success: true });
+  }
+
   return null;
 }
+
+export { clearUserTokens };

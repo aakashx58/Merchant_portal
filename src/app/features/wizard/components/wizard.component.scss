@@ -121,6 +121,353 @@
   }
 }
 
+/* Native input field styles (matching login page pattern) */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.field-input {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 1rem;
+  border: 1px solid var(--mat-sys-outline);
+  border-radius: 8px;
+  background: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+}
+
+.field-input:focus {
+  outline: none;
+  border-color: var(--mat-sys-primary);
+  box-shadow: 0 0 0 2px var(--mat-sys-primary-container);
+}
+
+.field-input::placeholder {
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.field-error {
+  font-size: 0.75rem;
+  color: var(--mat-sys-error);
+}
+
+.password-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-field .field-input {
+  padding-right: 48px;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--mat-sys-on-surface-variant);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+}
+
+.toggle-password:hover {
+  color: var(--mat-sys-on-surface);
+}
+
+.toggle-password mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.contacts-section {
+  h3 {
+    margin: 0 0 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--mat-sys-on-surface);
+  }
+
+  .section-hint {
+    margin: 0 0 16px;
+    font-size: 0.875rem;
+    color: var(--mat-sys-on-surface-variant);
+  }
+}
+
+.contacts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.contact-card {
+  padding: 16px;
+  border: 1px solid var(--mat-sys-outline);
+  border-radius: 8px;
+  background: var(--mat-sys-surface-container);
+
+  .contact-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+
+    h4 {
+      margin: 0;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--mat-sys-on-surface);
+    }
+  }
+
+  .contact-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+.file-upload {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 8px 0;
+
+  .file-label {
+    flex: 1;
+    min-width: 200px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    border: 1px dashed var(--mat-sys-outline);
+    border-radius: 8px;
+    background: var(--mat-sys-surface-container);
+    color: var(--mat-sys-on-surface-variant);
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: var(--mat-sys-primary);
+      color: var(--mat-sys-primary);
+      background: var(--mat-sys-primary-container);
+    }
+
+    mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
+
+.validation-progress {
+  margin-top: -8px;
+  margin-bottom: 8px;
+}
+
+.save-status {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: var(--mat-sys-surface-container-high);
+  border-radius: 24px;
+  box-shadow: var(--mat-sys-elevation-level3);
+  font-size: 0.875rem;
+  color: var(--mat-sys-on-surface-variant);
+  opacity: 0;
+  transform: translateY(20px);
+  pointer-events: none;
+  transition: all 0.3s ease;
+  z-index: 1000;
+
+  &.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+
+  mat-spinner {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.loading-state,
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: 16px;
+  text-align: center;
+  color: var(--mat-sys-on-surface-variant);
+
+  p {
+    margin: 0;
+  }
+}
+
+.review-content {
+  h3 {
+    margin: 0 0 24px;
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: var(--mat-sys-on-surface);
+  }
+}
+
+.review-section {
+  margin-bottom: 16px;
+}
+
+.review-field {
+  margin-bottom: 8px;
+  font-size: 0.9375rem;
+  color: var(--mat-sys-on-surface);
+}
+
+.no-data {
+  color: var(--mat-sys-on-surface-variant);
+  font-style: italic;
+  margin: 16px 0;
+}
+
+.review-contact {
+  padding: 12px;
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.terms-field {
+  margin-top: 16px;
+}
+
+.terms-field mat-checkbox {
+  --mdc-checkbox-unchecked-color: var(--mat-sys-on-surface-variant);
+  --mdc-checkbox-checked-color: var(--mat-sys-primary);
+}
+
+.step-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 16px;
+  margin-top: 8px;
+  border-top: 1px solid var(--mat-sys-outline-variant);
+}
+
+.progress-bar-container {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--mat-sys-outline-variant);
+}
+
+.progress-bar {
+  height: 4px;
+  background: var(--mat-sys-primary);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.progress-steps {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+}
+
+.progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+
+  .step-number {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--mat-sys-outline);
+    color: var(--mat-sys-on-surface-variant);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+
+  .step-label {
+    font-size: 0.625rem;
+    color: var(--mat-sys-on-surface-variant);
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  &.active {
+    .step-number {
+      background: var(--mat-sys-primary);
+      color: var(--mat-sys-on-primary);
+    }
+
+    .step-label {
+      color: var(--mat-sys-primary);
+      font-weight: 500;
+    }
+  }
+
+  &.active ~ .progress-step .step-number {
+    background: var(--mat-sys-outline);
+    color: var(--mat-sys-on-surface-variant);
+  }
+}
+
+.loading-state,
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: 16px;
+  text-align: center;
+  color: var(--mat-sys-on-surface-variant);
+
+  p {
+    margin: 0;
+  }
+}
+
 @media (max-width: 600px) {
   .wizard-container {
     padding: 16px 8px;

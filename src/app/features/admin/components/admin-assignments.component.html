@@ -1,0 +1,88 @@
+<div class="admin-assignments-container">
+  <header class="page-header">
+    <h1>Admin: Application Assignments</h1>
+    <p class="page-subtitle">Manage reviewer assignments for all applications</p>
+  </header>
+
+  <section class="filters-section">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Search</mat-label>
+      <input matInput [formControl]="store.search" placeholder="Search by business or contact name" />
+      <mat-icon matPrefix>search</mat-icon>
+      @if (store.search.value) {
+        <button mat-icon-button matSuffix aria-label="Clear search" (click)="store.search.setValue('')">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="status-field">
+      <mat-label>Status</mat-label>
+      <mat-select [value]="store.query().status" (selectionChange)="store.setStatus($event.value)">
+        <mat-option value="">All</mat-option>
+        @for (status of store.statuses; track status) {
+          <mat-option [value]="status">{{ status | titlecase }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </section>
+
+  <app-data-table
+    [columns]="store.columns()"
+    [rows]="store.applications()?.items ?? []"
+    [total]="store.applications()?.total ?? 0"
+    [page]="store.query().page"
+    [pageSize]="store.query().pageSize"
+    [sort]="store.query().sort"
+    [sortDir]="store.query().dir"
+    [loading]="store.loading()"
+    [error]="!!store.error()"
+    [emptyMessage]="'No applications found.'"
+    [errorMessage]="'Failed to load applications.'"
+    (pageChange)="store.onPage($event)"
+    (sortChange)="store.onSort($event)"
+    (retry)="store.reload()"
+  >
+    <ng-template appCellDef="status" let-row="row">
+      <span class="status-badge" [class]="'status-' + row.status">{{ row.status | titlecase }}</span>
+    </ng-template>
+
+    <ng-template appCellDef="monthlyVolume" let-row="row">
+      {{ row.monthlyVolume | currency:'USD':'symbol':'1.0-0' }}
+    </ng-template>
+
+    <ng-template appCellDef="updatedAt" let-row="row">
+      {{ row.updatedAt | date:'medium' }}
+    </ng-template>
+
+    <ng-template appCellDef="assigneeName" let-row="row">
+      {{ row.assigneeName || 'Unassigned' }}
+    </ng-template>
+
+    <ng-template appCellDef="actions" let-row="row">
+      <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Actions for {{ row.businessName }}">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="openDetails(row.id)">
+          <mat-icon>visibility</mat-icon>
+          <span>View Details</span>
+        </button>
+        @if (row.status === 'submitted') {
+          <div class="menu-divider"></div>
+          <div class="assign-menu">
+            <span class="assign-label">Assign Reviewer:</span>
+            @for (reviewer of store.reviewers(); track reviewer.id) {
+              <button mat-menu-item (click)="assignReviewer(row.id, reviewer.id)">
+                {{ reviewer.username }}
+              </button>
+            }
+            @if (store.reviewers().length === 0) {
+              <span class="no-reviewers">No reviewers available</span>
+            }
+          </div>
+        }
+      </mat-menu>
+    </ng-template>
+  </app-data-table>
+</div>

@@ -35,6 +35,12 @@ export const routes: Routes = [
         canActivate: [permissionGuard(PermissionEnum.application_create)],
         loadChildren: () => import('./features/wizard/wizard.routes').then((m) => m.ROUTES),
       },
+      {
+        path: 'review-queue',
+        title: 'Review Queue - TechKraft',
+        canActivate: [permissionGuard(PermissionEnum.application_view_assigned)],
+        loadChildren: () => import('./features/review/review.routes').then((m) => m.ROUTES),
+      },
     ],
   },
   {

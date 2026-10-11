@@ -68,6 +68,9 @@ describe('authInterceptor', () => {
 
     httpMock.expectOne('/api/auth/refresh').flush({}, unauthorized);
 
+    // Logout call is made after refresh failure
+    httpMock.expectOne('/api/auth/logout').flush({ success: true });
+
     expect(errors).toEqual([401, 401]);
     expect(auth.isAuthenticated()).toBe(false);
     httpMock.verify();

@@ -1,0 +1,114 @@
+.admin-assignments-container {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.page-header {
+  margin-bottom: 24px;
+
+  h1 {
+    margin: 0 0 4px;
+    font-size: 1.75rem;
+    font-weight: 500;
+  }
+
+  .page-subtitle {
+    margin: 0;
+    color: var(--mat-sys-on-surface-variant);
+    font-size: 1rem;
+  }
+}
+
+.filters-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+  align-items: center;
+
+  .search-field {
+    flex: 1;
+    min-width: 280px;
+    max-width: 400px;
+  }
+
+  .status-field {
+    width: 180px;
+    max-width: 100%;
+  }
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+
+  &.status-draft {
+    background: var(--mat-sys-secondary-container);
+    color: var(--mat-sys-on-secondary-container);
+  }
+
+  &.status-submitted {
+    background: var(--mat-sys-tertiary-container);
+    color: var(--mat-sys-on-tertiary-container);
+  }
+
+  &.status-approved {
+    background: var(--mat-sys-tertiary-container);
+    color: var(--mat-sys-on-tertiary-container);
+  }
+
+  &.status-rejected {
+    background: var(--mat-sys-error-container);
+    color: var(--mat-sys-on-error-container);
+  }
+}
+
+.assign-menu {
+  .assign-label {
+    padding: 8px 16px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--mat-sys-on-surface-variant);
+    text-transform: uppercase;
+  }
+
+  button[mat-menu-item] {
+    padding: 8px 16px;
+  }
+
+  .no-reviewers {
+    padding: 8px 16px;
+    color: var(--mat-sys-on-surface-variant);
+    font-size: 0.875rem;
+    font-style: italic;
+  }
+}
+
+.menu-divider {
+  margin: 4px 0;
+}
+
+@media (max-width: 600px) {
+  .admin-assignments-container {
+    padding: 16px;
+  }
+
+  .page-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .filters-section {
+    flex-direction: column;
+    align-items: stretch;
+
+    .search-field {
+      max-width: none;
+      min-width: 0;
+    }
+  }
+}

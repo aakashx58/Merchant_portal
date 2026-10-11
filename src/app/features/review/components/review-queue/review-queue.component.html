@@ -1,0 +1,138 @@
+<div class="review-queue-container">
+  <header class="page-header">
+    <h1>Review Queue</h1>
+    <p class="page-subtitle">Applications assigned to you for review</p>
+  </header>
+
+  <!-- KPI Cards -->
+  <section class="kpi-section" aria-label="Review Queue Metrics">
+    <div class="kpi-grid">
+      <mat-card class="kpi-card" appearance="outlined">
+        <mat-card-content>
+          <div class="kpi-header">
+            <span class="kpi-label">Pending Review</span>
+            <mat-icon class="kpi-icon">pending_actions</mat-icon>
+          </div>
+          <div class="kpi-value">{{ store.kpis().pending }}</div>
+          <div class="kpi-subtitle">Awaiting decision</div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="kpi-card" appearance="outlined">
+        <mat-card-content>
+          <div class="kpi-header">
+            <span class="kpi-label">Approved</span>
+            <mat-icon class="kpi-icon">check_circle</mat-icon>
+          </div>
+          <div class="kpi-value">{{ store.kpis().approved }}</div>
+          <div class="kpi-subtitle">This period</div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="kpi-card" appearance="outlined">
+        <mat-card-content>
+          <div class="kpi-header">
+            <span class="kpi-label">Rejected</span>
+            <mat-icon class="kpi-icon">cancel</mat-icon>
+          </div>
+          <div class="kpi-value">{{ store.kpis().rejected }}</div>
+          <div class="kpi-subtitle">This period</div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="kpi-card" appearance="outlined">
+        <mat-card-content>
+          <div class="kpi-header">
+            <span class="kpi-label">Total Assigned</span>
+            <mat-icon class="kpi-icon">assignment</mat-icon>
+          </div>
+          <div class="kpi-value">{{ store.kpis().total }}</div>
+          <div class="kpi-subtitle">All time</div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </section>
+
+  <!-- Filters -->
+  <section class="filters-section">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Search</mat-label>
+      <input matInput [formControl]="store.search" placeholder="Search by business or contact" />
+      <mat-icon matPrefix>search</mat-icon>
+      @if (store.search.value) {
+        <button mat-icon-button matSuffix aria-label="Clear search" (click)="store.search.setValue('')">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+    </mat-form-field>
+
+    <div class="status-filters">
+      @for (status of store.statuses; track status) {
+        <button
+          mat-stroked-button
+          [color]="store.query().status === status ? 'primary' : ''"
+          (click)="store.setStatus(status)"
+          [class.active]="store.query().status === status"
+        >
+          {{ status | titlecase }}
+        </button>
+      }
+      <button
+        mat-stroked-button
+        [color]="store.query().status === '' ? 'primary' : ''"
+        (click)="store.setStatus('')"
+        [class.active]="store.query().status === ''"
+      >
+        All
+      </button>
+    </div>
+  </section>
+
+  <!-- Data Table -->
+  <app-data-table
+    [columns]="store.columns()"
+    [rows]="store.applications()?.items ?? []"
+    [total]="store.applications()?.total ?? 0"
+    [page]="store.query().page"
+    [pageSize]="store.query().pageSize"
+    [sort]="store.query().sort"
+    [sortDir]="store.query().dir"
+    [loading]="store.loading()"
+    [error]="!!store.error()"
+    [emptyMessage]="'No applications in your review queue.'"
+    [errorMessage]="'Failed to load review queue.'"
+    (pageChange)="store.onPage($event)"
+    (sortChange)="store.onSort($event)"
+    (retry)="store.reload()"
+  >
+    <ng-template appCellDef="status" let-row="row">
+      <span class="status-badge" [class]="'status-' + row.status">{{ row.status | titlecase }}</span>
+    </ng-template>
+
+    <ng-template appCellDef="monthlyVolume" let-row="row">
+      {{ row.monthlyVolume | currency:'USD':'symbol':'1.0-0' }}
+    </ng-template>
+
+    <ng-template appCellDef="updatedAt" let-row="row">
+      {{ row.updatedAt | date:'medium' }}
+    </ng-template>
+
+    <ng-template appCellDef="actions" let-row="row">
+      <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Actions for {{ row.businessName }}">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="openDetails(row.id)">
+          <mat-icon>visibility</mat-icon>
+          <span>View Details</span>
+        </button>
+        @if (store.canReview() && row.status === 'submitted') {
+          <button mat-menu-item (click)="startReview(row.id)">
+            <mat-icon>rate_review</mat-icon>
+            <span>Start Review</span>
+          </button>
+        }
+      </mat-menu>
+    </ng-template>
+  </app-data-table>
+</div>

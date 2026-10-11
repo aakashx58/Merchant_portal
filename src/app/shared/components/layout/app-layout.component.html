@@ -60,6 +60,17 @@
         <mat-icon matListItemIcon>dashboard</mat-icon>
         <span matListItemTitle>Dashboard</span>
       </a>
+      @if (auth.can(permission.application_view_assigned)) {
+        <a
+          mat-list-item
+          routerLink="/review-queue"
+          routerLinkActive="active"
+          ariaCurrentWhenActive="page"
+        >
+          <mat-icon matListItemIcon>rate_review</mat-icon>
+          <span matListItemTitle>Review Queue</span>
+        </a>
+      }
       @if (auth.can(permission.application_create)) {
         <a
           mat-list-item

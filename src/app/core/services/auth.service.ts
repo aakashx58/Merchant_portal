@@ -57,8 +57,16 @@ export class AuthService {
   }
 
   logout(): void {
-    this.setSession(null);
-    this.router.navigate(['/login']);
+    this.http.post('/api/auth/logout', {}).subscribe({
+      next: () => {
+        this.setSession(null);
+        this.router.navigate(['/login']);
+      },
+      error: () => {
+        this.setSession(null);
+        this.router.navigate(['/login']);
+      },
+    });
   }
 
   private setSession(user: User | null) {

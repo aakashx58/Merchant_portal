@@ -9,9 +9,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { finalize } from 'rxjs';
-import { RiskLevel } from '../../../core/models/application.model';
-import { ApplicationReviewService } from '../../../core/services/application-review.service';
-import { ToastService } from '../../../core/services/toast.service';
+import { RiskLevel } from '../../../../core/models/application.model';
+import { ApplicationReviewService } from '../../../../core/services/application-review.service';
+import { ToastService } from '../../../../core/services/toast.service';
 
 type Decision = 'approved' | 'rejected';
 

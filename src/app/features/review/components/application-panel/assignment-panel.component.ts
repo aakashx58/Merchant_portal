@@ -9,8 +9,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { finalize } from 'rxjs';
-import { ApplicationAssignmentService } from '../../../core/services/application-assignment.service';
-import { ToastService } from '../../../core/services/toast.service';
+import { ApplicationAssignmentService } from '../../../../core/services/application-assignment.service';
+import { ToastService } from '../../../../core/services/toast.service';
 
 @Component({
   selector: 'app-assignment-panel',
