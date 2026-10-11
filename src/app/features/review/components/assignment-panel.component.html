@@ -1,0 +1,45 @@
+<mat-card class="assignment-panel">
+  <mat-card-header>
+    <mat-card-title>Assign Reviewer</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <form class="assignment-form">
+      @if (reviewers.isLoading()) {
+        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+      } @else if (reviewers.error()) {
+        <div class="error-message" role="alert">Failed to load reviewers</div>
+      } @else {
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Select Reviewer</mat-label>
+          <mat-select [formControl]="reviewer">
+            @for (r of reviewers.value(); track r.id) {
+              <mat-option [value]="r.id">{{ r.username }}</mat-option>
+            }
+          </mat-select>
+          @if (reviewer.hasError('required') && reviewer.touched) {
+            <mat-error>Reviewer is required</mat-error>
+          }
+        </mat-form-field>
+      }
+
+      @if (error()) {
+        <div class="error-message" role="alert">{{ error() }}</div>
+      }
+
+      <div class="assignment-actions">
+        <button
+          mat-flat-button
+          color="primary"
+          (click)="save()"
+          [disabled]="saving() || reviewer.invalid"
+        >
+          @if (saving()) {
+            <mat-spinner diameter="20"></mat-spinner>
+          } @else {
+            Assign Reviewer
+          }
+        </button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

@@ -1,0 +1,145 @@
+<app-dialog title="{{ application.value()?.businessName || 'Application Details' }}">
+  @if (application.isLoading()) {
+    <div class="loading-state">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Loading application...</p>
+    </div>
+  } @else if (application.error()) {
+    <div class="error-state" role="alert">
+      <mat-icon>error_outline</mat-icon>
+      <p>Failed to load application details.</p>
+      <button mat-flat-button color="primary" (click)="application.reload()">Retry</button>
+    </div>
+  } @else if (application.value(); as app) {
+    <div class="detail-content">
+      <!-- Status Badge -->
+      <div class="status-row">
+        <span class="status-badge" [class]="'status-' + app.status">{{ app.status | titlecase }}</span>
+        @if (app.riskLevel) {
+          <span class="risk-badge" [class]="'risk-' + app.riskLevel">
+            Risk: {{ app.riskLevel | titlecase }}
+          </span>
+        }
+      </div>
+
+      <!-- Business Information -->
+      <mat-card class="section-card">
+        <mat-card-header>
+          <mat-card-title>Business Information</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="grid-2">
+          <div class="field">
+            <label>Business Name</label>
+            <p>{{ app.businessName }}</p>
+          </div>
+          <div class="field">
+            <label>Contact Name</label>
+            <p>{{ app.contactName }}</p>
+          </div>
+          <div class="field">
+            <label>Email</label>
+            <p>{{ app.email }}</p>
+          </div>
+          <div class="field">
+            <label>Monthly Volume</label>
+            <p>{{ app.monthlyVolume | currency:'USD':'symbol':'1.0-0' }}</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Financial Information (Masked) -->
+      <mat-card class="section-card">
+        <mat-card-header>
+          <mat-card-title>Financial Information</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="grid-2">
+          <div class="field">
+            <label>Tax ID</label>
+            <app-masked-field
+              label="Tax ID"
+              [masked]="app.taxId"
+              [revealable]="canReveal()"
+              [reveal]="revealTaxId"
+            />
+          </div>
+          <div class="field">
+            <label>Account Number</label>
+            <app-masked-field
+              label="Account Number"
+              [masked]="app.accountNumber"
+              [revealable]="canReveal()"
+              [reveal]="revealAccount"
+            />
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Documents -->
+      @if (app.documentName) {
+        <mat-card class="section-card">
+          <mat-card-header>
+            <mat-card-title>Documents</mat-card-title>
+          </mat-card-header>
+          <mat-card-content class="grid-2">
+            <div class="field">
+              <label>Document Type</label>
+              <p>{{ app.documentType }}</p>
+            </div>
+            <div class="field">
+              <label>File Name</label>
+              <p>{{ app.documentName }}</p>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      }
+
+      <!-- Assignment Panel -->
+      @if (canAssign() && app.status === 'submitted') {
+        <app-assignment-panel
+          [applicationId]="app.id"
+          [assigneeId]="app.assigneeId"
+          (assigned)="application.reload()"
+        />
+      }
+
+      <!-- Review Panel -->
+      @if (canReview() && app.status === 'submitted') {
+        <app-review-panel [applicationId]="app.id" (decided)="application.reload()" />
+      }
+
+      <!-- History -->
+      <mat-card class="section-card">
+        <mat-card-header>
+          <mat-card-title>History</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="history-list">
+            @for (entry of history(); track entry.at + entry.action) {
+              <div class="history-entry">
+                <div class="history-meta">
+                  <span class="history-action">{{ entry.action | titlecase }}</span>
+                  <span class="history-actor">{{ entry.actorName }}</span>
+                  <span class="history-time">{{ entry.at | date:'medium' }}</span>
+                </div>
+                @if (entry.riskLevel) {
+                  <span class="risk-badge" [class]="'risk-' + entry.riskLevel">
+                    {{ entry.riskLevel | titlecase }}
+                  </span>
+                }
+                @if (entry.note) {
+                  <p class="history-note">{{ entry.note }}</p>
+                }
+              </div>
+            } @empty {
+              <p class="empty-history">No history available</p>
+            }
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  }
+
+  <div class="dialog-actions" mat-dialog-actions align="end">
+    <button mat-button (click)="dialogRef.close(false)">Close</button>
+  </div>
+</app-dialog>

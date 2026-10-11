@@ -1,0 +1,42 @@
+.assignment-panel {
+  margin-top: 8px;
+  border: 2px solid var(--mat-sys-secondary);
+}
+
+.assignment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.error-message {
+  color: var(--mat-sys-error);
+  font-size: 0.875rem;
+  padding: 8px 12px;
+  background: var(--mat-sys-error-container);
+  border-radius: 8px;
+}
+
+.assignment-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+
+  button {
+    min-width: 160px;
+  }
+}
+
+@media (max-width: 600px) {
+  .assignment-actions {
+    width: 100%;
+
+    button {
+      width: 100%;
+    }
+  }
+}

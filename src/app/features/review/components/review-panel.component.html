@@ -1,0 +1,67 @@
+<mat-card class="review-panel">
+  <mat-card-header>
+    <mat-card-title>Review Decision</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <form class="review-form">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Review Note</mat-label>
+        <textarea
+          matInput
+          [formControl]="note"
+          rows="3"
+          placeholder="Enter your review notes and justification..."
+        ></textarea>
+        @if (note.hasError('required') && note.touched) {
+          <mat-error>Review note is required</mat-error>
+        }
+        @if (note.hasError('pattern') && note.touched) {
+          <mat-error>Note cannot be empty</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Risk Level</mat-label>
+        <mat-select [formControl]="risk">
+          @for (level of riskLevels; track level) {
+            <mat-option [value]="level">{{ level | titlecase }}</mat-option>
+          }
+        </mat-select>
+        @if (risk.hasError('required') && risk.touched) {
+          <mat-error>Risk level is required</mat-error>
+        }
+      </mat-form-field>
+
+      @if (error()) {
+        <div class="error-message" role="alert">{{ error() }}</div>
+      }
+
+      <div class="decision-buttons">
+        <button
+          mat-flat-button
+          color="primary"
+          (click)="decide('approved')"
+          [disabled]="submitting()"
+        >
+          @if (submitting()) {
+            <mat-spinner diameter="20"></mat-spinner>
+          } @else {
+            Approve
+          }
+        </button>
+        <button
+          mat-flat-button
+          color="warn"
+          (click)="decide('rejected')"
+          [disabled]="submitting()"
+        >
+          @if (submitting()) {
+            <mat-spinner diameter="20"></mat-spinner>
+          } @else {
+            Reject
+          }
+        </button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

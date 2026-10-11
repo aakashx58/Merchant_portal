@@ -1,5 +1,5 @@
-import { RoleEnum } from '../enums/role.enum';
-import { PermissionEnum } from '../enums/permission.enum';
+import { RoleEnum } from '../constants/role.enum';
+import { PermissionEnum } from '../constants/permission.enum';
 import { ROLE_PERMISSIONS } from '../config/role-permissions.config';
 
 /**

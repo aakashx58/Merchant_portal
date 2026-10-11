@@ -1,0 +1,43 @@
+.review-panel {
+  margin-top: 8px;
+  border: 2px solid var(--mat-sys-tertiary);
+}
+
+.review-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.error-message {
+  color: var(--mat-sys-error);
+  font-size: 0.875rem;
+  padding: 8px 12px;
+  background: var(--mat-sys-error-container);
+  border-radius: 8px;
+}
+
+.decision-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 8px;
+
+  button {
+    min-width: 120px;
+  }
+}
+
+@media (max-width: 600px) {
+  .decision-buttons {
+    flex-direction: column-reverse;
+
+    button {
+      width: 100%;
+    }
+  }
+}

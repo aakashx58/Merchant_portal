@@ -7,7 +7,7 @@ import {
   RouterStateSnapshot,
   UrlTree,
 } from '@angular/router';
-import { AuthService } from '../auth/auth.service';
+import { AuthService } from '../services/auth.service';
 
 export function setupGuardTest(auth: { isAuthenticated?: () => boolean; can?: () => boolean }) {
   TestBed.configureTestingModule({

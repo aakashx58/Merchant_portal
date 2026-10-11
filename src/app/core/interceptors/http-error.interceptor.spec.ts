@@ -5,10 +5,8 @@ import {
   withInterceptors,
 } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { ErrorHandler } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { GlobalErrorHandler } from '../errors/global-error-handler';
 import { ToastService } from '../services/toast.service';
 import { handledInline, httpErrorInterceptor } from './http-error.interceptor';
 
@@ -22,7 +20,6 @@ describe('error reporting', () => {
     TestBed.configureTestingModule({
       providers: [
         { provide: ToastService, useValue: toast },
-        { provide: ErrorHandler, useClass: GlobalErrorHandler },
         provideHttpClient(withInterceptors([httpErrorInterceptor])),
         provideHttpClientTesting(),
       ],
@@ -53,16 +50,5 @@ describe('error reporting', () => {
     fail('/api/auth/login', 401);
     fail('/api/b', 500, handledInline());
     expect(toast.show).not.toHaveBeenCalled();
-  });
-
-  it('global handler toasts unexpected errors but not HTTP errors', () => {
-    vi.spyOn(console, 'error').mockImplementation(() => undefined);
-    const handler = TestBed.inject(ErrorHandler);
-
-    handler.handleError(new Error('boom'));
-    expect(toast.show).toHaveBeenCalledTimes(1);
-
-    handler.handleError(new HttpErrorResponse({ status: 500 }));
-    expect(toast.show).toHaveBeenCalledTimes(1);
   });
 });

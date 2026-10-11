@@ -1,0 +1,104 @@
+import { CurrencyPipe, DatePipe, TitleCasePipe } from '@angular/common';
+import { Component, computed, inject, signal } from '@angular/core';
+import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatSelectModule } from '@angular/material/select';
+import { debounceTime, distinctUntilChanged } from 'rxjs';
+import { AuthService } from '../../../core/services/auth.service';
+import { PermissionEnum } from '../../../core/constants/permission.enum';
+import { ApplicationQuery, ApplicationsService } from '../../../core/services/applications.service';
+import { DialogService } from '../../../core/services/dialog.service';
+import { CellDefDirective } from '../../../shared/directives/cell-def.directive';
+import { DataTableComponent, TableColumn } from '../../../shared/components/data-table/data-table.component';
+
+@Component({
+  selector: 'app-dashboard',
+  imports: [
+    CellDefDirective,
+    CurrencyPipe,
+    DataTableComponent,
+    DatePipe,
+    TitleCasePipe,
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatIconModule,
+    MatMenuModule,
+  ],
+  templateUrl: './dashboard.component.html',
+  styleUrl: './dashboard.component.scss',
+})
+export class DashboardComponent {
+  private readonly api = inject(ApplicationsService);
+  protected readonly auth = inject(AuthService);
+  private readonly dialog = inject(DialogService);
+
+  protected readonly search = new FormControl('', { nonNullable: true });
+  protected readonly statuses = ['draft', 'submitted', 'approved', 'rejected'] as const;
+
+  protected readonly query = signal<ApplicationQuery>({
+    page: 1,
+    pageSize: 10,
+    status: '',
+    q: '',
+    sort: 'updatedAt',
+    dir: 'desc',
+  });
+
+  protected readonly applications = rxResource({
+    params: () => this.query(),
+    stream: ({ params }) => this.api.list(params),
+  });
+
+  protected readonly canAssign = computed(() => this.auth.can(PermissionEnum.application_assign));
+  protected readonly canReview = computed(() => this.auth.can(PermissionEnum.application_review));
+  protected readonly columns = computed<TableColumn[]>(() => [
+    { key: 'businessName', header: 'Business', sortable: true },
+    { key: 'contactName', header: 'Contact' },
+    { key: 'status', header: 'Status' },
+    { key: 'monthlyVolume', header: 'Monthly volume', sortable: true },
+    { key: 'updatedAt', header: 'Updated', sortable: true },
+    ...(this.canAssign() ? [{ key: 'assigneeName', header: 'Reviewer' }] : []),
+    { key: 'actions', header: 'Action' },
+  ]);
+
+  // Expose PermissionEnum to template
+  protected readonly PermissionEnum = PermissionEnum;
+
+  constructor() {
+    this.search.valueChanges
+      .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed())
+      .subscribe((searchTerm) => this.patch({ q: searchTerm.trim() }));
+  }
+
+  protected setStatus(status: ApplicationQuery['status']) {
+    this.patch({ status });
+  }
+
+  protected onSort({ sort, dir }: { sort: string; dir: 'asc' | 'desc' | '' }) {
+    this.patch(dir ? { sort, dir } : { sort: 'updatedAt', dir: 'desc' });
+  }
+
+  protected onPage({ page, pageSize }: { page: number; pageSize: number }) {
+    this.query.update((q) => ({ ...q, page, pageSize }));
+  }
+
+  private patch(change: Partial<ApplicationQuery>) {
+    this.query.update((q) => ({ ...q, ...change, page: 1 }));
+  }
+
+  protected async openDetails(id: string) {
+    const { ApplicationDetailComponent } = await import('../../review/components/application-detail.component');
+    this.dialog
+      .openSideSheet(ApplicationDetailComponent, { data: { id } })
+      .afterClosed()
+      .subscribe(() => this.applications.reload());
+  }
+}

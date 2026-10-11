@@ -3,8 +3,8 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { AuthService } from '../auth/auth.service';
-import { RoleEnum } from '../enums/role.enum';
+import { AuthService } from '../services/auth.service';
+import { RoleEnum } from '../constants/role.enum';
 import { authInterceptor } from './auth.interceptor';
 
 describe('authInterceptor', () => {
