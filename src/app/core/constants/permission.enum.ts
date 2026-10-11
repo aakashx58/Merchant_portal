@@ -29,4 +29,7 @@ export enum PermissionEnum {
 
   /** View aggregate counts and metrics on the dashboard. */
   dashboard_counts = 'dashboard_counts',
+
+  /** Manage users (create, update, delete, assign roles). */
+  user_manage = 'user_manage',
 }

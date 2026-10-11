@@ -1,1 +1,1 @@
-export * from './admin-assignments.store';
+export * from './user-management.store';

@@ -1,0 +1,55 @@
+<app-dialog title="User Details">
+  @if (loading()) {
+    <div class="loading-state">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Loading user details...</p>
+    </div>
+  } @else if (error()) {
+    <div class="error-state" role="alert">
+      <mat-icon>error_outline</mat-icon>
+      <p>{{ error() }}</p>
+      <button mat-flat-button color="primary" (click)="close()">Close</button>
+    </div>
+  } @else if (user(); as user) {
+    <div class="user-detail-content">
+      <mat-card class="user-info-card">
+        <mat-card-header>
+          <mat-card-title>{{ user.username }}</mat-card-title>
+          <mat-card-subtitle>{{ user.email }}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="user-fields">
+            <div class="user-field">
+              <label>Username</label>
+              <span>{{ user.username }}</span>
+            </div>
+            <div class="user-field">
+              <label>Email</label>
+              <span>{{ user.email }}</span>
+            </div>
+            <div class="user-field">
+              <label>Roles</label>
+              <div class="role-chips">
+                @for (role of user.roles; track role) {
+                  <span class="role-chip" [class]="'role-' + role.toLowerCase()">{{ role | titlecase }}</span>
+                }
+              </div>
+            </div>
+            <div class="user-field">
+              <label>Created</label>
+              <span>{{ user.createdAt | date:'medium' }}</span>
+            </div>
+            <div class="user-field">
+              <label>Updated</label>
+              <span>{{ user.updatedAt | date:'medium' }}</span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <div class="dialog-actions" mat-dialog-actions align="end">
+        <button mat-button (click)="close()">Close</button>
+      </div>
+    </div>
+  }
+</app-dialog>

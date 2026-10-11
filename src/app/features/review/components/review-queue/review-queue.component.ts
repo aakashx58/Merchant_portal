@@ -10,13 +10,11 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DataTableComponent } from '../../../../shared/components/data-table/data-table.component';
-import { CellDefDirective } from '../../../../shared/directives/cell-def.directive';
 import { ReviewQueueStore } from '../../stores';
 
 @Component({
   selector: 'app-review-queue',
   imports: [
-    CellDefDirective,
     CurrencyPipe,
     DataTableComponent,
     DatePipe,

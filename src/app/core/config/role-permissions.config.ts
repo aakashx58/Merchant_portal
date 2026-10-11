@@ -24,5 +24,6 @@ export const ROLE_PERMISSIONS: Record<RoleEnum, PermissionEnum[]> = {
     PermissionEnum.application_assign,
     PermissionEnum.sensitive_reveal,
     PermissionEnum.dashboard_counts,
+    PermissionEnum.user_manage,
   ],
 };

@@ -39,3 +39,50 @@ export interface Page<T> {
   page: number;
   pageSize: number;
 }
+
+export type AuditAction = 
+  | 'login' 
+  | 'logout' 
+  | 'create_application' 
+  | 'update_application' 
+  | 'submit_application' 
+  | 'assign_application' 
+  | 'review_application' 
+  | 'reveal_sensitive' 
+  | 'create_user' 
+  | 'update_user' 
+  | 'delete_user' 
+  | 'change_role'
+  | 'view_application' 
+  | 'export_data';
+
+export type AuditSeverity = 'info' | 'warning' | 'error';
+
+export interface AuditLogEntry {
+  id: string;
+  at: string;
+  actorId: string;
+  actorName: string;
+  actorRole: string;
+  action: AuditAction;
+  severity: AuditSeverity;
+  entityType: string;
+  entityId?: string;
+  entityName?: string;
+  details?: Record<string, unknown>;
+  ipAddress?: string;
+  userAgent?: string;
+}
+
+export interface AuditLogQuery {
+  page: number;
+  pageSize: number;
+  q: string;
+  action: string;
+  actorId: string;
+  severity: string;
+  startDate: string;
+  endDate: string;
+  sort: string;
+  dir: 'asc' | 'desc';
+}

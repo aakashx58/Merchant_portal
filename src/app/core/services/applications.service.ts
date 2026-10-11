@@ -1,8 +1,9 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { handledInline } from '../interceptors/http-error.interceptor';
 import { Application, ApplicationStatus, Page } from '../models/application.model';
+import { ApiService } from '../api/api-service';
 
 export interface ApplicationQuery {
   page: number;
@@ -26,9 +27,7 @@ export type DraftPayload = Pick<
 >;
 
 @Injectable({ providedIn: 'root' })
-export class ApplicationsService {
-  private readonly http = inject(HttpClient);
-
+export class ApplicationsService extends ApiService {
   list(query: ApplicationQuery): Observable<Page<Application>> {
     let params = new HttpParams()
       .set('page', query.page)
@@ -37,13 +36,10 @@ export class ApplicationsService {
       .set('dir', query.dir);
     if (query.status) params = params.set('status', query.status);
     if (query.q) params = params.set('q', query.q);
-    return this.http.get<Page<Application>>('/api/applications', {
-      params,
-      context: handledInline(),
-    });
+    return this.get<Page<Application>>('/applications', { params, context: handledInline() });
   }
 
-  get(id: string): Observable<Application> {
-    return this.http.get<Application>(`/api/applications/${id}`, { context: handledInline() });
+  getById(id: string): Observable<Application> {
+    return this.get<Application>(`/applications/${id}`, { context: handledInline() });
   }
 }

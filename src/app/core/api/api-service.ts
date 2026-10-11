@@ -42,7 +42,7 @@ export class ApiService {
   protected readonly http = inject(HttpClient);
   protected readonly baseUrl = environment.apiBaseUrl;
 
-  protected get<T>(endpoint: string, options: {
+  get<T>(endpoint: string, options: {
     params?: HttpParams | Record<string, string | number | boolean | ReadonlyArray<string | number | boolean>>;
     headers?: HttpHeaders | Record<string, string>;
     context?: HttpContext;
@@ -50,7 +50,7 @@ export class ApiService {
     return this.request<T>('GET', endpoint, undefined, options);
   }
 
-  protected post<T>(endpoint: string, body: unknown, options: {
+  post<T>(endpoint: string, body: unknown, options: {
     params?: HttpParams | Record<string, string | number | boolean | ReadonlyArray<string | number | boolean>>;
     headers?: HttpHeaders | Record<string, string>;
     context?: HttpContext;

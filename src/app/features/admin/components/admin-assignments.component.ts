@@ -8,14 +8,15 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { ReactiveFormsModule } from '@angular/forms';
-import { CellDefDirective } from '../../../shared/directives/cell-def.directive';
-import { DataTableComponent, TableColumn } from '../../../shared/components/data-table/data-table.component';
+import {
+  DataTableComponent,
+  TableColumn,
+} from '../../../shared/components/data-table/data-table.component';
 import { AdminAssignmentsStore } from '../stores/admin-assignments.store';
 
 @Component({
   selector: 'app-admin-assignments',
   imports: [
-    CellDefDirective,
     CurrencyPipe,
     DataTableComponent,
     DatePipe,

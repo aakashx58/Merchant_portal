@@ -41,6 +41,18 @@ export const routes: Routes = [
         canActivate: [permissionGuard(PermissionEnum.application_view_assigned)],
         loadChildren: () => import('./features/review/review.routes').then((m) => m.ROUTES),
       },
+      {
+        path: 'admin',
+        title: 'Admin - TechKraft',
+        canActivate: [permissionGuard(PermissionEnum.user_manage)],
+        loadChildren: () => import('./features/admin/admin.routes').then((m) => m.ROUTES),
+      },
+      {
+        path: 'audit-log',
+        title: 'Audit Log - TechKraft',
+        canActivate: [permissionGuard(PermissionEnum.dashboard_counts)],
+        loadChildren: () => import('./features/audit-log/audit-log.routes').then((m) => m.ROUTES),
+      },
     ],
   },
   {

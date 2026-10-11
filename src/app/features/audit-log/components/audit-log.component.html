@@ -1,0 +1,101 @@
+<div class="audit-log-container">
+  <header class="page-header">
+    <h1>Audit Log</h1>
+    <p class="page-subtitle">System audit trail and activity monitoring</p>
+  </header>
+
+  <section class="filters-section">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Search</mat-label>
+      <input matInput [formControl]="store.search" placeholder="Search by actor, action, entity..." />
+      <mat-icon matPrefix>search</mat-icon>
+      @if (store.search.value) {
+        <button mat-icon-button matSuffix aria-label="Clear search" (click)="store.search.setValue('')">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="action-field">
+      <mat-label>Action</mat-label>
+      <mat-select [value]="store.query().action" (selectionChange)="setAction($event.value)">
+        <mat-option value="">All Actions</mat-option>
+        @for (action of store.actions; track action) {
+          <mat-option [value]="action">{{ action | titlecase }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="severity-field">
+      <mat-label>Severity</mat-label>
+      <mat-select [value]="store.query().severity" (selectionChange)="setSeverity($event.value)">
+        <mat-option value="">All Severities</mat-option>
+        @for (severity of store.severities; track severity) {
+          <mat-option [value]="severity">{{ severity | titlecase }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="date-field">
+      <mat-label>From</mat-label>
+      <input matInput [matDatepicker]="startPicker" [value]="store.query().startDate" (dateChange)="store.patch({ startDate: $event.value })" />
+      <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+      <mat-datepicker #startPicker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="date-field">
+      <mat-label>To</mat-label>
+      <input matInput [matDatepicker]="endPicker" [value]="store.query().endDate" (dateChange)="store.patch({ endDate: $event.value })" />
+      <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+      <mat-datepicker #endPicker></mat-datepicker>
+    </mat-form-field>
+  </section>
+
+  <app-data-table
+    [columns]="store.columns()"
+    [rows]="store.entries()"
+    [total]="store.total()"
+    [page]="store.query().page"
+    [pageSize]="store.query().pageSize"
+    [sort]="store.query().sort"
+    [sortDir]="store.query().dir"
+    [loading]="store.loading()"
+    [error]="!!store.error()"
+    [emptyMessage]="'No audit log entries found.'"
+    [errorMessage]="'Failed to load audit log.'"
+    (pageChange)="onPage($event)"
+    (sortChange)="onSort($event)"
+    (retry)="store.reload()"
+  >
+    <ng-template appCellDef="at" let-row="row">
+      {{ row.at | date:'medium' }}
+    </ng-template>
+
+    <ng-template appCellDef="actorName" let-row="row">
+      <div class="actor-info">
+        <span class="actor-name">{{ row.actorName }}</span>
+        <span class="actor-role" [class]="'role-' + row.actorRole.toLowerCase()">{{ row.actorRole | titlecase }}</span>
+      </div>
+    </ng-template>
+
+    <ng-template appCellDef="action" let-row="row">
+      <span class="action-badge" [class]="'action-' + row.action">{{ row.action | titlecase }}</span>
+    </ng-template>
+
+    <ng-template appCellDef="severity" let-row="row">
+      <span class="severity-badge" [class]="'severity-' + row.severity">{{ row.severity | titlecase }}</span>
+    </ng-template>
+
+    <ng-template appCellDef="entityType" let-row="row">
+      {{ row.entityType | titlecase }}
+    </ng-template>
+
+    <ng-template appCellDef="entityName" let-row="row">
+      {{ row.entityName || '-' }}
+    </ng-template>
+
+    <ng-template appCellDef="ipAddress" let-row="row">
+      {{ row.ipAddress || '-' }}
+    </ng-template>
+  </app-data-table>
+</div>

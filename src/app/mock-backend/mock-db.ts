@@ -32,6 +32,68 @@ export const userName = (id: string) =>
 
 export const revealLog: { userId: string; applicationId: string; field: string; at: string }[] = [];
 
+// Audit log entries
+export const auditLogs = Array.from({ length: 200 }, (_, i) => {
+  const actions = [
+    'login',
+    'logout',
+    'create_application',
+    'update_application',
+    'submit_application',
+    'assign_application',
+    'review_application',
+    'reveal_sensitive',
+    'create_user',
+    'update_user',
+    'delete_user',
+    'change_role',
+    'view_application',
+    'export_data',
+  ];
+  const severities = ['info', 'warning', 'error'];
+  const actors = [
+    { id: 'u-sales', name: 'sales', role: 'sales' },
+    { id: 'u-sales2', name: 'sales2', role: 'sales' },
+    { id: 'u-reviewer', name: 'reviewer', role: 'reviewer' },
+    { id: 'u-reviewer2', name: 'reviewer2', role: 'reviewer' },
+    { id: 'u-admin', name: 'admin', role: 'admin' },
+  ];
+  const entityTypes = ['application', 'user', 'audit_log'];
+
+  const action = actions[Math.floor(Math.random() * actions.length)];
+  const actor = actors[Math.floor(Math.random() * actors.length)];
+  const severity = severities[Math.floor(Math.random() * severities.length)];
+  const entityType = ['application', 'user', 'audit_log'][Math.floor(Math.random() * 3)];
+  const entityId = `app-${Math.floor(Math.random() * 36) + 1}`;
+  const daysAgo = Math.floor(Math.random() * 30);
+  const at = new Date(Date.now() - Math.floor(Math.random() * 30 * 86400000)).toISOString();
+
+  return {
+    id: `audit-${i + 1}`,
+    at: new Date(Date.now() - i * 86400000 - Math.random() * 86400000).toISOString(),
+    actorId: actor.id,
+    actorName: actor.name,
+    actorRole: actor.role,
+    action: [
+      'login',
+      'logout',
+      'create_application',
+      'update_application',
+      'submit_application',
+      'assign_application',
+      'review_application',
+      'reveal_sensitive',
+    ][Math.floor(Math.random() * 8)],
+    severity: ['info', 'warning', 'error'][Math.floor(Math.random() * 3)],
+    entityType: ['application', 'user', 'audit_log'][Math.floor(Math.random() * 3)],
+    entityId: `app-${Math.floor(Math.random() * 36) + 1}`,
+    entityName: `Entity ${Math.floor(Math.random() * 100)}`,
+    details: { note: 'Sample audit log entry' },
+    ipAddress: `192.168.1.${Math.floor(Math.random() * 255)}`,
+    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+  };
+});
+
 const statuses = ['draft', 'submitted', 'approved', 'rejected'] as const;
 const names = ['Acme', 'Globex', 'Initech', 'Umbrella', 'Hooli', 'Stark', 'Wayne', 'Wonka'];
 

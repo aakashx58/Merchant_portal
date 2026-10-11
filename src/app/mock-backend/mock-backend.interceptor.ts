@@ -15,6 +15,7 @@ import { handleAuth } from './handlers/auth.handler';
 import { handleUsers } from './handlers/users.handler';
 import { handleApplicationsCollection } from './handlers/applications-collection.handler';
 import { handleApplicationsItem } from './handlers/applications-item.handler';
+import { handleAuditLogs } from './handlers/audit-log.handler';
 
 export { expireAccessTokens } from './handlers/auth.handler';
 
@@ -39,6 +40,9 @@ function handle(req: HttpRequest<unknown>, url: URL, logger: LoggerService): Rep
 
   const applicationsItemReply = handleApplicationsItem(req, path, user, logger);
   if (applicationsItemReply) return applicationsItemReply;
+
+  const auditLogsReply = handleAuditLogs(req, path, user);
+  if (auditLogsReply) return auditLogsReply;
 
   return fail(404, 'Not found');
 }
