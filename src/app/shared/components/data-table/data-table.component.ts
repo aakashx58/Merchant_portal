@@ -51,7 +51,8 @@ export class DataTableComponent<T extends object> {
   );
 
   protected value(row: T, key: string) {
-    return (row as Record<string, unknown>)[key];
+    const val = (row as Record<string, unknown>)[key];
+    return val !== null && val !== undefined && val !== '' ? val : '-';
   }
 
   protected onPage({ pageIndex, pageSize }: PageEvent) {

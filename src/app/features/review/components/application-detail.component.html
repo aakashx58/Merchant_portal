@@ -32,15 +32,15 @@
         <mat-card-content class="grid-2">
           <div class="field">
             <label>Business Name</label>
-            <p>{{ app.businessName }}</p>
+            <p>{{ app.businessName || '-' }}</p>
           </div>
           <div class="field">
             <label>Contact Name</label>
-            <p>{{ app.contactName }}</p>
+            <p>{{ app.contactName || '-' }}</p>
           </div>
           <div class="field">
             <label>Email</label>
-            <p>{{ app.email }}</p>
+            <p>{{ app.email || '-' }}</p>
           </div>
           <div class="field">
             <label>Monthly Volume</label>

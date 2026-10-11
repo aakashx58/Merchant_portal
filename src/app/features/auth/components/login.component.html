@@ -7,35 +7,43 @@
 
     <mat-card-content>
       <form [formGroup]="form" (ngSubmit)="submit()" class="login-form">
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Username</mat-label>
-          <input matInput formControlName="username" autocomplete="username" />
-          @if (form.controls.username.hasError('required') && form.controls.username.touched) {
-            <mat-error>Username is required</mat-error>
-          }
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Password</mat-label>
+        <div class="field">
+          <label for="username">Username</label>
           <input
-            matInput
-            [type]="showPassword() ? 'text' : 'password'"
-            formControlName="password"
-            autocomplete="current-password"
+            id="username"
+            type="text"
+            formControlName="username"
+            autocomplete="username"
+            class="field-input"
           />
-          <button
-            mat-icon-button
-            matSuffix
-            type="button"
-            (click)="togglePassword()"
-            [attr.aria-label]="'Toggle password visibility'"
-          >
-            <mat-icon>{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
-          </button>
-          @if (form.controls.password.hasError('required') && form.controls.password.touched) {
-            <mat-error>Password is required</mat-error>
+          @if (form.controls.username.hasError('required') && form.controls.username.touched) {
+            <span class="field-error">Username is required</span>
           }
-        </mat-form-field>
+        </div>
+
+        <div class="field">
+          <label for="password">Password</label>
+          <div class="password-field">
+            <input
+              id="password"
+              [type]="showPassword() ? 'text' : 'password'"
+              formControlName="password"
+              autocomplete="current-password"
+              class="field-input"
+            />
+            <button
+              type="button"
+              class="toggle-password"
+              (click)="togglePassword()"
+              [attr.aria-label]="'Toggle password visibility'"
+            >
+              <mat-icon>{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+          </div>
+          @if (form.controls.password.hasError('required') && form.controls.password.touched) {
+            <span class="field-error">Password is required</span>
+          }
+        </div>
 
         @if (error()) {
           <div class="error-message" role="alert">{{ error() }}</div>
@@ -56,9 +64,5 @@
         </button>
       </form>
     </mat-card-content>
-
-    <mat-card-footer>
-      <p class="demo-hint">Demo users: sales/password, reviewer/password, admin/password</p>
-    </mat-card-footer>
   </mat-card>
 </div>
