@@ -14,7 +14,9 @@
     <div class="detail-content">
       <!-- Status Badge -->
       <div class="status-row">
-        <span class="status-badge" [class]="'status-' + app.status">{{ app.status | titlecase }}</span>
+        <span class="status-badge" [class]="'status-' + app.status">{{
+          app.status | titlecase
+        }}</span>
         @if (app.riskLevel) {
           <span class="risk-badge" [class]="'risk-' + app.riskLevel">
             Risk: {{ app.riskLevel | titlecase }}
@@ -42,7 +44,7 @@
           </div>
           <div class="field">
             <label>Monthly Volume</label>
-            <p>{{ app.monthlyVolume | currency:'USD':'symbol':'1.0-0' }}</p>
+            <p>{{ app.monthlyVolume | currency: 'USD' : 'symbol' : '1.0-0' }}</p>
           </div>
         </mat-card-content>
       </mat-card>
@@ -119,7 +121,7 @@
                 <div class="history-meta">
                   <span class="history-action">{{ entry.action | titlecase }}</span>
                   <span class="history-actor">{{ entry.actorName }}</span>
-                  <span class="history-time">{{ entry.at | date:'medium' }}</span>
+                  <span class="history-time">{{ entry.at | date: 'medium' }}</span>
                 </div>
                 @if (entry.riskLevel) {
                   <span class="risk-badge" [class]="'risk-' + entry.riskLevel">

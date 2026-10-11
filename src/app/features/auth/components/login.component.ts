@@ -37,7 +37,7 @@ export class LoginComponent {
   protected readonly showPassword = signal(false);
 
   protected togglePassword() {
-    this.showPassword.update(v => !v);
+    this.showPassword.update((v) => !v);
   }
 
   protected submit() {

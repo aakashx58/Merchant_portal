@@ -17,8 +17,19 @@
 
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Password</mat-label>
-          <input matInput [type]="showPassword() ? 'text' : 'password'" formControlName="password" autocomplete="current-password" />
-          <button mat-icon-button matSuffix type="button" (click)="togglePassword()" [attr.aria-label]="'Toggle password visibility'">
+          <input
+            matInput
+            [type]="showPassword() ? 'text' : 'password'"
+            formControlName="password"
+            autocomplete="current-password"
+          />
+          <button
+            mat-icon-button
+            matSuffix
+            type="button"
+            (click)="togglePassword()"
+            [attr.aria-label]="'Toggle password visibility'"
+          >
             <mat-icon>{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
           </button>
           @if (form.controls.password.hasError('required') && form.controls.password.touched) {
@@ -30,7 +41,13 @@
           <div class="error-message" role="alert">{{ error() }}</div>
         }
 
-        <button mat-flat-button color="primary" type="submit" class="full-width submit-btn" [disabled]="busy()">
+        <button
+          mat-flat-button
+          color="primary"
+          type="submit"
+          class="full-width submit-btn"
+          [disabled]="busy()"
+        >
           @if (busy()) {
             <mat-spinner diameter="20"></mat-spinner>
           } @else {

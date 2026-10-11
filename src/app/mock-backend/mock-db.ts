@@ -27,7 +27,8 @@ export const saveTokens = () => {
   sessionStorage.setItem('mock-refresh', JSON.stringify([...refreshTokens]));
 };
 
-export const userName = (id: string) => users.find((userItem) => userItem.id === id)?.username ?? id;
+export const userName = (id: string) =>
+  users.find((userItem) => userItem.id === id)?.username ?? id;
 
 export const revealLog: { userId: string; applicationId: string; field: string; at: string }[] = [];
 

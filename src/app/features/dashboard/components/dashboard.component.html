@@ -49,15 +49,17 @@
     (retry)="applications.reload()"
   >
     <ng-template appCell="status" let-row>
-      <span class="status-badge" [class]="'status-' + row.status">{{ row.status | titlecase }}</span>
+      <span class="status-badge" [class]="'status-' + row.status">{{
+        row.status | titlecase
+      }}</span>
     </ng-template>
 
     <ng-template appCell="monthlyVolume" let-row>
-      {{ row.monthlyVolume | currency:'USD':'symbol':'1.0-0' }}
+      {{ row.monthlyVolume | currency: 'USD' : 'symbol' : '1.0-0' }}
     </ng-template>
 
     <ng-template appCell="updatedAt" let-row>
-      {{ row.updatedAt | date:'medium' }}
+      {{ row.updatedAt | date: 'medium' }}
     </ng-template>
 
     <ng-template appCell="assigneeName" let-row>
@@ -65,7 +67,11 @@
     </ng-template>
 
     <ng-template appCell="actions" let-row>
-      <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Actions for {{ row.businessName }}">
+      <button
+        mat-icon-button
+        [matMenuTriggerFor]="menu"
+        aria-label="Actions for {{ row.businessName }}"
+      >
         <mat-icon>more_vert</mat-icon>
       </button>
       <mat-menu #menu="matMenu">

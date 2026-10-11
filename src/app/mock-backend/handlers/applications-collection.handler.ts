@@ -30,7 +30,9 @@ export function handleApplicationsCollection(
       .filter((application) => !status || application.status === status)
       .filter(
         (application) =>
-          !query || application.businessName.toLowerCase().includes(query) || application.contactName.toLowerCase().includes(query),
+          !query ||
+          application.businessName.toLowerCase().includes(query) ||
+          application.contactName.toLowerCase().includes(query),
       )
       .sort((a, b) => (a[sort]! > b[sort]! ? dir : a[sort]! < b[sort]! ? -dir : 0));
 
@@ -81,4 +83,3 @@ export function handleApplicationsCollection(
 
   return null;
 }
-

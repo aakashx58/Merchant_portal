@@ -14,7 +14,9 @@ button.submit-button {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background-color 0.15s ease, opacity 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    opacity 0.15s ease;
 
   &:hover:not(:disabled) {
     background-color: var(--primary-hover) !important;
@@ -45,7 +47,9 @@ button.btn-secondary {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background-color 0.15s ease, border-color 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
 
   &:hover:not(:disabled) {
     background-color: var(--bg-subtle) !important;

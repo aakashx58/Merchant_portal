@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any -- dev-only mock parsing untyped request bodies */
+ 
 import {
   HttpErrorResponse,
   HttpEvent,
@@ -55,7 +55,9 @@ export const mockBackendInterceptor: HttpInterceptorFn = (
     mergeMap(() => {
       const reply = handle(req, url, logger);
       return reply.status >= 400
-        ? throwError(() => new HttpErrorResponse({ status: reply.status, error: reply.body, url: req.url }))
+        ? throwError(
+            () => new HttpErrorResponse({ status: reply.status, error: reply.body, url: req.url }),
+          )
         : of(new HttpResponse({ status: reply.status, body: reply.body, headers: reply.headers }));
     }),
   );

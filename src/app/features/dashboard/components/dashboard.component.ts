@@ -14,7 +14,10 @@ import { PermissionEnum } from '../../../core/constants/permission.enum';
 import { ApplicationQuery, ApplicationsService } from '../../../core/services/applications.service';
 import { DialogService } from '../../../core/services/dialog.service';
 import { CellDefDirective } from '../../../shared/directives/cell-def.directive';
-import { DataTableComponent, TableColumn } from '../../../shared/components/data-table/data-table.component';
+import {
+  DataTableComponent,
+  TableColumn,
+} from '../../../shared/components/data-table/data-table.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -95,7 +98,8 @@ export class DashboardComponent {
   }
 
   protected async openDetails(id: string) {
-    const { ApplicationDetailComponent } = await import('../../review/components/application-detail.component');
+    const { ApplicationDetailComponent } =
+      await import('../../review/components/application-detail.component');
     this.dialog
       .openSideSheet(ApplicationDetailComponent, { data: { id } })
       .afterClosed()

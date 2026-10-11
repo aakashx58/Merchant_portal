@@ -49,12 +49,7 @@
             Approve
           }
         </button>
-        <button
-          mat-flat-button
-          color="warn"
-          (click)="decide('rejected')"
-          [disabled]="submitting()"
-        >
+        <button mat-flat-button color="warn" (click)="decide('rejected')" [disabled]="submitting()">
           @if (submitting()) {
             <mat-spinner diameter="20"></mat-spinner>
           } @else {

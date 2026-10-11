@@ -13,7 +13,8 @@ export interface Reply {
 
 export const ok = (body: unknown, headers?: HttpHeaders): Reply => ({ status: 200, body, headers });
 export const fail = (status: number, message: string): Reply => ({ status, body: { message } });
-export const etag = (application: Application) => new HttpHeaders({ ETag: `"${application.version}"` });
+export const etag = (application: Application) =>
+  new HttpHeaders({ ETag: `"${application.version}"` });
 
 export function currentUser(req: HttpRequest<unknown>): MockUser | undefined {
   const token = req.headers.get('Authorization')?.replace('Bearer ', '');
@@ -21,7 +22,8 @@ export function currentUser(req: HttpRequest<unknown>): MockUser | undefined {
   return users.find((user) => user.id === id);
 }
 
-export const can = (user: MockUser, permission: PermissionEnum) => hasPermission(user.roles, permission);
+export const can = (user: MockUser, permission: PermissionEnum) =>
+  hasPermission(user.roles, permission);
 export const isAdmin = (user: MockUser) => user.roles.includes(RoleEnum.admin);
 export const canSee = (user: MockUser, application: Application) =>
   can(user, PermissionEnum.application_view_all) ||

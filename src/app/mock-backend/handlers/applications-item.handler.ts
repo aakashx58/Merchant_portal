@@ -52,7 +52,12 @@ export function handleApplicationsItem(
     case 'POST submit':
       if (!canEdit(user, app)) return fail(403, 'Forbidden');
       if (app.status !== 'draft') return fail(409, 'Already submitted');
-      if (app.taxId && applications.some((application) => application.id !== app.id && application.taxId === app.taxId))
+      if (
+        app.taxId &&
+        applications.some(
+          (application) => application.id !== app.id && application.taxId === app.taxId,
+        )
+      )
         return fail(409, 'This application conflicts with an existing one');
       app.status = 'submitted';
       log(app, user, 'submitted');
@@ -63,7 +68,8 @@ export function handleApplicationsItem(
       if (app.status !== 'submitted')
         return fail(409, 'Only submitted applications can be assigned');
       const assignee = users.find(
-        (userItem) => userItem.id === body['assigneeId'] && userItem.roles.includes(RoleEnum.reviewer),
+        (userItem) =>
+          userItem.id === body['assigneeId'] && userItem.roles.includes(RoleEnum.reviewer),
       );
       if (!assignee) return fail(400, 'Choose a valid reviewer');
       app.assigneeId = assignee.id;
@@ -110,4 +116,3 @@ export function handleApplicationsItem(
   }
   return fail(405, 'Method not allowed');
 }
-

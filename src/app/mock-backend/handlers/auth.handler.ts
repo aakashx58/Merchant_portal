@@ -24,7 +24,8 @@ export function handleAuth(req: HttpRequest<unknown>, path: string): Reply | nul
 
   if (req.method === 'POST' && path === '/auth/login') {
     const user = users.find(
-      (userItem) => userItem.username === body['username'] && userItem.password === body['password'],
+      (userItem) =>
+        userItem.username === body['username'] && userItem.password === body['password'],
     );
     if (!user) return fail(401, 'Invalid credentials');
     return ok({ id: user.id, username: user.username, roles: user.roles, ...issueTokens(user) });

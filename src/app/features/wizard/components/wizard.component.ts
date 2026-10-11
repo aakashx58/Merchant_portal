@@ -41,7 +41,12 @@ import { ToastService } from '../../../core/services/toast.service';
 import { Application } from '../../../core/models/application.model';
 import { ApplicationDraftService } from '../../../core/services/application-draft.service';
 import { DraftPayload } from '../../../core/services/applications.service';
-import { ACCOUNT_PATTERN, documentFile, TAX_ID_PATTERN, uniqueTaxId } from '../validators/wizard.validators';
+import {
+  ACCOUNT_PATTERN,
+  documentFile,
+  TAX_ID_PATTERN,
+  uniqueTaxId,
+} from '../validators/wizard.validators';
 
 export type SaveStatus = 'idle' | 'saving' | 'saved' | 'failed';
 
