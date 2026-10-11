@@ -13,6 +13,8 @@ import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { httpErrorInterceptor } from './core/interceptors/http-error.interceptor';
 import { MOCK_INTERCEPTORS } from './mock-backend/mock.providers';
 import { GlobalErrorHandler } from './core/error-handling/global-error-handler';
+import { environment } from '../environments/environment';
+import { provideEnvironment } from './core/config/environment.token';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -27,5 +29,6 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(
       withInterceptors([httpErrorInterceptor, authInterceptor, ...MOCK_INTERCEPTORS]),
     ),
+    provideEnvironment(environment),
   ],
 };

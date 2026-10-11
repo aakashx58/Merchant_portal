@@ -1,4 +1,4 @@
-import { Component, ElementRef, inject, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, inject, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
@@ -30,6 +30,7 @@ import { ViewportService } from '../../../core/services/viewport.service';
   ],
   templateUrl: './app-layout.component.html',
   styleUrl: './app-layout.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppLayoutComponent {
   protected readonly auth = inject(AuthService);

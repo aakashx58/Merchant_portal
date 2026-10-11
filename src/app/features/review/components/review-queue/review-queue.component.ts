@@ -1,5 +1,5 @@
 import { CurrencyPipe, DatePipe, TitleCasePipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -31,11 +31,10 @@ import { ReviewQueueStore } from '../../stores';
   ],
   templateUrl: './review-queue.component.html',
   styleUrl: './review-queue.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ReviewQueueComponent {
   protected readonly store = inject(ReviewQueueStore);
-
-  constructor() {}
 
   protected setStatus(status: string) {
     this.store.setStatus(status as any);

@@ -1,5 +1,5 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { Component, computed, contentChildren, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, contentChildren, input, output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -25,6 +25,7 @@ export interface TableColumn {
   ],
   templateUrl: './data-table.component.html',
   styleUrl: './data-table.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DataTableComponent<T extends object> {
   readonly columns = input.required<TableColumn[]>();

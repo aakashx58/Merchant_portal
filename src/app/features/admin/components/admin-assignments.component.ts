@@ -1,5 +1,5 @@
 import { CurrencyPipe, DatePipe, TitleCasePipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -32,11 +32,10 @@ import { AdminAssignmentsStore } from '../stores/admin-assignments.store';
   ],
   templateUrl: './admin-assignments.component.html',
   styleUrl: './admin-assignments.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminAssignmentsComponent {
   protected readonly store = inject(AdminAssignmentsStore);
-
-  constructor() {}
 
   protected setStatus(status: string) {
     this.store.setStatus(status as any);

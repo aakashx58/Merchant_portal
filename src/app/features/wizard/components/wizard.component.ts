@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   DestroyRef,
   inject,
@@ -6,7 +7,6 @@ import {
   OnInit,
   CUSTOM_ELEMENTS_SCHEMA,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -39,6 +39,7 @@ import { WizardStore } from '../stores/wizard.store';
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './wizard.component.html',
   styleUrl: './wizard.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WizardComponent implements OnInit, OnDestroy {
   protected readonly store = inject(WizardStore);
