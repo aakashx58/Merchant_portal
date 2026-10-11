@@ -9,32 +9,32 @@ import {
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSelectModule } from '@angular/material/select';
 import { MatStepperModule } from '@angular/material/stepper';
-import { ReactiveFormsModule } from '@angular/forms';
 import { ViewportService } from '../../../core/services/viewport.service';
 import { WizardStore } from '../stores/wizard.store';
+import { BusinessInfoStepComponent } from './steps/business-info-step/business-info-step.component';
+import { ContactsStepComponent } from './steps/contacts-step/contacts-step.component';
+import { FinancialStepComponent } from './steps/financial-step/financial-step.component';
+import { DocumentsStepComponent } from './steps/documents-step/documents-step.component';
+import { ReviewStepComponent } from './steps/review-step/review-step.component';
 
 @Component({
   selector: 'app-wizard',
   imports: [
-    ReactiveFormsModule,
     MatButtonModule,
     MatCardModule,
-    MatCheckboxModule,
-    MatFormFieldModule,
     MatIconModule,
-    MatInputModule,
     MatProgressBarModule,
     MatProgressSpinnerModule,
-    MatSelectModule,
     MatStepperModule,
+    BusinessInfoStepComponent,
+    ContactsStepComponent,
+    FinancialStepComponent,
+    DocumentsStepComponent,
+    ReviewStepComponent,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './wizard.component.html',
@@ -52,14 +52,6 @@ export class WizardComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.store.saveOnDestroy();
-  }
-
-  protected nextStep() {
-    this.store.nextStep();
-  }
-
-  protected previousStep() {
-    this.store.previousStep();
   }
 
   protected onFile(event: Event) {
@@ -84,9 +76,5 @@ export class WizardComponent implements OnInit, OnDestroy {
 
   protected onStepChange() {
     this.store.onStepChange();
-  }
-
-  protected trackByIndex(index: number): number {
-    return index;
   }
 }

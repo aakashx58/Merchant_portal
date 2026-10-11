@@ -7,8 +7,8 @@ import { MatDialogModule, MAT_DIALOG_DATA, MatDialogRef } from '@angular/materia
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CommonModule } from '@angular/common';
 import { DatePipe, TitleCasePipe } from '@angular/common';
-import { User } from '../../../core/models/user.model';
-import { UserService } from '../../../core/services/user.service';
+import { User } from '../../../../core/models/user.model';
+import { UserService } from '../../../../core/services/user.service';
 
 interface UserDetailData {
   id: string;

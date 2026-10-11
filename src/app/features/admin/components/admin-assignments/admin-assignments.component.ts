@@ -11,8 +11,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import {
   DataTableComponent,
   TableColumn,
-} from '../../../shared/components/data-table/data-table.component';
-import { AdminAssignmentsStore } from '../stores/admin-assignments.store';
+} from '../../../../shared/components/data-table/data-table.component';
+import { AdminAssignmentsStore } from '../../stores/admin-assignments.store';
 
 @Component({
   selector: 'app-admin-assignments',

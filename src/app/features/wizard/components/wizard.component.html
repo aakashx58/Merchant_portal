@@ -10,52 +10,7 @@
       <mat-stepper #stepper linear class="wizard-stepper" (selectionChange)="onStepChange()">
         <!-- Step 1: Business Information -->
         <mat-step [stepControl]="store.form.controls.business" label="Business Info">
-          <form [formGroup]="store.form.controls.business" class="step-form">
-            <div class="field">
-              <label for="businessName">Business Name</label>
-              <input
-                id="businessName"
-                type="text"
-                formControlName="businessName"
-                autocomplete="organization"
-                class="field-input"
-              />
-              @if (store.form.controls.business.controls.businessName.hasError('required') && store.form.controls.business.controls.businessName.touched) {
-                <span class="field-error">Business name is required</span>
-              }
-            </div>
-
-            <div class="field">
-              <label for="contactName">Contact Name</label>
-              <input
-                id="contactName"
-                type="text"
-                formControlName="contactName"
-                autocomplete="name"
-                class="field-input"
-              />
-              @if (store.form.controls.business.controls.contactName.hasError('required') && store.form.controls.business.controls.contactName.touched) {
-                <span class="field-error">Contact name is required</span>
-              }
-            </div>
-
-            <div class="field">
-              <label for="email">Email</label>
-              <input
-                id="email"
-                type="email"
-                formControlName="email"
-                autocomplete="email"
-                class="field-input"
-              />
-              @if (store.form.controls.business.controls.email.hasError('required') && store.form.controls.business.controls.email.touched) {
-                <span class="field-error">Email is required</span>
-              }
-              @if (store.form.controls.business.controls.email.hasError('email') && store.form.controls.business.controls.email.touched) {
-                <span class="field-error">Enter a valid email address</span>
-              }
-            </div>
-          </form>
+          <app-business-info-step [formGroup]="store.form.controls.business" />
           <div class="step-actions">
             <button mat-button matStepperNext>Next</button>
           </div>
@@ -63,136 +18,20 @@
 
         <!-- Step 2: Contacts -->
         <mat-step [stepControl]="store.form.controls.contacts" label="Contacts">
-          <form [formGroup]="store.form.controls.contacts" class="step-form">
-            <div class="contacts-section">
-              <h3>Additional Contacts</h3>
-              <p class="section-hint">Add additional contacts for this application (optional)</p>
-              <div class="contacts-list" formArrayName="additionalContacts">
-                <ng-container>
-                  @for (contact of store.form.controls.contacts.controls.additionalContacts.controls; track $index) {
-                    <div class="contact-card" [formGroupName]="$index">
-                      <div class="contact-header">
-                        <h4>Contact #{{ $index + 1 }}</h4>
-                        <button type="button" mat-icon-button color="warn" (click)="removeContact($index)" aria-label="Remove contact">
-                          <mat-icon>delete</mat-icon>
-                        </button>
-                      </div>
-                      <div class="contact-fields">
-                        <div class="field">
-                          <label for="contact-name-{{$index}}">Name</label>
-                          <input
-                            id="contact-name-{{$index}}"
-                            type="text"
-                            formControlName="name"
-                            autocomplete="name"
-                            class="field-input"
-                          />
-                        </div>
-                        <div class="field">
-                          <label for="contact-role-{{$index}}">Role</label>
-                          <input
-                            type="text"
-                            formControlName="role"
-                            autocomplete="organization-title"
-                            class="field-input"
-                          />
-                        </div>
-                        <div class="field">
-                          <label for="contact-phone-{{$index}}">Phone</label>
-                          <input
-                            type="tel"
-                            formControlName="phone"
-                            autocomplete="tel"
-                            class="field-input"
-                          />
-                        </div>
-                        <div class="field">
-                          <label for="contact-email-{{$index}}">Email</label>
-                          <input
-                            type="email"
-                            formControlName="email"
-                            autocomplete="email"
-                            class="field-input"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  }
-                </ng-container>
-                <button type="button" mat-stroked-button (click)="addContact()">
-                  <mat-icon>person_add</mat-icon>
-                  Add Contact
-                </button>
-              </div>
-            </div>
-            <div class="step-actions">
-              <button mat-button matStepperPrevious>Back</button>
-              <button mat-button matStepperNext>Next</button>
-            </div>
-          </form>
+          <app-contacts-step
+            [formGroup]="store.form.controls.contacts"
+            (contactAdded)="addContact()"
+            (contactRemoved)="removeContact($event)"
+          />
+          <div class="step-actions">
+            <button mat-button matStepperPrevious>Back</button>
+            <button mat-button matStepperNext>Next</button>
+          </div>
         </mat-step>
 
         <!-- Step 3: Financial Information -->
         <mat-step [stepControl]="store.form.controls.financial" label="Financial Info">
-          <form [formGroup]="store.form.controls.financial" class="step-form">
-            <div class="field">
-              <label for="taxId">Tax ID (XXX-XX-XXXX)</label>
-              <input
-                id="taxId"
-                type="text"
-                formControlName="taxId"
-                placeholder="123-45-6789"
-                autocomplete="off"
-                class="field-input"
-              />
-              @if (store.form.controls.financial.controls.taxId.hasError('required') && store.form.controls.financial.controls.taxId.touched) {
-                <span class="field-error">Tax ID is required</span>
-              }
-              @if (store.form.controls.financial.controls.taxId.hasError('pattern') && store.form.controls.financial.controls.taxId.touched) {
-                <span class="field-error">Format must be XXX-XX-XXXX</span>
-              }
-              @if (store.form.controls.financial.controls.taxId.hasError('taxIdTaken')) {
-                <span class="field-error">This Tax ID is already registered</span>
-              }
-              @if (store.form.controls.financial.controls.taxId.pending) {
-                <mat-progress-bar mode="indeterminate" class="validation-progress"></mat-progress-bar>
-              }
-            </div>
-
-            <div class="field">
-              <label for="accountNumber">Account Number (8-17 digits)</label>
-              <input
-                id="accountNumber"
-                type="text"
-                formControlName="accountNumber"
-                autocomplete="off"
-                class="field-input"
-              />
-              @if (store.form.controls.financial.controls.accountNumber.hasError('required') && store.form.controls.financial.controls.accountNumber.touched) {
-                <span class="field-error">Account number is required</span>
-              }
-              @if (store.form.controls.financial.controls.accountNumber.hasError('pattern') && store.form.controls.financial.controls.accountNumber.touched) {
-                <span class="field-error">Must be 8-17 digits</span>
-              }
-            </div>
-
-            <div class="field">
-              <label for="monthlyVolume">Monthly Volume (USD)</label>
-              <input
-                id="monthlyVolume"
-                type="number"
-                formControlName="monthlyVolume"
-                autocomplete="off"
-                class="field-input"
-              />
-              @if (store.form.controls.financial.controls.monthlyVolume.hasError('required') && store.form.controls.financial.controls.monthlyVolume.touched) {
-                <span class="field-error">Monthly volume is required</span>
-              }
-              @if (store.form.controls.financial.controls.monthlyVolume.hasError('min') && store.form.controls.financial.controls.monthlyVolume.touched) {
-                <span class="field-error">Must be at least 1</span>
-              }
-            </div>
-          </form>
+          <app-financial-step [formGroup]="store.form.controls.financial" />
           <div class="step-actions">
             <button mat-button matStepperPrevious>Back</button>
             <button mat-button matStepperNext>Next</button>
@@ -201,59 +40,12 @@
 
         <!-- Step 4: Documents -->
         <mat-step [stepControl]="store.form.controls.documents" label="Documents">
-          <form [formGroup]="store.form.controls.documents" class="step-form">
-            <div class="field">
-              <label for="documentType">Document Type</label>
-              <select
-                id="documentType"
-                formControlName="documentType"
-                class="field-input"
-              >
-                @for (type of store.documentTypes; track type.value) {
-                  <option [value]="type.value">{{ type.label }}</option>
-                }
-              </select>
-            </div>
-
-            <div class="file-upload">
-              <label class="file-label" for="document">
-                <mat-icon>cloud_upload</mat-icon>
-                <span>{{ store.form.controls.documents.controls.document.value ? store.form.controls.documents.controls.document.value.name : 'Choose file (PDF, PNG, JPG, max 5MB)' }}</span>
-              </label>
-              <input
-                type="file"
-                id="document"
-                accept=".pdf,image/png,image/jpeg"
-                (change)="onFile($event)"
-                #fileInput
-                style="display: none"
-              />
-              <button
-                type="button"
-                mat-stroked-button
-                color="primary"
-                (click)="fileInput.click()"
-                [disabled]="store.form.controls.documents.controls.document.value"
-              >
-                <mat-icon>attach_file</mat-icon>
-                Upload
-              </button>
-              @if (store.form.controls.documents.controls.document.value) {
-                <button type="button" mat-icon-button color="warn" (click)="removeFile()" aria-label="Remove file">
-                  <mat-icon>close</mat-icon>
-                </button>
-              }
-              @if (store.form.controls.documents.controls.document.hasError('fileType')) {
-                <span class="field-error">Only PDF, PNG, and JPG files are allowed</span>
-              }
-              @if (store.form.controls.documents.controls.document.hasError('fileSize')) {
-                <span class="field-error">File size must not exceed 5MB</span>
-              }
-              @if (store.form.controls.documents.controls.document.hasError('required') && store.form.controls.documents.controls.document.touched) {
-                <span class="field-error">Document is required</span>
-              }
-            </div>
-          </form>
+          <app-documents-step
+            [formGroup]="store.form.controls.documents"
+            [documentTypes]="store.documentTypes"
+            (fileSelected)="onFile($event)"
+            (fileRemoved)="removeFile()"
+          />
           <div class="step-actions">
             <button mat-button matStepperPrevious>Back</button>
             <button mat-button matStepperNext>Next</button>
@@ -262,78 +54,21 @@
 
         <!-- Step 5: Review & Submit -->
         <mat-step [stepControl]="store.form.controls.review" label="Review & Submit">
-          <form [formGroup]="store.form.controls.review" class="review-content">
-            <h3>Review Your Application</h3>
-            
-            <mat-card class="review-section">
-              <mat-card-header>
-                <mat-card-title>Business Information</mat-card-title>
-              </mat-card-header>
-              <mat-card-content>
-                <div class="review-field"><strong>Business Name:</strong> {{ store.form.controls.business.controls.businessName.value }}</div>
-                <div class="review-field"><strong>Contact Name:</strong> {{ store.form.controls.business.controls.contactName.value }}</div>
-                <div class="review-field"><strong>Email:</strong> {{ store.form.controls.business.controls.email.value }}</div>
-              </mat-card-content>
-            </mat-card>
-
-            <mat-card class="review-section">
-              <mat-card-header>
-                <mat-card-title>Additional Contacts</mat-card-title>
-              </mat-card-header>
-              <mat-card-content>
-                @if (store.form.controls.contacts.controls.additionalContacts.value && store.form.controls.contacts.controls.additionalContacts.value.length > 0) {
-                  @for (contact of store.form.controls.contacts.controls.additionalContacts.value; track $index) {
-                    <div class="review-contact">
-                      <div class="review-field"><strong>Name:</strong> {{ contact.name }}</div>
-                      <div class="review-field"><strong>Role:</strong> {{ contact.role }}</div>
-                      <div class="review-field"><strong>Phone:</strong> {{ contact.phone }}</div>
-                      <div class="review-field"><strong>Email:</strong> {{ contact.email }}</div>
-                    </div>
-                  }
-                } @else {
-                  <p class="no-data">No additional contacts added</p>
-                }
-              </mat-card-content>
-            </mat-card>
-
-            <mat-card class="review-section">
-              <mat-card-header>
-                <mat-card-title>Financial Information</mat-card-title>
-              </mat-card-header>
-              <mat-card-content>
-                <div class="review-field"><strong>Tax ID:</strong> {{ store.form.controls.financial.controls.taxId.value }}</div>
-                <div class="review-field"><strong>Account Number:</strong> {{ store.form.controls.financial.controls.accountNumber.value }}</div>
-                <div class="review-field"><strong>Monthly Volume:</strong> {{ store.form.controls.financial.controls.monthlyVolume.value }}</div>
-              </mat-card-content>
-            </mat-card>
-
-            <mat-card class="review-section">
-              <mat-card-header>
-                <mat-card-title>Documents</mat-card-title>
-              </mat-card-header>
-              <mat-card-content>
-                <div class="review-field"><strong>Document Type:</strong> {{ store.form.controls.documents.controls.documentType.value }}</div>
-                <div class="review-field"><strong>File:</strong> {{ store.form.controls.documents.controls.document.value?.name || 'None uploaded' }}</div>
-              </mat-card-content>
-            </mat-card>
-
-            <div class="terms-field">
-              <mat-checkbox formControlName="termsAccepted">I agree to the Terms & Conditions and Privacy Policy</mat-checkbox>
-              @if (store.form.controls.review.controls.termsAccepted.hasError('required') && store.form.controls.review.controls.termsAccepted.touched) {
-                <span class="field-error">You must accept the terms to proceed</span>
+          <app-review-step
+            [formGroup]="store.form"
+            [submitting]="store.submitting()"
+            [onSubmit]="submit"
+          />
+          <div class="step-actions">
+            <button mat-button matStepperPrevious>Back</button>
+            <button mat-flat-button color="primary" (click)="submit()" [disabled]="store.submitting()">
+              @if (store.submitting()) {
+                <mat-spinner diameter="20"></mat-spinner>
+              } @else {
+                Submit Application
               }
-            </div>
-            <div class="step-actions">
-              <button mat-button matStepperPrevious>Back</button>
-              <button mat-flat-button color="primary" (click)="submit()" [disabled]="store.submitting()">
-                @if (store.submitting()) {
-                  <mat-spinner diameter="20"></mat-spinner>
-                } @else {
-                  Submit Application
-                }
-              </button>
-            </div>
-          </form>
+            </button>
+          </div>
         </mat-step>
       </mat-stepper>
 

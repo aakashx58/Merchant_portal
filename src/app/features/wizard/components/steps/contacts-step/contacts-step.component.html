@@ -1,0 +1,63 @@
+<form [formGroup]="formGroup()" class="step-form">
+  <div class="contacts-section">
+    <h3>Additional Contacts</h3>
+    <p class="section-hint">Add additional contacts for this application (optional)</p>
+    <div class="contacts-list" formArrayName="additionalContacts">
+      <ng-container>
+        @for (contact of additionalContacts.controls; track $index) {
+          <div class="contact-card" [formGroupName]="$index">
+            <div class="contact-header">
+              <h4>Contact #{{ $index + 1 }}</h4>
+              <button type="button" mat-icon-button color="warn" (click)="removeContact($index)" aria-label="Remove contact">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+            <div class="contact-fields">
+              <div class="field">
+                <label for="contact-name-{{$index}}">Name</label>
+                <input
+                  id="contact-name-{{$index}}"
+                  type="text"
+                  formControlName="name"
+                  autocomplete="name"
+                  class="field-input"
+                />
+              </div>
+              <div class="field">
+                <label for="contact-role-{{$index}}">Role</label>
+                <input
+                  type="text"
+                  formControlName="role"
+                  autocomplete="organization-title"
+                  class="field-input"
+                />
+              </div>
+              <div class="field">
+                <label for="contact-phone-{{$index}}">Phone</label>
+                <input
+                  type="tel"
+                  formControlName="phone"
+                  autocomplete="tel"
+                  class="field-input"
+                />
+              </div>
+              <div class="field">
+                <label for="contact-email-{{$index}}">Email</label>
+                <input
+                  type="email"
+                  formControlName="email"
+                  autocomplete="email"
+                  class="field-input"
+                />
+              </div>
+            </div>
+          </div>
+        }
+      </ng-container>
+      <button type="button" mat-stroked-button (click)="addContact()">
+        <mat-icon>person_add</mat-icon>
+        Add Contact
+      </button>
+    </div>
+  </div>
+</form>

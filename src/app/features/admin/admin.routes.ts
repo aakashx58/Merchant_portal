@@ -8,13 +8,17 @@ export const ROUTES: Routes = [
     title: 'Application Assignments - TechKraft',
     canActivate: [permissionGuard(PermissionEnum.application_assign)],
     loadComponent: () =>
-      import('./components/admin-assignments.component').then((m) => m.AdminAssignmentsComponent),
+      import('./components/admin-assignments/admin-assignments.component').then(
+        (m) => m.AdminAssignmentsComponent,
+      ),
   },
   {
     path: 'users',
     title: 'User Management - TechKraft',
     canActivate: [permissionGuard(PermissionEnum.user_manage)],
     loadComponent: () =>
-      import('./components/user-management.component').then((m) => m.UserManagementComponent),
+      import('./components/user-management/user-management.component').then(
+        (m) => m.UserManagementComponent,
+      ),
   },
 ];

@@ -100,8 +100,7 @@ export class UserManagementStore {
   }
 
   async openDetails(userId: string) {
-    const { UserDetailComponent } =
-      await import('../components/user-detail.component');
+    const { UserDetailComponent } = await import('../components/user-detail/user-detail.component');
     this.dialog
       .openSideSheet(UserDetailComponent, { data: { id: userId } })
       .afterClosed()

@@ -10,9 +10,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { ReactiveFormsModule } from '@angular/forms';
-import { CellDefDirective } from '../../../shared/directives/cell-def.directive';
-import { DataTableComponent, TableColumn } from '../../../shared/components/data-table/data-table.component';
-import { UserManagementStore } from '../stores/user-management.store';
+import { UserManagementStore } from '../../stores/user-management.store';
 
 @Component({
   selector: 'app-user-management',

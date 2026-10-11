@@ -1,0 +1,71 @@
+<form [formGroup]="formGroup()" class="review-content">
+  <h3>Review Your Application</h3>
+
+  <mat-card class="review-section">
+    <mat-card-header>
+      <mat-card-title>Business Information</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="review-field"><strong>Business Name:</strong> {{ businessGroup.controls['businessName'].value }}</div>
+      <div class="review-field"><strong>Contact Name:</strong> {{ businessGroup.controls['contactName'].value }}</div>
+      <div class="review-field"><strong>Email:</strong> {{ businessGroup.controls['email'].value }}</div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="review-section">
+    <mat-card-header>
+      <mat-card-title>Additional Contacts</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      @if (additionalContactsArray.value && additionalContactsArray.value.length > 0) {
+        @for (contact of additionalContactsArray.value; track $index) {
+          <div class="review-contact">
+            <div class="review-field"><strong>Name:</strong> {{ contact.name }}</div>
+            <div class="review-field"><strong>Role:</strong> {{ contact.role }}</div>
+            <div class="review-field"><strong>Phone:</strong> {{ contact.phone }}</div>
+            <div class="review-field"><strong>Email:</strong> {{ contact.email }}</div>
+          </div>
+        }
+      } @else {
+        <p class="no-data">No additional contacts added</p>
+      }
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="review-section">
+    <mat-card-header>
+      <mat-card-title>Financial Information</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="review-field"><strong>Tax ID:</strong> {{ financialGroup.controls['taxId'].value }}</div>
+      <div class="review-field"><strong>Account Number:</strong> {{ financialGroup.controls['accountNumber'].value }}</div>
+      <div class="review-field"><strong>Monthly Volume:</strong> {{ financialGroup.controls['monthlyVolume'].value }}</div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="review-section">
+    <mat-card-header>
+      <mat-card-title>Documents</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="review-field"><strong>Document Type:</strong> {{ documentsGroup.controls['documentType'].value }}</div>
+      <div class="review-field"><strong>File:</strong> {{ documentsGroup.controls['document'].value?.name || 'None uploaded' }}</div>
+    </mat-card-content>
+  </mat-card>
+
+  <div class="terms-field">
+    <mat-checkbox [formControl]="termsAcceptedControl">I agree to the Terms & Conditions and Privacy Policy</mat-checkbox>
+    @if (termsAcceptedControl.hasError('required') && termsAcceptedControl.touched) {
+      <span class="field-error">You must accept the terms to proceed</span>
+    }
+  </div>
+  <div class="step-actions">
+    <button mat-flat-button color="primary" (click)="onSubmit()" [disabled]="submitting()">
+      @if (submitting()) {
+        <mat-spinner diameter="20"></mat-spinner>
+      } @else {
+        Submit Application
+      }
+    </button>
+  </div>
+</form>
