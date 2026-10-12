@@ -208,29 +208,6 @@ signs the user out). Data resets on reload; tokens live in `sessionStorage`.
 - Components: dashboard, review queue, assignments, users, audit log, layout, wizard, application detail (role-based controls), masked field, error pages
 - A basic accessibility check (`src/app/testing/a11y.ts`) on every page: labelled controls, named buttons and links
 
-## Conventions
 
-- Files are `kebab-case.<kind>.ts` (`user-management.store.ts`, `api.service.ts`); classes are `PascalCase` with a kind suffix.
-- Feature and component folders share the page name.
-- Templates call `store.method()` directly; components have no pass-through methods.
-- Required form labels use `class="required"` (adds the asterisk).
-- Pages share `.page`, `.page-header`, `.filter-bar`, `.details`, `.status-badge` and `.stat-card` from `src/styles/_page.scss`.
 
-### Adding a list page
 
-1. Add `XxxService extends ApiService` with `list(query)`.
-2. Add `XxxStore extends ListStore<Item, Query>`: pass the initial query, default sort and error text, implement `fetch`, call `this.load()`.
-3. Add the component with `<app-data-table>`, `appCell` templates for formatted cells, and the shared page header and filter bar.
-4. Add a lazy route with `permissionGuard(...)` and a sidebar link guarded by the same permission.
-
-## Status and roadmap
-
-Done: all required features above, dashboard counts, auth refresh interceptor, lint clean, 268 passing tests.
-
-Still open:
-
-- Real-time status updates with Socket.IO and a polling fallback (on hold)
-- Apply the CSP in a production build (documented, not set)
-- Move tokens out of `sessionStorage` into an httpOnly cookie (needs a real backend)
-- Mock role changes live in memory and reset on reload
-- Manual click-through of every role in a browser before submitting
