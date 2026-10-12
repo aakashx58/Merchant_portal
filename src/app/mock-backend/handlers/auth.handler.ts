@@ -30,7 +30,7 @@ export function expireAccessTokens() {
 }
 
 export function handleAuth(req: HttpRequest<unknown>, path: string): Reply | null {
-  const body = (req.body ?? {}) as Record<string, any>;
+  const body = (req.body ?? {}) as Record<string, string>;
 
   if (req.method === 'POST' && path === '/auth/login') {
     const user = users.find(

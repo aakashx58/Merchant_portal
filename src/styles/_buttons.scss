@@ -83,3 +83,13 @@ button.btn-text {
     opacity: 0.65 !important;
   }
 }
+
+// Destructive action (e.g. Reject): <button mat-flat-button class="btn-danger">
+button[mat-flat-button].btn-danger {
+  background-color: var(--mat-sys-error) !important;
+  color: var(--mat-sys-on-error) !important;
+
+  &:hover:not(:disabled) {
+    background-color: color-mix(in srgb, var(--mat-sys-error) 85%, black) !important;
+  }
+}

@@ -8,12 +8,12 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { PermissionEnum } from '../../../../core/constants/permission.enum';
 import { Application } from '../../../../core/models/application.model';
-import { ApplicationReviewService } from '../../../../core/services/application-review.service';
+import { ApplicationReviewService } from '../../services/application-review.service';
 import { ApplicationsService } from '../../../../core/services/applications.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { DialogComponent } from '../../../../shared/components/dialog/dialog.component';
 import { MaskedFieldComponent } from '../../../../shared/components/masked-field/masked-field.component';
-import { AssignmentPanelComponent } from '../application-panel/assignment-panel.component';
+import { AssignmentPanelComponent } from '../assignment-panel/assignment-panel.component';
 import { ReviewPanelComponent } from '../review-panel/review-panel.component';
 
 @Component({
@@ -45,7 +45,7 @@ export class ApplicationDetailComponent {
 
   protected readonly application = rxResource<Application, string>({
     params: () => this.id,
-    stream: ({ params }) => this.api.get(params),
+    stream: ({ params }) => this.api.getById(params),
   });
 
   protected readonly canReveal = computed(() => this.auth.can(PermissionEnum.sensitive_reveal));

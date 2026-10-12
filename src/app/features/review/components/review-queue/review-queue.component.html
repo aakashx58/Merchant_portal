@@ -1,4 +1,4 @@
-<div class="review-queue-container">
+<div class="page review-queue-container">
   <header class="page-header">
     <h1>Review Queue</h1>
     <p class="page-subtitle">Applications assigned to you for review</p>
@@ -54,38 +54,36 @@
   </section>
 
   <!-- Filters -->
-  <section class="filters-section">
-    <mat-form-field appearance="outline" class="search-field">
-      <mat-label>Search</mat-label>
-      <input matInput [formControl]="store.search" placeholder="Search by business or contact" />
-      <mat-icon matPrefix>search</mat-icon>
+  <section class="filter-bar">
+    <label class="search-box">
+      <mat-icon aria-hidden="true">search</mat-icon>
+      <input
+        type="search"
+        [formControl]="store.search"
+        placeholder="Search by business or contact"
+        aria-label="Search"
+      />
       @if (store.search.value) {
-        <button mat-icon-button matSuffix aria-label="Clear search" (click)="store.search.setValue('')">
+        <button
+          type="button"
+          class="clear"
+          aria-label="Clear search"
+          (click)="store.search.setValue('')"
+        >
           <mat-icon>close</mat-icon>
         </button>
       }
-    </mat-form-field>
+    </label>
 
-    <div class="status-filters">
-      @for (status of store.statuses; track status) {
-        <button
-          mat-stroked-button
-          [color]="store.query().status === status ? 'primary' : ''"
-          (click)="store.setStatus(status)"
-          [class.active]="store.query().status === status"
-        >
-          {{ status | titlecase }}
-        </button>
-      }
-      <button
-        mat-stroked-button
-        [color]="store.query().status === '' ? 'primary' : ''"
-        (click)="store.setStatus('')"
-        [class.active]="store.query().status === ''"
-      >
-        All
-      </button>
-    </div>
+    <mat-form-field appearance="outline" class="filter-select" subscriptSizing="dynamic">
+      <mat-label>Status</mat-label>
+      <mat-select [value]="store.query().status" (selectionChange)="store.setStatus($event.value)">
+        <mat-option value="">All</mat-option>
+        @for (status of store.statuses; track status) {
+          <mat-option [value]="status">{{ status | titlecase }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
   </section>
 
   <!-- Data Table -->
@@ -105,29 +103,35 @@
     (sortChange)="store.onSort($event)"
     (retry)="store.reload()"
   >
-    <ng-template appCellDef="status" let-row="row">
-      <span class="status-badge" [class]="'status-' + row.status">{{ row.status | titlecase }}</span>
+    <ng-template appCell="status" let-row>
+      <span class="status-badge" [class]="'status-' + row.status">{{
+        row.status | titlecase
+      }}</span>
     </ng-template>
 
-    <ng-template appCellDef="monthlyVolume" let-row="row">
-      {{ row.monthlyVolume | currency:'USD':'symbol':'1.0-0' }}
+    <ng-template appCell="monthlyVolume" let-row>
+      {{ row.monthlyVolume | currency: 'USD' : 'symbol' : '1.0-0' }}
     </ng-template>
 
-    <ng-template appCellDef="updatedAt" let-row="row">
-      {{ row.updatedAt | date:'medium' }}
+    <ng-template appCell="updatedAt" let-row>
+      {{ row.updatedAt | date: 'medium' }}
     </ng-template>
 
-    <ng-template appCellDef="actions" let-row="row">
-      <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Actions for {{ row.businessName }}">
+    <ng-template appCell="actions" let-row>
+      <button
+        mat-icon-button
+        [matMenuTriggerFor]="menu"
+        aria-label="Actions for {{ row.businessName }}"
+      >
         <mat-icon>more_vert</mat-icon>
       </button>
       <mat-menu #menu="matMenu">
-        <button mat-menu-item (click)="openDetails(row.id)">
+        <button mat-menu-item (click)="store.openDetails(row.id)">
           <mat-icon>visibility</mat-icon>
           <span>View Details</span>
         </button>
         @if (store.canReview() && row.status === 'submitted') {
-          <button mat-menu-item (click)="startReview(row.id)">
+          <button mat-menu-item (click)="store.startReview(row.id)">
             <mat-icon>rate_review</mat-icon>
             <span>Start Review</span>
           </button>

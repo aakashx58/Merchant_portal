@@ -58,15 +58,8 @@ export const auditLogs = Array.from({ length: 200 }, (_, i) => {
     { id: 'u-reviewer2', name: 'reviewer2', role: 'reviewer' },
     { id: 'u-admin', name: 'admin', role: 'admin' },
   ];
-  const entityTypes = ['application', 'user', 'audit_log'];
 
-  const action = actions[Math.floor(Math.random() * actions.length)];
   const actor = actors[Math.floor(Math.random() * actors.length)];
-  const severity = severities[Math.floor(Math.random() * severities.length)];
-  const entityType = ['application', 'user', 'audit_log'][Math.floor(Math.random() * 3)];
-  const entityId = `app-${Math.floor(Math.random() * 36) + 1}`;
-  const daysAgo = Math.floor(Math.random() * 30);
-  const at = new Date(Date.now() - Math.floor(Math.random() * 30 * 86400000)).toISOString();
 
   return {
     id: `audit-${i + 1}`,
@@ -74,17 +67,8 @@ export const auditLogs = Array.from({ length: 200 }, (_, i) => {
     actorId: actor.id,
     actorName: actor.name,
     actorRole: actor.role,
-    action: [
-      'login',
-      'logout',
-      'create_application',
-      'update_application',
-      'submit_application',
-      'assign_application',
-      'review_application',
-      'reveal_sensitive',
-    ][Math.floor(Math.random() * 8)],
-    severity: ['info', 'warning', 'error'][Math.floor(Math.random() * 3)],
+    action: actions[Math.floor(Math.random() * actions.length)],
+    severity: severities[Math.floor(Math.random() * severities.length)],
     entityType: ['application', 'user', 'audit_log'][Math.floor(Math.random() * 3)],
     entityId: `app-${Math.floor(Math.random() * 36) + 1}`,
     entityName: `Entity ${Math.floor(Math.random() * 100)}`,

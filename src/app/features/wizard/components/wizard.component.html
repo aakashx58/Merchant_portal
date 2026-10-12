@@ -1,5 +1,10 @@
 @if (!store.loading()) {
-  <div class="wizard-container">
+  <div class="page wizard-container">
+    <header class="page-header">
+      <h1>New application</h1>
+      <p class="page-subtitle">Complete the steps below. Your progress is saved automatically.</p>
+    </header>
+
     @if (store.loadError()) {
       <div class="error-state" role="alert">
         <mat-icon>error_outline</mat-icon>
@@ -7,12 +12,12 @@
         <button mat-flat-button color="primary" (click)="store.load()">Retry</button>
       </div>
     } @else {
-      <mat-stepper #stepper linear class="wizard-stepper" (selectionChange)="onStepChange()">
+      <mat-stepper #stepper linear class="wizard-card" (selectionChange)="onStepChange()">
         <!-- Step 1: Business Information -->
-        <mat-step [stepControl]="store.form.controls.business" label="Business Info">
+        <mat-step [stepControl]="store.form.controls.business" label="Business">
           <app-business-info-step [formGroup]="store.form.controls.business" />
           <div class="step-actions">
-            <button mat-button matStepperNext>Next</button>
+            <button mat-flat-button matStepperNext>Next</button>
           </div>
         </mat-step>
 
@@ -24,17 +29,17 @@
             (contactRemoved)="removeContact($event)"
           />
           <div class="step-actions">
-            <button mat-button matStepperPrevious>Back</button>
-            <button mat-button matStepperNext>Next</button>
+            <button mat-stroked-button matStepperPrevious>Back</button>
+            <button mat-flat-button matStepperNext>Next</button>
           </div>
         </mat-step>
 
         <!-- Step 3: Financial Information -->
-        <mat-step [stepControl]="store.form.controls.financial" label="Financial Info">
+        <mat-step [stepControl]="store.form.controls.financial" label="Financial">
           <app-financial-step [formGroup]="store.form.controls.financial" />
           <div class="step-actions">
-            <button mat-button matStepperPrevious>Back</button>
-            <button mat-button matStepperNext>Next</button>
+            <button mat-stroked-button matStepperPrevious>Back</button>
+            <button mat-flat-button matStepperNext>Next</button>
           </div>
         </mat-step>
 
@@ -47,21 +52,22 @@
             (fileRemoved)="removeFile()"
           />
           <div class="step-actions">
-            <button mat-button matStepperPrevious>Back</button>
-            <button mat-button matStepperNext>Next</button>
+            <button mat-stroked-button matStepperPrevious>Back</button>
+            <button mat-flat-button matStepperNext>Next</button>
           </div>
         </mat-step>
 
         <!-- Step 5: Review & Submit -->
-        <mat-step [stepControl]="store.form.controls.review" label="Review & Submit">
-          <app-review-step
-            [formGroup]="store.form"
-            [submitting]="store.submitting()"
-            [onSubmit]="submit"
-          />
+        <mat-step [stepControl]="store.form.controls.review" label="Review">
+          <app-review-step [formGroup]="store.form" />
           <div class="step-actions">
-            <button mat-button matStepperPrevious>Back</button>
-            <button mat-flat-button color="primary" (click)="submit()" [disabled]="store.submitting()">
+            <button mat-stroked-button matStepperPrevious>Back</button>
+            <button
+              mat-flat-button
+              color="primary"
+              (click)="submit()"
+              [disabled]="store.submitting()"
+            >
               @if (store.submitting()) {
                 <mat-spinner diameter="20"></mat-spinner>
               } @else {
@@ -88,21 +94,6 @@
             <span>Save failed - retrying...</span>
           }
         }
-      </div>
-
-      <!-- Progress Bar -->
-      <div class="progress-bar-container">
-        <div class="progress-bar" [style.width.%]="store.progress()"></div>
-        <div class="progress-steps">
-          <ng-container>
-            @for (step of [0,1,2,3,4]; track step) {
-              <div class="progress-step" [class.active]="store.currentStep() >= step" [class.current]="store.currentStep() === step">
-                <span class="step-number">{{ step + 1 }}</span>
-                <span class="step-label">{{ ['Business','Contacts','Financial','Documents','Review'][step] }}</span>
-              </div>
-            }
-          </ng-container>
-        </div>
       </div>
     }
   </div>

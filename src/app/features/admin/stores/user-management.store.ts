@@ -1,49 +1,24 @@
+import { computed, inject, Injectable } from '@angular/core';
+import { PermissionEnum } from '../../../core/constants/permission.enum';
+import { User } from '../../../core/models/user.model';
+import { AuthService } from '../../../core/services/auth.service';
+import { DialogService } from '../../../core/services/dialog.service';
+import { ToastService } from '../../../core/services/toast.service';
+import { UserQuery, UserService } from '../services/user.service';
+import { ListStore } from '../../../core/state';
 import { TableColumn } from '../../../shared/components/data-table/data-table.component';
 
-import { Injectable, signal, computed, inject } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { debounceTime, distinctUntilChanged, tap } from 'rxjs';
-import { UserService } from '../../../core/services/user.service';
-import { DialogService } from '../../../core/services/dialog.service';
-import { AuthService } from '../../../core/services/auth.service';
-import { PermissionEnum } from '../../../core/constants/permission.enum';
-import { User, Page } from '../../../core/models/user.model';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { DestroyRef } from '@angular/core';
-
-export interface UserQuery {
-  page: number;
-  pageSize: number;
-  q: string;
-  role: string;
-  sort: string;
-  dir: 'asc' | 'desc';
-}
-
 @Injectable({ providedIn: 'root' })
-export class UserManagementStore {
+export class UserManagementStore extends ListStore<User, UserQuery> {
   private readonly api = inject(UserService);
-  readonly auth = inject(AuthService);
   private readonly dialog = inject(DialogService);
-  private readonly destroyRef = inject(DestroyRef);
+  private readonly toast = inject(ToastService);
+  readonly auth = inject(AuthService);
 
-  readonly search = new FormControl('', { nonNullable: true });
   readonly roles = ['sales', 'reviewer', 'admin'] as const;
+  readonly users = this.data;
 
-  readonly query = signal<UserQuery>({
-    page: 1,
-    pageSize: 10,
-    q: '',
-    role: '',
-    sort: 'username',
-    dir: 'asc',
-  });
-
-  readonly users = signal<Page<User> | null>(null);
-  readonly loading = signal(false);
-  readonly error = signal<string | null>(null);
-
-  readonly canManageUsers = computed(() => this.auth.can(PermissionEnum.user_manage as PermissionEnum));
+  readonly canManageUsers = computed(() => this.auth.can(PermissionEnum.user_manage));
 
   readonly columns = computed<TableColumn[]>(() => [
     { key: 'username', header: 'Username', sortable: true },
@@ -54,49 +29,20 @@ export class UserManagementStore {
   ]);
 
   constructor() {
-    this.search.valueChanges
-      .pipe(
-        debounceTime(300),
-        distinctUntilChanged(),
-        takeUntilDestroyed(this.destroyRef),
-        tap((searchTerm) => this.patch({ q: searchTerm.trim() }))
-      )
-      .subscribe();
-  }
-
-  load() {
-    this.loading.set(true);
-    this.error.set(null);
-    this.api.list(this.query()).subscribe({
-      next: (page) => {
-        this.users.set(page);
-        this.loading.set(false);
-      },
-      error: (err) => {
-        this.loading.set(false);
-        this.error.set(err?.message || 'Failed to load users');
-      },
-    });
-  }
-
-  reload() {
+    super(
+      { page: 1, pageSize: 10, q: '', role: '', sort: 'username', dir: 'asc' },
+      { sort: 'username', dir: 'asc' },
+      'Failed to load users',
+    );
     this.load();
+  }
+
+  protected fetch(query: UserQuery) {
+    return this.api.list(query);
   }
 
   setRole(role: UserQuery['role']) {
     this.patch({ role });
-  }
-
-  onSort({ sort, dir }: { sort: string; dir: 'asc' | 'desc' | '' }) {
-    this.patch(dir ? { sort, dir } : { sort: 'username', dir: 'asc' });
-  }
-
-  onPage({ page, pageSize }: { page: number; pageSize: number }) {
-    this.query.update((q) => ({ ...q, page, pageSize }));
-  }
-
-  private patch(change: Partial<UserQuery>) {
-    this.query.update((q) => ({ ...q, ...change, page: 1 }));
   }
 
   async openDetails(userId: string) {
@@ -109,8 +55,11 @@ export class UserManagementStore {
 
   toggleRole(userId: string, newRole: string) {
     this.api.updateRole(userId, newRole).subscribe({
-      next: () => this.reload(),
-      error: () => this.error.set('Failed to update role'),
+      next: () => {
+        this.toast.show('Role updated');
+        this.reload();
+      },
+      error: () => this.toast.show('Failed to update role'),
     });
   }
 }

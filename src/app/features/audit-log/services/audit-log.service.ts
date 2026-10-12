@@ -1,13 +1,13 @@
 import { HttpParams } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { handledInline } from '../interceptors/http-error.interceptor';
-import { AuditLogEntry, AuditLogQuery, Page } from '../models/application.model';
-import { ApiService } from '../api/api-service';
+import { handledInline } from '../../../core/interceptors/http-error.interceptor';
+import { AuditLogEntry, AuditLogQuery, Page } from '../../../core/models/application.model';
+import { ApiService } from '../../../core/api/api.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuditLogService extends ApiService {
-  list(query: AuditLogQuery): Observable<Page<any>> {
+  list(query: AuditLogQuery): Observable<Page<AuditLogEntry>> {
     let params = new HttpParams()
       .set('page', query.page)
       .set('pageSize', query.pageSize)
@@ -19,6 +19,6 @@ export class AuditLogService extends ApiService {
     if (query.severity) params = params.set('severity', query.severity);
     if (query.startDate) params = params.set('startDate', query.startDate);
     if (query.endDate) params = params.set('endDate', query.endDate);
-    return this.get<any>('/audit-logs', { params, context: handledInline() });
+    return this.get<Page<AuditLogEntry>>('/audit-logs', { params, context: handledInline() });
   }
 }

@@ -1,39 +1,24 @@
-import { Injectable, signal, computed, inject } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { debounceTime, distinctUntilChanged, tap } from 'rxjs';
-import { ApplicationQuery, ApplicationsService } from '../../../core/services/applications.service';
-import { DialogService } from '../../../core/services/dialog.service';
-import { AuthService } from '../../../core/services/auth.service';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { PermissionEnum } from '../../../core/constants/permission.enum';
-import { Application, Page } from '../../../core/models/application.model';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { DestroyRef } from '@angular/core';
+import { Application, StatusCounts } from '../../../core/models/application.model';
+import { ApplicationQuery, ApplicationsService } from '../../../core/services/applications.service';
+import { AuthService } from '../../../core/services/auth.service';
+import { DialogService } from '../../../core/services/dialog.service';
+import { ListStore } from '../../../core/state';
 
 @Injectable({ providedIn: 'root' })
-export class DashboardStore {
+export class DashboardStore extends ListStore<Application, ApplicationQuery> {
   private readonly api = inject(ApplicationsService);
-  readonly auth = inject(AuthService);
   private readonly dialog = inject(DialogService);
-  private readonly destroyRef = inject(DestroyRef);
+  readonly auth = inject(AuthService);
 
-  readonly search = new FormControl('', { nonNullable: true });
   readonly statuses = ['draft', 'submitted', 'approved', 'rejected'] as const;
-
-  readonly query = signal<ApplicationQuery>({
-    page: 1,
-    pageSize: 10,
-    status: '',
-    q: '',
-    sort: 'updatedAt',
-    dir: 'desc',
-  });
-
-  readonly applications = signal<Page<Application> | null>(null);
-  readonly loading = signal(false);
-  readonly error = signal<string | null>(null);
+  readonly applications = this.data;
 
   readonly canAssign = computed(() => this.auth.can(PermissionEnum.application_assign));
   readonly canReview = computed(() => this.auth.can(PermissionEnum.application_review));
+  readonly canViewCounts = computed(() => this.auth.can(PermissionEnum.dashboard_counts));
+  readonly counts = signal<StatusCounts | null>(null);
 
   readonly columns = computed(() => [
     { key: 'businessName', header: 'Business', sortable: true },
@@ -45,54 +30,35 @@ export class DashboardStore {
     { key: 'actions', header: 'Action' },
   ]);
 
-  readonly PermissionEnum = PermissionEnum;
-
   constructor() {
-    this.search.valueChanges
-      .pipe(
-        debounceTime(300),
-        distinctUntilChanged(),
-        takeUntilDestroyed(this.destroyRef),
-        tap((searchTerm) => this.patch({ q: searchTerm.trim() }))
-      )
-      .subscribe();
-
+    super(
+      { page: 1, pageSize: 10, status: '', q: '', sort: 'updatedAt', dir: 'desc' },
+      { sort: 'updatedAt', dir: 'desc' },
+      'Failed to load applications',
+    );
     this.load();
+    this.loadCounts();
   }
 
-  load() {
-    this.loading.set(true);
-    this.error.set(null);
-    this.api.list(this.query()).subscribe({
-      next: (page) => {
-        this.applications.set(page);
-        this.loading.set(false);
-      },
-      error: (err) => {
-        this.loading.set(false);
-        this.error.set(err?.message || 'Failed to load applications');
-      },
+  protected fetch(query: ApplicationQuery) {
+    return this.api.list(query);
+  }
+
+  loadCounts() {
+    if (!this.canViewCounts()) return;
+    this.api.counts().subscribe({
+      next: (counts) => this.counts.set(counts),
+      error: () => this.counts.set(null), // the cards simply stay hidden; the table has its own error state
     });
   }
 
-  reload() {
-    this.load();
+  override reload() {
+    super.reload();
+    this.loadCounts();
   }
 
   setStatus(status: ApplicationQuery['status']) {
     this.patch({ status });
-  }
-
-  onSort({ sort, dir }: { sort: string; dir: 'asc' | 'desc' | '' }) {
-    this.patch(dir ? { sort, dir } : { sort: 'updatedAt', dir: 'desc' });
-  }
-
-  onPage({ page, pageSize }: { page: number; pageSize: number }) {
-    this.query.update((q) => ({ ...q, page, pageSize }));
-  }
-
-  private patch(change: Partial<ApplicationQuery>) {
-    this.query.update((q) => ({ ...q, ...change, page: 1 }));
   }
 
   async openDetails(id: string) {

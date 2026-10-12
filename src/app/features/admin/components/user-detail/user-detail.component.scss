@@ -1,34 +1,37 @@
 .user-detail-content {
-  min-width: 400px;
-  max-width: 500px;
-}
-
-.user-info-card {
-  margin-bottom: 16px;
-}
-
-.user-fields {
   display: flex;
   flex-direction: column;
+  gap: 24px;
+  padding: 8px 0;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
   gap: 16px;
-}
 
-.user-field {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-
-  label {
-    font-size: 0.75rem;
-    font-weight: 500;
-    color: var(--mat-sys-on-surface-variant);
+  .avatar {
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--mat-sys-primary);
+    color: var(--mat-sys-on-primary);
+    font-size: 1.5rem;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
   }
 
-  span {
-    font-size: 1rem;
-    color: var(--mat-sys-on-surface);
+  h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+
+  p {
+    margin: 2px 0 0;
+    color: var(--mat-sys-on-surface-variant);
   }
 }
 
@@ -41,9 +44,9 @@
 .role-chip {
   display: inline-flex;
   align-items: center;
-  padding: 2px 8px;
+  padding: 3px 10px;
   border-radius: 12px;
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   font-weight: 500;
   text-transform: uppercase;
 
@@ -61,12 +64,6 @@
     background: var(--mat-sys-error-container);
     color: var(--mat-sys-on-error-container);
   }
-}
-
-.dialog-actions {
-  padding: 16px 0 0;
-  border-top: 1px solid var(--mat-sys-outline-variant);
-  margin-top: 16px;
 }
 
 .loading-state,

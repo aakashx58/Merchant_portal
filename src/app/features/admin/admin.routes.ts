@@ -3,6 +3,7 @@ import { permissionGuard } from '../../core/guards/permission.guard';
 import { PermissionEnum } from '../../core/constants/permission.enum';
 
 export const ROUTES: Routes = [
+  { path: '', pathMatch: 'full', redirectTo: 'assignments' },
   {
     path: 'assignments',
     title: 'Application Assignments - TechKraft',

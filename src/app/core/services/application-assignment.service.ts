@@ -1,9 +1,9 @@
 import { HttpParams } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { handledInline } from '../interceptors/http-error.interceptor';
 import { Application } from '../models/application.model';
-import { ApiService } from '../api/api-service';
+import { ApiService } from '../api/api.service';
 
 @Injectable({ providedIn: 'root' })
 export class ApplicationAssignmentService extends ApiService {
@@ -13,6 +13,10 @@ export class ApplicationAssignmentService extends ApiService {
   }
 
   assign(id: string, assigneeId: string): Observable<Application> {
-    return this.put<Application>(`/applications/${id}/assignment`, { assigneeId }, { context: handledInline() });
+    return this.put<Application>(
+      `/applications/${id}/assignment`,
+      { assigneeId },
+      { context: handledInline() },
+    );
   }
 }

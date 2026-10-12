@@ -18,6 +18,14 @@ export const routes: Routes = [
     loadChildren: () => import('./features/error-pages/error-pages.routes').then((m) => m.ROUTES),
   },
   {
+    path: 'error',
+    title: 'Error - TechKraft',
+    loadComponent: () =>
+      import('./features/error-pages/server-error/server-error.component').then(
+        (m) => m.ServerErrorComponent,
+      ),
+  },
+  {
     path: '',
     loadComponent: () =>
       import('./shared/components/layout/app-layout.component').then((m) => m.AppLayoutComponent),

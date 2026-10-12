@@ -1,0 +1,18 @@
+<div class="error-page-container">
+  <mat-card class="error-card">
+    <mat-card-content>
+      <div class="error-icon">
+        <mat-icon>error_outline</mat-icon>
+      </div>
+      <h1 class="error-code">500</h1>
+      <h2 class="error-title">Something Went Wrong</h2>
+      <p class="error-message">An unexpected error occurred. Please try again in a moment.</p>
+      <div class="error-actions">
+        <button mat-flat-button color="primary" (click)="goToDashboard()">
+          <mat-icon>dashboard</mat-icon>
+          Go to Dashboard
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

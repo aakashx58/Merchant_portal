@@ -1,8 +1,7 @@
 import { HttpRequest } from '@angular/common/http';
 import { PermissionEnum } from '../../core/constants/permission.enum';
-import { AuditLogEntry } from '../../core/models/application.model';
 import { auditLogs, MockUser } from '../mock-db';
-import { can, fail, ok, Reply } from '../mock-utils';
+import { can, Reply } from '../mock-utils';
 
 export function handleAuditLogs(
   req: HttpRequest<unknown>,
@@ -24,10 +23,10 @@ export function handleAuditLogs(
     const severity = params.get('severity');
     const startDate = params.get('startDate');
     const endDate = params.get('endDate');
-    const sort = (params.get('sort') ?? 'at') as keyof typeof auditLogs[0];
+    const sort = (params.get('sort') ?? 'at') as keyof (typeof auditLogs)[0];
     const dir = params.get('dir') === 'asc' ? 1 : -1;
 
-    let rows = auditLogs;
+    let rows = [...auditLogs];
 
     // Apply filters
     if (query) {
@@ -36,7 +35,7 @@ export function handleAuditLogs(
           log.actorName.toLowerCase().includes(query) ||
           log.action.toLowerCase().includes(query) ||
           log.entityName?.toLowerCase().includes(query) ||
-          log.entityType.toLowerCase().includes(query)
+          log.entityType.toLowerCase().includes(query),
       );
     }
 

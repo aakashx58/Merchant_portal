@@ -1,27 +1,52 @@
-<div class="dashboard-container">
-  <header class="dashboard-header">
+<div class="page dashboard-container">
+  <header class="page-header">
     <h1>Applications</h1>
-    @if (store.auth.can(store.PermissionEnum.application_create)) {
-      <button mat-flat-button color="primary" routerLink="/wizard">
-        <mat-icon>add</mat-icon>
-        New Application
-      </button>
-    }
+    <p class="page-subtitle">Track and manage all merchant applications</p>
   </header>
 
-  <section class="filters-section">
-    <mat-form-field appearance="outline" class="search-field">
-      <mat-label>Search</mat-label>
-      <input matInput [formControl]="store.search" placeholder="Search by business or contact name" />
-      <mat-icon matPrefix>search</mat-icon>
+  @if (store.counts(); as counts) {
+    <section class="stat-grid" aria-label="Applications by status">
+      @for (status of store.statuses; track status) {
+        <button
+          type="button"
+          class="stat-card"
+          [class.active]="store.query().status === status"
+          [attr.aria-pressed]="store.query().status === status"
+          (click)="store.setStatus(store.query().status === status ? '' : status)"
+        >
+          <span class="stat-label">{{ status | titlecase }}</span>
+          <span class="stat-value">{{ counts[status] }}</span>
+        </button>
+      }
+      <div class="stat-card total">
+        <span class="stat-label">Total</span>
+        <span class="stat-value">{{ counts.total }}</span>
+      </div>
+    </section>
+  }
+
+  <section class="filter-bar">
+    <label class="search-box">
+      <mat-icon aria-hidden="true">search</mat-icon>
+      <input
+        type="search"
+        [formControl]="store.search"
+        placeholder="Search by business or contact name"
+        aria-label="Search"
+      />
       @if (store.search.value) {
-        <button mat-icon-button matSuffix aria-label="Clear search" (click)="store.search.setValue('')">
+        <button
+          type="button"
+          class="clear"
+          aria-label="Clear search"
+          (click)="store.search.setValue('')"
+        >
           <mat-icon>close</mat-icon>
         </button>
       }
-    </mat-form-field>
+    </label>
 
-    <mat-form-field appearance="outline" class="status-field">
+    <mat-form-field appearance="outline" class="filter-select" subscriptSizing="dynamic">
       <mat-label>Status</mat-label>
       <mat-select [value]="store.query().status" (selectionChange)="store.setStatus($event.value)">
         <mat-option value="">All</mat-option>
@@ -49,15 +74,17 @@
     (retry)="store.reload()"
   >
     <ng-template appCell="status" let-row>
-      <span class="status-badge" [class]="'status-' + row.status">{{ row.status | titlecase }}</span>
+      <span class="status-badge" [class]="'status-' + row.status">{{
+        row.status | titlecase
+      }}</span>
     </ng-template>
 
     <ng-template appCell="monthlyVolume" let-row>
-      {{ row.monthlyVolume | currency:'USD':'symbol':'1.0-0' }}
+      {{ row.monthlyVolume | currency: 'USD' : 'symbol' : '1.0-0' }}
     </ng-template>
 
     <ng-template appCell="updatedAt" let-row>
-      {{ row.updatedAt | date:'medium' }}
+      {{ row.updatedAt | date: 'medium' }}
     </ng-template>
 
     <ng-template appCell="assigneeName" let-row>
@@ -65,22 +92,26 @@
     </ng-template>
 
     <ng-template appCell="actions" let-row>
-      <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Actions for {{ row.businessName }}">
+      <button
+        mat-icon-button
+        [matMenuTriggerFor]="menu"
+        aria-label="Actions for {{ row.businessName }}"
+      >
         <mat-icon>more_vert</mat-icon>
       </button>
       <mat-menu #menu="matMenu">
-        <button mat-menu-item (click)="openDetails(row.id)">
+        <button mat-menu-item (click)="store.openDetails(row.id)">
           <mat-icon>visibility</mat-icon>
           <span>View Details</span>
         </button>
         @if (store.canReview() && row.status === 'submitted') {
-          <button mat-menu-item (click)="openDetails(row.id)">
+          <button mat-menu-item (click)="store.openDetails(row.id)">
             <mat-icon>rate_review</mat-icon>
             <span>Review</span>
           </button>
         }
         @if (store.canAssign() && row.status === 'submitted') {
-          <button mat-menu-item (click)="openDetails(row.id)">
+          <button mat-menu-item (click)="store.openDetails(row.id)">
             <mat-icon>assignment_ind</mat-icon>
             <span>Assign</span>
           </button>

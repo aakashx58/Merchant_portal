@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { AuditLogStore } from './audit-log.store';
-import { AuditLogService } from '../../../core/services/audit-log.service';
+import { AuditLogService } from '../services/audit-log.service';
 import { of } from 'rxjs';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
@@ -75,10 +75,7 @@ describe('AuditLogStore', () => {
     };
 
     TestBed.configureTestingModule({
-      providers: [
-        AuditLogStore,
-        { provide: AuditLogService, useValue: mockAuditLogService },
-      ],
+      providers: [AuditLogStore, { provide: AuditLogService, useValue: mockAuditLogService }],
     });
 
     store = TestBed.inject(AuditLogStore);
@@ -125,7 +122,7 @@ describe('AuditLogStore', () => {
 
   describe('patch', () => {
     it('should update query with partial values', () => {
-      store.patch({ action: 'create_user', page: 1 });
+      store.setAction('create_user');
       const query = store.query();
       expect(query.action).toBe('create_user');
       expect(query.page).toBe(1);
@@ -134,8 +131,26 @@ describe('AuditLogStore', () => {
 
     it('should reset page to 1 when not provided', () => {
       store.query.set({ ...store.query(), page: 5 });
-      store.patch({ action: 'login' });
+      store.setAction('login');
       expect(store.query().page).toBe(1);
+    });
+  });
+
+  describe('date filters', () => {
+    it('keeps ISO strings in the query and Date objects for the pickers', () => {
+      store.setStartDate(new Date(2026, 0, 15, 13, 30));
+      store.setEndDate(new Date(2026, 0, 20, 8, 0));
+      expect(store.query().startDate).toBe(new Date(2026, 0, 15).toISOString());
+      expect(store.query().endDate).toBe(new Date(2026, 0, 20, 23, 59, 59, 999).toISOString());
+      expect(store.startDate()).toEqual(new Date(2026, 0, 15));
+      expect(store.endDate()).toEqual(new Date(2026, 0, 20, 23, 59, 59, 999));
+    });
+
+    it('clears when the picker is emptied', () => {
+      store.setStartDate(new Date(2026, 0, 15));
+      store.setStartDate(null);
+      expect(store.query().startDate).toBe('');
+      expect(store.startDate()).toBeNull();
     });
   });
 
@@ -206,7 +221,7 @@ describe('AuditLogStore', () => {
     });
 
     it('should have correct actor list', () => {
-      expect(store.actors.map(a => a.name)).toEqual(['sales', 'reviewer', 'admin']);
+      expect(store.actors.map((a) => a.name)).toEqual(['sales', 'reviewer', 'admin']);
     });
 
     it('should have correct entity list', () => {

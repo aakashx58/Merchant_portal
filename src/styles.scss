@@ -19,3 +19,12 @@
 
 // 6. Custom Dialog Overrides
 @use 'styles/dialogs';
+
+// 7. Shared page header + filter bar
+@use 'styles/_page';
+
+// Required-field marker: <label class="required">
+label.required::after {
+  content: ' *';
+  color: var(--mat-sys-error);
+}

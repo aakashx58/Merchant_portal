@@ -71,6 +71,16 @@ export function handleApplicationsCollection(
     return { status: 201, body: mask(created), headers: etag(created) };
   }
 
+  if (path === '/applications/counts' && req.method === 'GET') {
+    if (!can(user, PermissionEnum.dashboard_counts)) return fail(403, 'Forbidden');
+    const counts = { draft: 0, submitted: 0, approved: 0, rejected: 0, total: 0 };
+    for (const application of applications.filter((a) => canSee(user, a))) {
+      counts[application.status]++;
+      counts.total++;
+    }
+    return ok(counts);
+  }
+
   if (path === '/applications/check-tax-id' && req.method === 'GET') {
     const taken = applications.some(
       (application) =>

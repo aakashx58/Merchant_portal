@@ -12,44 +12,40 @@
     </div>
   } @else if (user(); as user) {
     <div class="user-detail-content">
-      <mat-card class="user-info-card">
-        <mat-card-header>
-          <mat-card-title>{{ user.username }}</mat-card-title>
-          <mat-card-subtitle>{{ user.email }}</mat-card-subtitle>
-        </mat-card-header>
-        <mat-card-content>
-          <div class="user-fields">
-            <div class="user-field">
-              <label>Username</label>
-              <span>{{ user.username }}</span>
-            </div>
-            <div class="user-field">
-              <label>Email</label>
-              <span>{{ user.email }}</span>
-            </div>
-            <div class="user-field">
-              <label>Roles</label>
-              <div class="role-chips">
-                @for (role of user.roles; track role) {
-                  <span class="role-chip" [class]="'role-' + role.toLowerCase()">{{ role | titlecase }}</span>
-                }
-              </div>
-            </div>
-            <div class="user-field">
-              <label>Created</label>
-              <span>{{ user.createdAt | date:'medium' }}</span>
-            </div>
-            <div class="user-field">
-              <label>Updated</label>
-              <span>{{ user.updatedAt | date:'medium' }}</span>
-            </div>
-          </div>
-        </mat-card-content>
-      </mat-card>
-
-      <div class="dialog-actions" mat-dialog-actions align="end">
-        <button mat-button (click)="close()">Close</button>
+      <div class="profile">
+        <div class="avatar" aria-hidden="true">{{ user.username.charAt(0) }}</div>
+        <div>
+          <h2>{{ user.username }}</h2>
+          <p>{{ user.email }}</p>
+        </div>
       </div>
+
+      <dl class="details">
+        <div class="row">
+          <dt>Roles</dt>
+          <dd>
+            <div class="role-chips">
+              @for (role of user.roles; track role) {
+                <span class="role-chip" [class]="'role-' + role.toLowerCase()">{{
+                  role | titlecase
+                }}</span>
+              }
+            </div>
+          </dd>
+        </div>
+        <div class="row">
+          <dt>User ID</dt>
+          <dd>{{ user.id }}</dd>
+        </div>
+        <div class="row">
+          <dt>Created</dt>
+          <dd>{{ user.createdAt | date: 'medium' }}</dd>
+        </div>
+        <div class="row">
+          <dt>Last updated</dt>
+          <dd>{{ user.updatedAt | date: 'medium' }}</dd>
+        </div>
+      </dl>
     </div>
   }
 </app-dialog>

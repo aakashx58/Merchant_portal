@@ -1,3 +1,4 @@
+import { CellDefDirective } from '../../../shared/directives/cell-def.directive';
 import { DatePipe, TitleCasePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -19,6 +20,7 @@ import { AuditLogStore } from '../stores/audit-log.store';
 @Component({
   selector: 'app-audit-log',
   imports: [
+    CellDefDirective,
     DatePipe,
     TitleCasePipe,
     DataTableComponent,
@@ -42,20 +44,4 @@ import { AuditLogStore } from '../stores/audit-log.store';
 })
 export class AuditLogComponent {
   protected readonly store = inject(AuditLogStore);
-
-  protected setAction(action: string) {
-    this.store.setAction(action);
-  }
-
-  protected setSeverity(severity: string) {
-    this.store.setSeverity(severity);
-  }
-
-  protected onSort({ sort, dir }: { sort: string; dir: 'asc' | 'desc' | '' }) {
-    this.store.onSort({ sort, dir });
-  }
-
-  protected onPage({ page, pageSize }: { page: number; pageSize: number }) {
-    this.store.onPage({ page, pageSize });
-  }
 }

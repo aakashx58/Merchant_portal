@@ -1,7 +1,14 @@
-import { HttpClient, HttpContext, HttpContextToken, HttpErrorResponse, HttpHeaders, HttpParams, HttpRequest } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpContext,
+  HttpContextToken,
+  HttpErrorResponse,
+  HttpHeaders,
+  HttpParams,
+} from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { catchError, Observable, retry, throwError, timeout, timer } from 'rxjs';
-import { environment } from '../../../environments/environment';
+import { ENVIRONMENT } from '../config/environment.token';
 
 export interface RetryConfig {
   maxRetries: number;
@@ -40,45 +47,73 @@ export function skipErrorHandling() {
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   protected readonly http = inject(HttpClient);
-  protected readonly baseUrl = environment.apiBaseUrl;
+  protected readonly baseUrl = inject(ENVIRONMENT).apiBaseUrl;
 
-  get<T>(endpoint: string, options: {
-    params?: HttpParams | Record<string, string | number | boolean | ReadonlyArray<string | number | boolean>>;
-    headers?: HttpHeaders | Record<string, string>;
-    context?: HttpContext;
-  } = {}): Observable<T> {
+  protected get<T>(
+    endpoint: string,
+    options: {
+      params?:
+        | HttpParams
+        | Record<string, string | number | boolean | readonly (string | number | boolean)[]>;
+      headers?: HttpHeaders | Record<string, string>;
+      context?: HttpContext;
+    } = {},
+  ): Observable<T> {
     return this.request<T>('GET', endpoint, undefined, options);
   }
 
-  post<T>(endpoint: string, body: unknown, options: {
-    params?: HttpParams | Record<string, string | number | boolean | ReadonlyArray<string | number | boolean>>;
-    headers?: HttpHeaders | Record<string, string>;
-    context?: HttpContext;
-  } = {}): Observable<T> {
+  protected post<T>(
+    endpoint: string,
+    body: unknown,
+    options: {
+      params?:
+        | HttpParams
+        | Record<string, string | number | boolean | readonly (string | number | boolean)[]>;
+      headers?: HttpHeaders | Record<string, string>;
+      context?: HttpContext;
+    } = {},
+  ): Observable<T> {
     return this.request<T>('POST', endpoint, body, options);
   }
 
-  protected put<T>(endpoint: string, body: unknown, options: {
-    params?: HttpParams | Record<string, string | number | boolean | ReadonlyArray<string | number | boolean>>;
-    headers?: HttpHeaders | Record<string, string>;
-    context?: HttpContext;
-  } = {}): Observable<T> {
+  protected put<T>(
+    endpoint: string,
+    body: unknown,
+    options: {
+      params?:
+        | HttpParams
+        | Record<string, string | number | boolean | readonly (string | number | boolean)[]>;
+      headers?: HttpHeaders | Record<string, string>;
+      context?: HttpContext;
+    } = {},
+  ): Observable<T> {
     return this.request<T>('PUT', endpoint, body, options);
   }
 
-  protected patch<T>(endpoint: string, body: unknown, options: {
-    params?: HttpParams | Record<string, string | number | boolean | ReadonlyArray<string | number | boolean>>;
-    headers?: HttpHeaders | Record<string, string>;
-    context?: HttpContext;
-  } = {}): Observable<T> {
+  protected patch<T>(
+    endpoint: string,
+    body: unknown,
+    options: {
+      params?:
+        | HttpParams
+        | Record<string, string | number | boolean | readonly (string | number | boolean)[]>;
+      headers?: HttpHeaders | Record<string, string>;
+      context?: HttpContext;
+    } = {},
+  ): Observable<T> {
     return this.request<T>('PATCH', endpoint, body, options);
   }
 
-  protected delete<T>(endpoint: string, options: {
-    params?: HttpParams | Record<string, string | number | boolean | ReadonlyArray<string | number | boolean>>;
-    headers?: HttpHeaders | Record<string, string>;
-    context?: HttpContext;
-  } = {}): Observable<T> {
+  protected delete<T>(
+    endpoint: string,
+    options: {
+      params?:
+        | HttpParams
+        | Record<string, string | number | boolean | readonly (string | number | boolean)[]>;
+      headers?: HttpHeaders | Record<string, string>;
+      context?: HttpContext;
+    } = {},
+  ): Observable<T> {
     return this.request<T>('DELETE', endpoint, undefined, options);
   }
 
@@ -87,15 +122,18 @@ export class ApiService {
     endpoint: string,
     body: unknown | undefined,
     options: {
-      params?: HttpParams | Record<string, string | number | boolean | ReadonlyArray<string | number | boolean>>;
+      params?:
+        | HttpParams
+        | Record<string, string | number | boolean | readonly (string | number | boolean)[]>;
       headers?: HttpHeaders | Record<string, string>;
       context?: HttpContext;
-    } = {}
+    } = {},
   ): Observable<T> {
     const { params, headers, context = new HttpContext() } = options;
 
-    let httpParams = params instanceof HttpParams ? params : new HttpParams({ fromObject: params as any });
-    let httpHeaders = headers instanceof HttpHeaders ? headers : new HttpHeaders(headers);
+    const httpParams =
+      params instanceof HttpParams ? params : new HttpParams({ fromObject: params ?? {} });
+    const httpHeaders = headers instanceof HttpHeaders ? headers : new HttpHeaders(headers);
 
     const url = `${this.baseUrl}${endpoint}`;
 
@@ -125,12 +163,15 @@ export class ApiService {
         retry({
           count: retryConfig.maxRetries,
           delay: (error, retryCount) => {
-            if (error instanceof HttpErrorResponse && retryConfig.retryableStatuses.includes(error.status)) {
+            if (
+              error instanceof HttpErrorResponse &&
+              retryConfig.retryableStatuses.includes(error.status)
+            ) {
               return timer(retryConfig.retryDelayMs * retryCount);
             }
             return throwError(() => error);
           },
-        })
+        }),
       );
     }
 
@@ -138,19 +179,24 @@ export class ApiService {
       observable = observable.pipe(
         catchError((error: HttpErrorResponse) => {
           return throwError(() => error);
-        })
+        }),
       );
     }
 
     return observable;
   }
 
-  protected buildParams(params: Record<string, string | number | boolean | ReadonlyArray<string | number | boolean> | undefined>): HttpParams {
+  protected buildParams(
+    params: Record<
+      string,
+      string | number | boolean | readonly (string | number | boolean)[] | undefined
+    >,
+  ): HttpParams {
     let httpParams = new HttpParams();
     for (const [key, value] of Object.entries(params)) {
       if (value !== undefined && value !== null && value !== '') {
         if (Array.isArray(value)) {
-          value.forEach(v => httpParams = httpParams.append(key, String(v)));
+          value.forEach((v) => (httpParams = httpParams.append(key, String(v))));
         } else {
           httpParams = httpParams.set(key, String(value));
         }

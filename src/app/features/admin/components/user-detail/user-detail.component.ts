@@ -1,24 +1,20 @@
-import { Component, inject, signal, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CommonModule } from '@angular/common';
 import { DatePipe, TitleCasePipe } from '@angular/common';
+import { DialogComponent } from '../../../../shared/components/dialog/dialog.component';
 import { User } from '../../../../core/models/user.model';
-import { UserService } from '../../../../core/services/user.service';
-
-interface UserDetailData {
-  id: string;
-}
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-user-detail',
   imports: [
+    DialogComponent,
     MatButtonModule,
-    MatCardModule,
     MatDividerModule,
     MatIconModule,
     MatDialogModule,
@@ -27,7 +23,6 @@ interface UserDetailData {
     DatePipe,
     TitleCasePipe,
   ],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './user-detail.component.html',
   styleUrl: './user-detail.component.scss',
 })
@@ -48,7 +43,7 @@ export class UserDetailComponent {
     try {
       const user = await this.userService.getById(this.data.id).toPromise();
       this.user.set(user ?? null);
-    } catch (err) {
+    } catch {
       this.error.set('Failed to load user details');
     } finally {
       this.loading.set(false);

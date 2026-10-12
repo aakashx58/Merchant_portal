@@ -82,6 +82,28 @@
           <span matListItemTitle>New application</span>
         </a>
       }
+      @if (auth.can(permission.application_assign)) {
+        <a
+          mat-list-item
+          routerLink="/admin/assignments"
+          routerLinkActive="active"
+          ariaCurrentWhenActive="page"
+        >
+          <mat-icon matListItemIcon>assignment_ind</mat-icon>
+          <span matListItemTitle>Assignments</span>
+        </a>
+      }
+      @if (auth.can(permission.user_manage)) {
+        <a
+          mat-list-item
+          routerLink="/admin/users"
+          routerLinkActive="active"
+          ariaCurrentWhenActive="page"
+        >
+          <mat-icon matListItemIcon>group</mat-icon>
+          <span matListItemTitle>Users</span>
+        </a>
+      }
       @if (auth.can(permission.dashboard_counts)) {
         <a
           mat-list-item

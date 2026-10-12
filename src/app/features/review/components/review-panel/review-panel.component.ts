@@ -1,6 +1,7 @@
 import { TitleCasePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, input, output, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -8,9 +9,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
-import { finalize } from 'rxjs';
+import { finalize, map, merge } from 'rxjs';
 import { RiskLevel } from '../../../../core/models/application.model';
-import { ApplicationReviewService } from '../../../../core/services/application-review.service';
+import { ApplicationReviewService } from '../../services/application-review.service';
 import { ToastService } from '../../../../core/services/toast.service';
 
 type Decision = 'approved' | 'rejected';
@@ -50,14 +51,27 @@ export class ReviewPanelComponent {
 
   private attempt: { decision: Decision; risk: RiskLevel; note: string; key: string } | null = null;
 
-  protected decide(decision: Decision) {
-    if (this.submitting()) return;
-    if (this.note.invalid || this.risk.invalid) {
-      this.note.markAsTouched();
-      this.risk.markAsTouched();
-      return;
-    }
+  /** Approve / Reject stay disabled until both a note and a risk level are given. */
+  protected readonly canDecide = toSignal(
+    merge(this.note.statusChanges, this.risk.statusChanges).pipe(
+      map(() => this.note.valid && this.risk.valid),
+    ),
+    { initialValue: false },
+  );
+  /** The decision waiting for an explicit confirmation, shown inline in the card. */
+  protected readonly pending = signal<Decision | null>(null);
 
+  protected ask(decision: Decision) {
+    if (this.submitting() || !this.canDecide()) return;
+    this.pending.set(decision);
+  }
+
+  protected cancel() {
+    this.pending.set(null);
+  }
+
+  protected submit(decision: Decision) {
+    if (this.submitting() || !this.canDecide()) return;
     const note = this.note.value.trim();
     const risk = this.risk.value!;
     // Retrying the same decision reuses the key, so the server applies it only once.
@@ -76,11 +90,14 @@ export class ReviewPanelComponent {
       .pipe(finalize(() => this.submitting.set(false)))
       .subscribe({
         next: () => {
+          this.pending.set(null);
           this.toast.show(`Application ${decision}`);
           this.decided.emit();
         },
-        error: (err: HttpErrorResponse) =>
-          this.error.set(err.error?.message ?? 'Could not save your decision. Please try again.'),
+        error: (err: HttpErrorResponse) => {
+          this.pending.set(null);
+          this.error.set(err.error?.message ?? 'Could not save your decision. Please try again.');
+        },
       });
   }
 }

@@ -5,7 +5,6 @@ import {
   inject,
   OnDestroy,
   OnInit,
-  CUSTOM_ELEMENTS_SCHEMA,
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -36,7 +35,6 @@ import { ReviewStepComponent } from './steps/review-step/review-step.component';
     DocumentsStepComponent,
     ReviewStepComponent,
   ],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './wizard.component.html',
   styleUrl: './wizard.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

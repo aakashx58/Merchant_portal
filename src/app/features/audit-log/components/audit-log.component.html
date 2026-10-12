@@ -1,24 +1,33 @@
-<div class="audit-log-container">
+<div class="page audit-log-container">
   <header class="page-header">
     <h1>Audit Log</h1>
     <p class="page-subtitle">System audit trail and activity monitoring</p>
   </header>
 
-  <section class="filters-section">
-    <mat-form-field appearance="outline" class="search-field">
-      <mat-label>Search</mat-label>
-      <input matInput [formControl]="store.search" placeholder="Search by actor, action, entity..." />
-      <mat-icon matPrefix>search</mat-icon>
+  <section class="filter-bar">
+    <label class="search-box">
+      <mat-icon aria-hidden="true">search</mat-icon>
+      <input
+        type="search"
+        [formControl]="store.search"
+        placeholder="Search by actor, action, entity..."
+        aria-label="Search"
+      />
       @if (store.search.value) {
-        <button mat-icon-button matSuffix aria-label="Clear search" (click)="store.search.setValue('')">
+        <button
+          type="button"
+          class="clear"
+          aria-label="Clear search"
+          (click)="store.search.setValue('')"
+        >
           <mat-icon>close</mat-icon>
         </button>
       }
-    </mat-form-field>
+    </label>
 
-    <mat-form-field appearance="outline" class="action-field">
+    <mat-form-field appearance="outline" class="filter-select" subscriptSizing="dynamic">
       <mat-label>Action</mat-label>
-      <mat-select [value]="store.query().action" (selectionChange)="setAction($event.value)">
+      <mat-select [value]="store.query().action" (selectionChange)="store.setAction($event.value)">
         <mat-option value="">All Actions</mat-option>
         @for (action of store.actions; track action) {
           <mat-option [value]="action">{{ action | titlecase }}</mat-option>
@@ -26,9 +35,12 @@
       </mat-select>
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="severity-field">
+    <mat-form-field appearance="outline" class="filter-select" subscriptSizing="dynamic">
       <mat-label>Severity</mat-label>
-      <mat-select [value]="store.query().severity" (selectionChange)="setSeverity($event.value)">
+      <mat-select
+        [value]="store.query().severity"
+        (selectionChange)="store.setSeverity($event.value)"
+      >
         <mat-option value="">All Severities</mat-option>
         @for (severity of store.severities; track severity) {
           <mat-option [value]="severity">{{ severity | titlecase }}</mat-option>
@@ -36,16 +48,26 @@
       </mat-select>
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="date-field">
+    <mat-form-field appearance="outline" class="filter-select" subscriptSizing="dynamic">
       <mat-label>From</mat-label>
-      <input matInput [matDatepicker]="startPicker" [value]="store.query().startDate" (dateChange)="store.patch({ startDate: $event.value })" />
+      <input
+        matInput
+        [matDatepicker]="startPicker"
+        [value]="store.startDate()"
+        (dateChange)="store.setStartDate($event.value)"
+      />
       <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
       <mat-datepicker #startPicker></mat-datepicker>
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="date-field">
+    <mat-form-field appearance="outline" class="filter-select" subscriptSizing="dynamic">
       <mat-label>To</mat-label>
-      <input matInput [matDatepicker]="endPicker" [value]="store.query().endDate" (dateChange)="store.patch({ endDate: $event.value })" />
+      <input
+        matInput
+        [matDatepicker]="endPicker"
+        [value]="store.endDate()"
+        (dateChange)="store.setEndDate($event.value)"
+      />
       <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
       <mat-datepicker #endPicker></mat-datepicker>
     </mat-form-field>
@@ -63,38 +85,44 @@
     [error]="!!store.error()"
     [emptyMessage]="'No audit log entries found.'"
     [errorMessage]="'Failed to load audit log.'"
-    (pageChange)="onPage($event)"
-    (sortChange)="onSort($event)"
+    (pageChange)="store.onPage($event)"
+    (sortChange)="store.onSort($event)"
     (retry)="store.reload()"
   >
-    <ng-template appCellDef="at" let-row="row">
-      {{ row.at | date:'medium' }}
+    <ng-template appCell="at" let-row>
+      {{ row.at | date: 'medium' }}
     </ng-template>
 
-    <ng-template appCellDef="actorName" let-row="row">
+    <ng-template appCell="actorName" let-row>
       <div class="actor-info">
         <span class="actor-name">{{ row.actorName }}</span>
-        <span class="actor-role" [class]="'role-' + row.actorRole.toLowerCase()">{{ row.actorRole | titlecase }}</span>
+        <span class="actor-role" [class]="'role-' + row.actorRole.toLowerCase()">{{
+          row.actorRole | titlecase
+        }}</span>
       </div>
     </ng-template>
 
-    <ng-template appCellDef="action" let-row="row">
-      <span class="action-badge" [class]="'action-' + row.action">{{ row.action | titlecase }}</span>
+    <ng-template appCell="action" let-row>
+      <span class="action-badge" [class]="'action-' + row.action">{{
+        row.action | titlecase
+      }}</span>
     </ng-template>
 
-    <ng-template appCellDef="severity" let-row="row">
-      <span class="severity-badge" [class]="'severity-' + row.severity">{{ row.severity | titlecase }}</span>
+    <ng-template appCell="severity" let-row>
+      <span class="severity-badge" [class]="'severity-' + row.severity">{{
+        row.severity | titlecase
+      }}</span>
     </ng-template>
 
-    <ng-template appCellDef="entityType" let-row="row">
+    <ng-template appCell="entityType" let-row>
       {{ row.entityType | titlecase }}
     </ng-template>
 
-    <ng-template appCellDef="entityName" let-row="row">
+    <ng-template appCell="entityName" let-row>
       {{ row.entityName || '-' }}
     </ng-template>
 
-    <ng-template appCellDef="ipAddress" let-row="row">
+    <ng-template appCell="ipAddress" let-row>
       {{ row.ipAddress || '-' }}
     </ng-template>
   </app-data-table>

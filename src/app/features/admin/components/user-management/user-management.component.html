@@ -1,22 +1,31 @@
-<div class="user-management-container">
+<div class="page user-management-container">
   <header class="page-header">
-    <h1>User Management</h1>
+    <h1>Users</h1>
     <p class="page-subtitle">Manage user accounts and roles</p>
   </header>
 
-  <section class="filters-section">
-    <mat-form-field appearance="outline" class="search-field">
-      <mat-label>Search</mat-label>
-      <input matInput [formControl]="store.search" placeholder="Search by username or email" />
-      <mat-icon matPrefix>search</mat-icon>
+  <section class="filter-bar">
+    <label class="search-box">
+      <mat-icon aria-hidden="true">search</mat-icon>
+      <input
+        type="search"
+        [formControl]="store.search"
+        placeholder="Search by username or email"
+        aria-label="Search"
+      />
       @if (store.search.value) {
-        <button mat-icon-button matSuffix aria-label="Clear search" (click)="store.search.setValue('')">
+        <button
+          type="button"
+          class="clear"
+          aria-label="Clear search"
+          (click)="store.search.setValue('')"
+        >
           <mat-icon>close</mat-icon>
         </button>
       }
-    </mat-form-field>
+    </label>
 
-    <mat-form-field appearance="outline" class="role-field">
+    <mat-form-field appearance="outline" class="filter-select" subscriptSizing="dynamic">
       <mat-label>Role Filter</mat-label>
       <mat-select [value]="store.query().role" (selectionChange)="store.setRole($event.value)">
         <mat-option value="">All Roles</mat-option>
@@ -39,54 +48,65 @@
     [error]="!!store.error()"
     [emptyMessage]="'No users found.'"
     [errorMessage]="'Failed to load users.'"
-    (pageChange)="onPage($event)"
-    (sortChange)="onSort($event)"
+    (pageChange)="store.onPage($event)"
+    (sortChange)="store.onSort($event)"
     (retry)="store.reload()"
   >
-    <ng-template appCellDef="username" let-row="row">
+    <ng-template appCell="username" let-row>
       <strong>{{ row.username }}</strong>
     </ng-template>
 
-    <ng-template appCellDef="email" let-row="row">
+    <ng-template appCell="email" let-row>
       {{ row.email }}
     </ng-template>
 
-    <ng-template appCellDef="roles" let-row="row">
+    <ng-template appCell="roles" let-row>
       <div class="role-chips">
         @for (role of row.roles; track role) {
-          <span class="role-chip" [class]="'role-' + role.toLowerCase()">{{ role | titlecase }}</span>
+          <span class="role-chip" [class]="'role-' + role.toLowerCase()">{{
+            role | titlecase
+          }}</span>
         }
       </div>
     </ng-template>
 
-    <ng-template appCellDef="createdAt" let-row="row">
-      {{ row.createdAt | date:'medium' }}
+    <ng-template appCell="createdAt" let-row>
+      {{ row.createdAt | date: 'medium' }}
     </ng-template>
 
-    <ng-template appCellDef="actions" let-row="row">
-      <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Actions for {{ row.username }}">
+    <ng-template appCell="actions" let-row>
+      <button
+        mat-icon-button
+        [matMenuTriggerFor]="menu"
+        aria-label="Actions for {{ row.username }}"
+      >
         <mat-icon>more_vert</mat-icon>
       </button>
       <mat-menu #menu="matMenu">
-        <button mat-menu-item (click)="openDetails(row.id)">
+        <button mat-menu-item (click)="store.openDetails(row.id)">
           <mat-icon>visibility</mat-icon>
           <span>View Details</span>
         </button>
         <hr class="menu-divider" />
         @for (role of ['sales', 'reviewer', 'admin']; track role) {
-          <button mat-menu-item (click)="toggleRole(row.id, role)" [disabled]="row.roles.includes(role)">
-            <mat-icon [class]="row.roles.includes(role) ? 'checked' : ''">{{ role === 'admin' ? 'admin_panel_settings' : role === 'reviewer' ? 'rate_review' : 'shopping_cart' }}</mat-icon>
+          <button
+            mat-menu-item
+            (click)="store.toggleRole(row.id, role)"
+            [disabled]="row.roles.includes(role)"
+          >
+            <mat-icon [class]="row.roles.includes(role) ? 'checked' : ''">{{
+              role === 'admin'
+                ? 'admin_panel_settings'
+                : role === 'reviewer'
+                  ? 'rate_review'
+                  : 'shopping_cart'
+            }}</mat-icon>
             <span>Make {{ role | titlecase }}</span>
             @if (row.roles.includes(role)) {
               <span class="current-badge">Current</span>
             }
           </button>
         }
-        <hr class="menu-divider" />
-        <button mat-menu-item (click)="openDetails(row.id)" class="delete-action">
-          <mat-icon>delete</mat-icon>
-          <span>Delete User</span>
-        </button>
       </mat-menu>
     </ng-template>
   </app-data-table>

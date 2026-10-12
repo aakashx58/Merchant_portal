@@ -8,17 +8,46 @@ describe('AuditLogComponent', () => {
   let component: AuditLogComponent;
   let fixture: ReturnType<typeof TestBed.createComponent<AuditLogComponent>>;
   let mockStore: {
-    entries: () => readonly { id: string; at: string; actorId: string; actorName: string; actorRole: string; action: string; severity: string; entityType: string; entityId: string; entityName: string; details: Record<string, unknown>; ipAddress: string; userAgent: string }[];
+    entries: () => readonly {
+      id: string;
+      at: string;
+      actorId: string;
+      actorName: string;
+      actorRole: string;
+      action: string;
+      severity: string;
+      entityType: string;
+      entityId: string;
+      entityName: string;
+      details: Record<string, unknown>;
+      ipAddress: string;
+      userAgent: string;
+    }[];
     total: () => number;
     loading: () => boolean;
     error: () => string | null;
-    query: () => { page: number; pageSize: number; q: string; action: string; actorId: string; severity: string; startDate: string; endDate: string; sort: string; dir: string };
+    query: () => {
+      page: number;
+      pageSize: number;
+      q: string;
+      action: string;
+      actorId: string;
+      severity: string;
+      startDate: string;
+      endDate: string;
+      sort: string;
+      dir: string;
+    };
     actions: readonly string[];
     severities: readonly string[];
     actors: readonly { id: string; name: string; role: string }[];
     entities: readonly string[];
     columns: () => readonly { key: string; header: string; sortable?: boolean }[];
     canViewAuditLog: () => boolean;
+    startDate: () => Date | null;
+    endDate: () => Date | null;
+    setStartDate: ReturnType<typeof vi.fn>;
+    setEndDate: ReturnType<typeof vi.fn>;
     search: FormControl;
     load: ReturnType<typeof vi.fn>;
     reload: ReturnType<typeof vi.fn>;
@@ -79,10 +108,20 @@ describe('AuditLogComponent', () => {
       error: () => null,
       query: () => mockQuery,
       actions: [
-        'login', 'logout', 'create_application', 'update_application',
-        'submit_application', 'assign_application', 'review_application',
-        'reveal_sensitive', 'create_user', 'update_user', 'delete_user',
-        'change_role', 'view_application', 'export_data'
+        'login',
+        'logout',
+        'create_application',
+        'update_application',
+        'submit_application',
+        'assign_application',
+        'review_application',
+        'reveal_sensitive',
+        'create_user',
+        'update_user',
+        'delete_user',
+        'change_role',
+        'view_application',
+        'export_data',
       ] as const,
       severities: ['info', 'warning', 'error'] as const,
       actors: [
@@ -93,6 +132,10 @@ describe('AuditLogComponent', () => {
       entities: ['application', 'user', 'audit_log'] as const,
       columns: () => mockColumns,
       canViewAuditLog: () => true,
+      startDate: () => null,
+      endDate: () => null,
+      setStartDate: vi.fn(),
+      setEndDate: vi.fn(),
       search: new FormControl(''),
       load: vi.fn(),
       reload: vi.fn(),
@@ -105,9 +148,7 @@ describe('AuditLogComponent', () => {
 
     TestBed.configureTestingModule({
       imports: [AuditLogComponent, ReactiveFormsModule],
-      providers: [
-        { provide: AuditLogStore, useValue: mockStore },
-      ],
+      providers: [{ provide: AuditLogStore, useValue: mockStore }],
     });
 
     fixture = TestBed.createComponent(AuditLogComponent);
@@ -123,29 +164,5 @@ describe('AuditLogComponent', () => {
     // Access protected store via fixture using unknown cast
     const instance = fixture.componentInstance as unknown as { store: typeof mockStore };
     expect(instance.store).toBe(mockStore);
-  });
-
-  it('should call store.setAction when setAction is called', () => {
-    const instance = fixture.componentInstance as unknown as { setAction: (action: string) => void };
-    instance.setAction('create_user');
-    expect(mockStore.setAction).toHaveBeenCalledWith('create_user');
-  });
-
-  it('should call store.setSeverity when setSeverity is called', () => {
-    const instance = fixture.componentInstance as unknown as { setSeverity: (severity: string) => void };
-    instance.setSeverity('warning');
-    expect(mockStore.setSeverity).toHaveBeenCalledWith('warning');
-  });
-
-  it('should call store.onSort when onSort is called', () => {
-    const instance = fixture.componentInstance as unknown as { onSort: (params: { sort: string; dir: 'asc' | 'desc' | '' }) => void };
-    instance.onSort({ sort: 'at', dir: 'asc' });
-    expect(mockStore.onSort).toHaveBeenCalledWith({ sort: 'at', dir: 'asc' });
-  });
-
-  it('should call store.onPage when onPage is called', () => {
-    const instance = fixture.componentInstance as unknown as { onPage: (params: { page: number; pageSize: number }) => void };
-    instance.onPage({ page: 2, pageSize: 20 });
-    expect(mockStore.onPage).toHaveBeenCalledWith({ page: 2, pageSize: 20 });
   });
 });

@@ -1,18 +1,23 @@
 <form [formGroup]="formGroup()" class="step-form">
   <div class="field">
-    <label for="taxId">Tax ID (XXX-XX-XXXX)</label>
+    <label for="taxId" class="required">Tax ID (XXX-XX-XXXX)</label>
     <input
       id="taxId"
+      aria-required="true"
       type="text"
       formControlName="taxId"
       placeholder="123-45-6789"
       autocomplete="off"
       class="field-input"
     />
-    @if (formGroup().controls['taxId'].hasError('required') && formGroup().controls['taxId'].touched) {
+    @if (
+      formGroup().controls['taxId'].hasError('required') && formGroup().controls['taxId'].touched
+    ) {
       <span class="field-error">Tax ID is required</span>
     }
-    @if (formGroup().controls['taxId'].hasError('pattern') && formGroup().controls['taxId'].touched) {
+    @if (
+      formGroup().controls['taxId'].hasError('pattern') && formGroup().controls['taxId'].touched
+    ) {
       <span class="field-error">Format must be XXX-XX-XXXX</span>
     }
     @if (formGroup().controls['taxId'].hasError('taxIdTaken')) {
@@ -24,35 +29,49 @@
   </div>
 
   <div class="field">
-    <label for="accountNumber">Account Number (8-17 digits)</label>
+    <label for="accountNumber" class="required">Account Number (8-17 digits)</label>
     <input
       id="accountNumber"
+      aria-required="true"
       type="text"
       formControlName="accountNumber"
       autocomplete="off"
       class="field-input"
     />
-    @if (formGroup().controls['accountNumber'].hasError('required') && formGroup().controls['accountNumber'].touched) {
+    @if (
+      formGroup().controls['accountNumber'].hasError('required') &&
+      formGroup().controls['accountNumber'].touched
+    ) {
       <span class="field-error">Account number is required</span>
     }
-    @if (formGroup().controls['accountNumber'].hasError('pattern') && formGroup().controls['accountNumber'].touched) {
+    @if (
+      formGroup().controls['accountNumber'].hasError('pattern') &&
+      formGroup().controls['accountNumber'].touched
+    ) {
       <span class="field-error">Must be 8-17 digits</span>
     }
   </div>
 
   <div class="field">
-    <label for="monthlyVolume">Monthly Volume (USD)</label>
+    <label for="monthlyVolume" class="required">Monthly Volume (USD)</label>
     <input
       id="monthlyVolume"
+      aria-required="true"
       type="number"
       formControlName="monthlyVolume"
       autocomplete="off"
       class="field-input"
     />
-    @if (formGroup().controls['monthlyVolume'].hasError('required') && formGroup().controls['monthlyVolume'].touched) {
+    @if (
+      formGroup().controls['monthlyVolume'].hasError('required') &&
+      formGroup().controls['monthlyVolume'].touched
+    ) {
       <span class="field-error">Monthly volume is required</span>
     }
-    @if (formGroup().controls['monthlyVolume'].hasError('min') && formGroup().controls['monthlyVolume'].touched) {
+    @if (
+      formGroup().controls['monthlyVolume'].hasError('min') &&
+      formGroup().controls['monthlyVolume'].touched
+    ) {
       <span class="field-error">Must be at least 1</span>
     }
   </div>

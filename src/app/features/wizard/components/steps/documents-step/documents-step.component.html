@@ -1,8 +1,9 @@
 <form [formGroup]="formGroup()" class="step-form">
   <div class="field">
-    <label for="documentType">Document Type</label>
+    <label for="documentType" class="required">Document Type</label>
     <select
       id="documentType"
+      aria-required="true"
       formControlName="documentType"
       class="field-input"
     >
@@ -15,7 +16,11 @@
   <div class="file-upload">
     <label class="file-label" for="document">
       <mat-icon>cloud_upload</mat-icon>
-      <span>{{ formGroup().controls['document'].value ? formGroup().controls['document'].value.name : 'Choose file (PDF, PNG, JPG, max 5MB)' }}</span>
+      <span>{{
+        formGroup().controls['document'].value
+          ? formGroup().controls['document'].value.name
+          : 'Choose file (PDF, PNG, JPG, max 5MB) *'
+      }}</span>
     </label>
     <input
       type="file"
@@ -36,7 +41,13 @@
       Upload
     </button>
     @if (formGroup().controls['document'].value) {
-      <button type="button" mat-icon-button color="warn" (click)="removeFile()" aria-label="Remove file">
+      <button
+        type="button"
+        mat-icon-button
+        color="warn"
+        (click)="removeFile()"
+        aria-label="Remove file"
+      >
         <mat-icon>close</mat-icon>
       </button>
     }
@@ -46,7 +57,10 @@
     @if (formGroup().controls['document'].hasError('fileSize')) {
       <span class="field-error">File size must not exceed 5MB</span>
     }
-    @if (formGroup().controls['document'].hasError('required') && formGroup().controls['document'].touched) {
+    @if (
+      formGroup().controls['document'].hasError('required') &&
+      formGroup().controls['document'].touched
+    ) {
       <span class="field-error">Document is required</span>
     }
   </div>

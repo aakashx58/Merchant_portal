@@ -36,27 +36,49 @@
         <div class="error-message" role="alert">{{ error() }}</div>
       }
 
-      <div class="decision-buttons">
-        <button
-          mat-flat-button
-          color="primary"
-          (click)="decide('approved')"
-          [disabled]="submitting()"
-        >
-          @if (submitting()) {
-            <mat-spinner diameter="20"></mat-spinner>
-          } @else {
+      @if (pending(); as decision) {
+        <div class="confirm-bar" role="alertdialog" aria-labelledby="confirm-text">
+          <p id="confirm-text">
+            <strong>{{
+              decision === 'approved' ? 'Approve this application?' : 'Reject this application?'
+            }}</strong>
+            This cannot be undone.
+          </p>
+          <div class="decision-buttons">
+            <button mat-stroked-button type="button" (click)="cancel()" [disabled]="submitting()">
+              Cancel
+            </button>
+            <button
+              mat-flat-button
+              type="button"
+              [class.btn-danger]="decision === 'rejected'"
+              (click)="submit(decision)"
+              [disabled]="submitting()"
+            >
+              @if (submitting()) {
+                <mat-spinner diameter="20"></mat-spinner>
+              } @else {
+                {{ decision === 'approved' ? 'Yes, approve' : 'Yes, reject' }}
+              }
+            </button>
+          </div>
+        </div>
+      } @else {
+        <div class="decision-buttons">
+          <button mat-flat-button type="button" (click)="ask('approved')" [disabled]="!canDecide()">
             Approve
-          }
-        </button>
-        <button mat-flat-button color="warn" (click)="decide('rejected')" [disabled]="submitting()">
-          @if (submitting()) {
-            <mat-spinner diameter="20"></mat-spinner>
-          } @else {
+          </button>
+          <button
+            mat-flat-button
+            type="button"
+            class="btn-danger"
+            (click)="ask('rejected')"
+            [disabled]="!canDecide()"
+          >
             Reject
-          }
-        </button>
-      </div>
+          </button>
+        </div>
+      }
     </form>
   </mat-card-content>
 </mat-card>

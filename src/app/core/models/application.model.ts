@@ -1,4 +1,6 @@
 export type ApplicationStatus = 'draft' | 'submitted' | 'approved' | 'rejected';
+
+export type StatusCounts = Record<ApplicationStatus, number> & { total: number };
 export type RiskLevel = 'low' | 'medium' | 'high';
 export type SensitiveField = 'taxId' | 'accountNumber';
 
@@ -40,20 +42,20 @@ export interface Page<T> {
   pageSize: number;
 }
 
-export type AuditAction = 
-  | 'login' 
-  | 'logout' 
-  | 'create_application' 
-  | 'update_application' 
-  | 'submit_application' 
-  | 'assign_application' 
-  | 'review_application' 
-  | 'reveal_sensitive' 
-  | 'create_user' 
-  | 'update_user' 
-  | 'delete_user' 
+export type AuditAction =
+  | 'login'
+  | 'logout'
+  | 'create_application'
+  | 'update_application'
+  | 'submit_application'
+  | 'assign_application'
+  | 'review_application'
+  | 'reveal_sensitive'
+  | 'create_user'
+  | 'update_user'
+  | 'delete_user'
   | 'change_role'
-  | 'view_application' 
+  | 'view_application'
   | 'export_data';
 
 export type AuditSeverity = 'info' | 'warning' | 'error';

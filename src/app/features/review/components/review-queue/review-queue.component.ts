@@ -1,3 +1,4 @@
+import { CellDefDirective } from '../../../../shared/directives/cell-def.directive';
 import { CurrencyPipe, DatePipe, TitleCasePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -15,6 +16,7 @@ import { ReviewQueueStore } from '../../stores';
 @Component({
   selector: 'app-review-queue',
   imports: [
+    CellDefDirective,
     CurrencyPipe,
     DataTableComponent,
     DatePipe,
@@ -35,24 +37,4 @@ import { ReviewQueueStore } from '../../stores';
 })
 export class ReviewQueueComponent {
   protected readonly store = inject(ReviewQueueStore);
-
-  protected setStatus(status: string) {
-    this.store.setStatus(status as any);
-  }
-
-  protected onSort({ sort, dir }: { sort: string; dir: 'asc' | 'desc' | '' }) {
-    this.store.onSort({ sort, dir });
-  }
-
-  protected onPage({ page, pageSize }: { page: number; pageSize: number }) {
-    this.store.onPage({ page, pageSize });
-  }
-
-  protected async openDetails(id: string) {
-    await this.store.openDetails(id);
-  }
-
-  protected async startReview(id: string) {
-    await this.store.startReview(id);
-  }
 }

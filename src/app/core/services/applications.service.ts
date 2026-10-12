@@ -1,9 +1,9 @@
 import { HttpParams } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { handledInline } from '../interceptors/http-error.interceptor';
-import { Application, ApplicationStatus, Page } from '../models/application.model';
-import { ApiService } from '../api/api-service';
+import { Application, ApplicationStatus, Page, StatusCounts } from '../models/application.model';
+import { ApiService } from '../api/api.service';
 
 export interface ApplicationQuery {
   page: number;
@@ -37,6 +37,10 @@ export class ApplicationsService extends ApiService {
     if (query.status) params = params.set('status', query.status);
     if (query.q) params = params.set('q', query.q);
     return this.get<Page<Application>>('/applications', { params, context: handledInline() });
+  }
+
+  counts(): Observable<StatusCounts> {
+    return this.get<StatusCounts>('/applications/counts', { context: handledInline() });
   }
 
   getById(id: string): Observable<Application> {

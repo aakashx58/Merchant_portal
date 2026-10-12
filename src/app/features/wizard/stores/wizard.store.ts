@@ -1,10 +1,27 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
-import { merge, debounceTime, distinctUntilChanged, startWith, skip, concatMap, takeUntil, map, Observable, of, EMPTY, catchError, Subject, switchMap, tap } from 'rxjs';
-import { ApplicationDraftService } from '../../../core/services/application-draft.service';
+import {
+  merge,
+  debounceTime,
+  filter,
+  concatMap,
+  map,
+  of,
+  EMPTY,
+  catchError,
+  Subject,
+  switchMap,
+  tap,
+} from 'rxjs';
+import { ApplicationDraftService } from '../services/application-draft.service';
 import { Application } from '../../../core/models/application.model';
 import { DraftPayload } from '../../../core/services/applications.service';
-import { ACCOUNT_PATTERN, documentFile, TAX_ID_PATTERN, uniqueTaxId } from '../validators/wizard.validators';
+import {
+  ACCOUNT_PATTERN,
+  documentFile,
+  TAX_ID_PATTERN,
+  uniqueTaxId,
+} from '../validators/wizard.validators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DestroyRef } from '@angular/core';
 import { Router } from '@angular/router';
@@ -20,7 +37,7 @@ export interface WizardFormState {
     email: string;
   };
   contacts: {
-    additionalContacts: Array<{ name: string; role: string; phone: string; email: string }>;
+    additionalContacts: { name: string; role: string; phone: string; email: string }[];
   };
   financial: {
     taxId: string;
@@ -74,15 +91,20 @@ export class WizardStore {
     business: new FormGroup({
       businessName: new FormControl('', { nonNullable: true, validators: Validators.required }),
       contactName: new FormControl('', { nonNullable: true, validators: Validators.required }),
-      email: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.email] }),
+      email: new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.required, Validators.email],
+      }),
     }),
     contacts: new FormGroup({
-      additionalContacts: new FormArray<FormGroup<{
-        name: FormControl<string>;
-        role: FormControl<string>;
-        phone: FormControl<string>;
-        email: FormControl<string>;
-      }>>([]),
+      additionalContacts: new FormArray<
+        FormGroup<{
+          name: FormControl<string>;
+          role: FormControl<string>;
+          phone: FormControl<string>;
+          email: FormControl<string>;
+        }>
+      >([]),
     }),
     financial: new FormGroup({
       taxId: new FormControl('', {
@@ -95,18 +117,22 @@ export class WizardStore {
         nonNullable: true,
         validators: [Validators.required, Validators.pattern(ACCOUNT_PATTERN)],
       }),
-      monthlyVolume: new FormControl(0, { nonNullable: true, validators: [Validators.required, Validators.min(1)] }),
+      monthlyVolume: new FormControl(0, {
+        nonNullable: true,
+        validators: [Validators.required, Validators.min(1)],
+      }),
     }),
     documents: new FormGroup({
       documentType: new FormControl('', { nonNullable: true, validators: Validators.required }),
       document: new FormControl<File | null>(null, { validators: documentFile }),
     }),
     review: new FormGroup({
-      termsAccepted: new FormControl(false, { nonNullable: true, validators: Validators.requiredTrue }),
-    })}
-  );
-  
-
+      termsAccepted: new FormControl(false, {
+        nonNullable: true,
+        validators: Validators.requiredTrue,
+      }),
+    }),
+  });
 
   private readonly stepGroups = {
     0: this.form.controls.business,
@@ -117,10 +143,10 @@ export class WizardStore {
   };
 
   readonly currentStepGroup = computed(() => this.stepGroups[this.currentStep()]);
-  readonly isStepValid = computed(() => this.currentStepGroup().valid);
-  readonly canGoNext = computed(() => this.isStepValid() && this.currentStep() < 4);
-  readonly canSubmit = computed(() => this.form.valid);
-  readonly progress = computed(() => ((this.currentStep() + 1) / 5) * 100);
+  // Plain methods, not computed(): form validity is not a signal, so a computed would go stale.
+  isStepValid = () => this.currentStepGroup().valid;
+  canGoNext = () => this.isStepValid() && this.currentStep() < 4;
+  canSubmit = () => this.form.valid;
 
   constructor() {
     this.startAutoSave();
@@ -146,8 +172,8 @@ export class WizardStore {
 
   nextStep() {
     if (this.canGoNext()) {
-      this.stepsCompleted.update(s => new Set([...s, this.currentStep()]));
-      this.currentStep.update(s => (s + 1) as WizardStep);
+      this.stepsCompleted.update((s) => new Set([...s, this.currentStep()]));
+      this.currentStep.update((s) => (s + 1) as WizardStep);
     } else {
       this.currentStepGroup().markAllAsTouched();
     }
@@ -155,7 +181,7 @@ export class WizardStore {
 
   previousStep() {
     if (this.currentStep() > 0) {
-      this.currentStep.update(s => (s - 1) as WizardStep);
+      this.currentStep.update((s) => (s - 1) as WizardStep);
     }
   }
 
@@ -184,12 +210,14 @@ export class WizardStore {
 
   addContact(contact: { name: string; role: string; phone: string; email: string }) {
     const contacts = this.form.controls.contacts.controls.additionalContacts;
-    contacts.push(new FormGroup({
-      name: new FormControl(contact.name, { nonNullable: true }),
-      role: new FormControl(contact.role, { nonNullable: true }),
-      phone: new FormControl(contact.phone, { nonNullable: true }),
-      email: new FormControl(contact.email, { nonNullable: true }),
-    }));
+    contacts.push(
+      new FormGroup({
+        name: new FormControl(contact.name, { nonNullable: true }),
+        role: new FormControl(contact.role, { nonNullable: true }),
+        phone: new FormControl(contact.phone, { nonNullable: true }),
+        email: new FormControl(contact.email, { nonNullable: true }),
+      }),
+    );
   }
 
   removeContact(index: number) {
@@ -202,7 +230,6 @@ export class WizardStore {
     this.form.markAllAsTouched();
     if (this.form.invalid) {
       this.toast.show('Please fix the highlighted fields first.');
-      this.focusFirstInvalid();
       return;
     }
     this.submitting.set(true);
@@ -244,11 +271,6 @@ export class WizardStore {
     }
   }
 
-  private focusFirstInvalid() {
-    const step = [this.form.controls.business, this.form.controls.contacts, this.form.controls.financial, this.form.controls.documents, this.form.controls.review].findIndex((group) => group.invalid);
-    // stepper focus logic removed - handled by component
-  }
-
   private isDirty() {
     return JSON.stringify(this.payload()) !== this.lastSaved;
   }
@@ -260,8 +282,16 @@ export class WizardStore {
 
     this.form.patchValue(
       {
-        business: { businessName: draft.businessName, contactName: draft.contactName, email: draft.email },
-        financial: { taxId: draft.taxId, accountNumber: draft.accountNumber, monthlyVolume: draft.monthlyVolume },
+        business: {
+          businessName: draft.businessName,
+          contactName: draft.contactName,
+          email: draft.email,
+        },
+        financial: {
+          taxId: draft.taxId,
+          accountNumber: draft.accountNumber,
+          monthlyVolume: draft.monthlyVolume,
+        },
         documents: { documentType: draft.documentType },
       },
       { emitEvent: false },
@@ -269,6 +299,7 @@ export class WizardStore {
 
     const document = this.form.controls.documents.controls.document;
     document.setValidators(draft.documentName ? documentFile : [documentFile, Validators.required]);
+    document.updateValueAndValidity({ emitEvent: false });
     this.form.updateValueAndValidity({ emitEvent: false });
     this.lastSaved = JSON.stringify(this.payload());
   }
@@ -276,10 +307,8 @@ export class WizardStore {
   private startAutoSave() {
     merge(this.form.valueChanges.pipe(debounceTime(1000)), this.flush$)
       .pipe(
+        filter(() => this.draftId !== null && this.isDirty()),
         map(() => this.payload()),
-        startWith(this.payload()),
-        distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
-        skip(1),
         concatMap((payload) => this.save(payload)),
         takeUntilDestroyed(this.destroyRef),
       )

@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ReviewStepComponent } from './review-step.component';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 
 describe('ReviewStepComponent', () => {
   let fixture: ReturnType<typeof TestBed.createComponent<ReviewStepComponent>>;
@@ -54,8 +54,6 @@ describe('ReviewStepComponent', () => {
     const formGroup = createFormGroup(TestBed.inject(FormBuilder));
     fixture = TestBed.createComponent(ReviewStepComponent);
     fixture.componentRef.setInput('formGroup', formGroup);
-    fixture.componentRef.setInput('submitting', false);
-    fixture.componentRef.setInput('onSubmit', vi.fn());
     fixture.detectChanges();
     expect(fixture.componentInstance).toBeTruthy();
   });
@@ -64,8 +62,6 @@ describe('ReviewStepComponent', () => {
     const formGroup = createFormGroup(TestBed.inject(FormBuilder));
     fixture = TestBed.createComponent(ReviewStepComponent);
     fixture.componentRef.setInput('formGroup', formGroup);
-    fixture.componentRef.setInput('submitting', false);
-    fixture.componentRef.setInput('onSubmit', vi.fn());
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement;
@@ -79,8 +75,6 @@ describe('ReviewStepComponent', () => {
     const formGroup = createFormGroup(TestBed.inject(FormBuilder));
     fixture = TestBed.createComponent(ReviewStepComponent);
     fixture.componentRef.setInput('formGroup', formGroup);
-    fixture.componentRef.setInput('submitting', false);
-    fixture.componentRef.setInput('onSubmit', vi.fn());
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement;
@@ -96,15 +90,20 @@ describe('ReviewStepComponent', () => {
     const formGroup = fb.group({
       business: fb.group({ businessName: ['Test'], contactName: ['John'], email: ['j@t.com'] }),
       contacts: fb.group({ additionalContacts: fb.array([]) }),
-      financial: fb.group({ taxId: ['123-45-6789'], accountNumber: ['12345678'], monthlyVolume: [1000] }),
-      documents: fb.group({ documentType: ['business_license'], document: [new File(['t'], 't.pdf')] }),
+      financial: fb.group({
+        taxId: ['123-45-6789'],
+        accountNumber: ['12345678'],
+        monthlyVolume: [1000],
+      }),
+      documents: fb.group({
+        documentType: ['business_license'],
+        document: [new File(['t'], 't.pdf')],
+      }),
       review: fb.group({ termsAccepted: [true] }),
     });
 
     fixture = TestBed.createComponent(ReviewStepComponent);
     fixture.componentRef.setInput('formGroup', formGroup);
-    fixture.componentRef.setInput('submitting', false);
-    fixture.componentRef.setInput('onSubmit', vi.fn());
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement;
@@ -115,8 +114,6 @@ describe('ReviewStepComponent', () => {
     const formGroup = createFormGroup(TestBed.inject(FormBuilder));
     fixture = TestBed.createComponent(ReviewStepComponent);
     fixture.componentRef.setInput('formGroup', formGroup);
-    fixture.componentRef.setInput('submitting', false);
-    fixture.componentRef.setInput('onSubmit', vi.fn());
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement;
@@ -130,8 +127,6 @@ describe('ReviewStepComponent', () => {
     const formGroup = createFormGroup(TestBed.inject(FormBuilder));
     fixture = TestBed.createComponent(ReviewStepComponent);
     fixture.componentRef.setInput('formGroup', formGroup);
-    fixture.componentRef.setInput('submitting', false);
-    fixture.componentRef.setInput('onSubmit', vi.fn());
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement;
@@ -144,8 +139,6 @@ describe('ReviewStepComponent', () => {
     const formGroup = createFormGroup(TestBed.inject(FormBuilder));
     fixture = TestBed.createComponent(ReviewStepComponent);
     fixture.componentRef.setInput('formGroup', formGroup);
-    fixture.componentRef.setInput('submitting', false);
-    fixture.componentRef.setInput('onSubmit', vi.fn());
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement;
@@ -157,8 +150,6 @@ describe('ReviewStepComponent', () => {
     const formGroup = createFormGroup(TestBed.inject(FormBuilder));
     fixture = TestBed.createComponent(ReviewStepComponent);
     fixture.componentRef.setInput('formGroup', formGroup);
-    fixture.componentRef.setInput('submitting', false);
-    fixture.componentRef.setInput('onSubmit', vi.fn());
     fixture.detectChanges();
 
     // Manually mark the control as touched and trigger change detection
@@ -168,18 +159,5 @@ describe('ReviewStepComponent', () => {
 
     // The termsAccepted is still false, so error should show
     expect(fixture.nativeElement.textContent).toContain('You must accept the terms to proceed');
-  });
-
-  it('should disable submit button when submitting', () => {
-    const formGroup = createFormGroup(TestBed.inject(FormBuilder));
-    fixture = TestBed.createComponent(ReviewStepComponent);
-    fixture.componentRef.setInput('formGroup', formGroup);
-    fixture.componentRef.setInput('submitting', true);
-    fixture.componentRef.setInput('onSubmit', vi.fn());
-    fixture.detectChanges();
-
-    const submitBtn = fixture.nativeElement.querySelector('button[color="primary"]');
-    expect(submitBtn.disabled).toBe(true);
-    expect(fixture.nativeElement.querySelector('mat-spinner')).toBeTruthy();
   });
 });

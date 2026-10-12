@@ -1,9 +1,9 @@
 import { HttpParams } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { handledInline } from '../interceptors/http-error.interceptor';
-import { User, Page } from '../models/user.model';
-import { ApiService } from '../api/api-service';
+import { handledInline } from '../../../core/interceptors/http-error.interceptor';
+import { User, Page } from '../../../core/models/user.model';
+import { ApiService } from '../../../core/api/api.service';
 
 export interface UserQuery {
   page: number;
