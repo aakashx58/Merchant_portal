@@ -7,19 +7,19 @@
   @if (store.counts(); as counts) {
     <section class="stat-grid" aria-label="Applications by status">
       @for (status of store.statuses; track status) {
-        <button
-          type="button"
-          class="stat-card"
-          [class.active]="store.query().status === status"
-          [attr.aria-pressed]="store.query().status === status"
-          (click)="store.setStatus(store.query().status === status ? '' : status)"
-        >
-          <span class="stat-label">{{ status | titlecase }}</span>
+        <div class="stat-card">
+          <div class="stat-head">
+            <span class="stat-label">{{ status | titlecase }}</span>
+            <mat-icon class="stat-icon" aria-hidden="true">{{ statusIcons[status] }}</mat-icon>
+          </div>
           <span class="stat-value">{{ counts[status] }}</span>
-        </button>
+        </div>
       }
-      <div class="stat-card total">
-        <span class="stat-label">Total</span>
+      <div class="stat-card">
+        <div class="stat-head">
+          <span class="stat-label">Total</span>
+          <mat-icon class="stat-icon" aria-hidden="true">assignment</mat-icon>
+        </div>
         <span class="stat-value">{{ counts.total }}</span>
       </div>
     </section>

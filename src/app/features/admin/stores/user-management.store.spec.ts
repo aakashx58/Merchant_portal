@@ -73,6 +73,14 @@ describe('UserManagementStore', () => {
     expect(list).toHaveBeenCalledTimes(1);
   });
 
+  it('toggleRole shows the server reason when it has one', () => {
+    updateRole.mockReturnValue(
+      throwError(() => ({ error: { message: 'You cannot change your own role' } })),
+    );
+    store.toggleRole('u1', 'sales');
+    expect(toast.show).toHaveBeenCalledWith('You cannot change your own role');
+  });
+
   it('toggleRole surfaces a failure', () => {
     updateRole.mockReturnValue(throwError(() => new Error('x')));
     store.toggleRole('u1', 'admin');

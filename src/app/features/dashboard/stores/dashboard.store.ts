@@ -17,7 +17,6 @@ export class DashboardStore extends ListStore<Application, ApplicationQuery> {
 
   readonly canAssign = computed(() => this.auth.can(PermissionEnum.application_assign));
   readonly canReview = computed(() => this.auth.can(PermissionEnum.application_review));
-  readonly canViewCounts = computed(() => this.auth.can(PermissionEnum.dashboard_counts));
   readonly counts = signal<StatusCounts | null>(null);
 
   readonly columns = computed(() => [
@@ -45,7 +44,6 @@ export class DashboardStore extends ListStore<Application, ApplicationQuery> {
   }
 
   loadCounts() {
-    if (!this.canViewCounts()) return;
     this.api.counts().subscribe({
       next: (counts) => this.counts.set(counts),
       error: () => this.counts.set(null), // the cards simply stay hidden; the table has its own error state

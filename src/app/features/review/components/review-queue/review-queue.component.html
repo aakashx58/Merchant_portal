@@ -4,52 +4,38 @@
     <p class="page-subtitle">Applications assigned to you for review</p>
   </header>
 
-  <!-- KPI Cards -->
-  <section class="kpi-section" aria-label="Review Queue Metrics">
-    <div class="kpi-grid">
-      <mat-card class="kpi-card" appearance="outlined">
-        <mat-card-content>
-          <div class="kpi-header">
-            <span class="kpi-label">Pending Review</span>
-            <mat-icon class="kpi-icon">pending_actions</mat-icon>
-          </div>
-          <div class="kpi-value">{{ store.kpis().pending }}</div>
-          <div class="kpi-subtitle">Awaiting decision</div>
-        </mat-card-content>
-      </mat-card>
-
-      <mat-card class="kpi-card" appearance="outlined">
-        <mat-card-content>
-          <div class="kpi-header">
-            <span class="kpi-label">Approved</span>
-            <mat-icon class="kpi-icon">check_circle</mat-icon>
-          </div>
-          <div class="kpi-value">{{ store.kpis().approved }}</div>
-          <div class="kpi-subtitle">This period</div>
-        </mat-card-content>
-      </mat-card>
-
-      <mat-card class="kpi-card" appearance="outlined">
-        <mat-card-content>
-          <div class="kpi-header">
-            <span class="kpi-label">Rejected</span>
-            <mat-icon class="kpi-icon">cancel</mat-icon>
-          </div>
-          <div class="kpi-value">{{ store.kpis().rejected }}</div>
-          <div class="kpi-subtitle">This period</div>
-        </mat-card-content>
-      </mat-card>
-
-      <mat-card class="kpi-card" appearance="outlined">
-        <mat-card-content>
-          <div class="kpi-header">
-            <span class="kpi-label">Total Assigned</span>
-            <mat-icon class="kpi-icon">assignment</mat-icon>
-          </div>
-          <div class="kpi-value">{{ store.kpis().total }}</div>
-          <div class="kpi-subtitle">All time</div>
-        </mat-card-content>
-      </mat-card>
+  <section class="stat-grid" aria-label="Review queue metrics">
+    <div class="stat-card">
+      <div class="stat-head">
+        <span class="stat-label">Pending review</span>
+        <mat-icon class="stat-icon" aria-hidden="true">pending_actions</mat-icon>
+      </div>
+      <span class="stat-value">{{ store.kpis().pending }}</span>
+      <span class="stat-hint">Awaiting decision</span>
+    </div>
+    <div class="stat-card">
+      <div class="stat-head">
+        <span class="stat-label">Approved</span>
+        <mat-icon class="stat-icon" aria-hidden="true">check_circle</mat-icon>
+      </div>
+      <span class="stat-value">{{ store.kpis().approved }}</span>
+      <span class="stat-hint">All assigned to you</span>
+    </div>
+    <div class="stat-card">
+      <div class="stat-head">
+        <span class="stat-label">Rejected</span>
+        <mat-icon class="stat-icon" aria-hidden="true">cancel</mat-icon>
+      </div>
+      <span class="stat-value">{{ store.kpis().rejected }}</span>
+      <span class="stat-hint">All assigned to you</span>
+    </div>
+    <div class="stat-card">
+      <div class="stat-head">
+        <span class="stat-label">Total assigned</span>
+        <mat-icon class="stat-icon" aria-hidden="true">assignment</mat-icon>
+      </div>
+      <span class="stat-value">{{ store.kpis().total }}</span>
+      <span class="stat-hint">All statuses</span>
     </div>
   </section>
 

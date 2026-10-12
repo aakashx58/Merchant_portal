@@ -53,7 +53,7 @@
     (retry)="store.reload()"
   >
     <ng-template appCell="username" let-row>
-      <strong>{{ row.username }}</strong>
+      {{ row.username }}
     </ng-template>
 
     <ng-template appCell="email" let-row>
@@ -92,7 +92,7 @@
           <button
             mat-menu-item
             (click)="store.toggleRole(row.id, role)"
-            [disabled]="row.roles.includes(role)"
+            [disabled]="row.roles.includes(role) || row.id === store.auth.user()?.id"
           >
             <mat-icon [class]="row.roles.includes(role) ? 'checked' : ''">{{
               role === 'admin'

@@ -18,8 +18,12 @@ const page = (items: never[], total = items.length) => ({
 describe('ReviewQueueStore', () => {
   let store: ReviewQueueStore;
   let list: ReturnType<typeof vi.fn>;
+  let counts: ReturnType<typeof vi.fn>;
 
   beforeEach(() => {
+    counts = vi
+      .fn()
+      .mockReturnValue(of({ draft: 0, submitted: 2, approved: 1, rejected: 1, total: 40 }));
     list = vi
       .fn()
       .mockReturnValue(
@@ -37,7 +41,7 @@ describe('ReviewQueueStore', () => {
       );
     TestBed.configureTestingModule({
       providers: [
-        { provide: ApplicationsService, useValue: { list } },
+        { provide: ApplicationsService, useValue: { list, counts } },
         { provide: AuthService, useValue: { can: () => true } },
         { provide: DialogService, useValue: { openSideSheet: vi.fn() } },
       ],
@@ -71,15 +75,23 @@ describe('ReviewQueueStore', () => {
     expect(store.error()).toBe('Failed to load review queue');
   });
 
-  it('computes KPIs from the loaded items and server total', () => {
-    store.load();
+  it('KPIs come from the server-side counts, not from the rows on the current page', () => {
+    // the table shows only "submitted" rows, yet approved/rejected must still be counted
     expect(store.kpis()).toEqual({ pending: 2, approved: 1, rejected: 1, total: 40 });
   });
 
-  it('kpis are zero when nothing is returned', () => {
-    list.mockReturnValue(of(page([])));
-    store.load();
+  it('KPIs are zero when the counts could not be loaded', () => {
+    counts.mockReturnValue(throwError(() => new Error('x')));
+    store.loadCounts();
     expect(store.kpis()).toEqual({ pending: 0, approved: 0, rejected: 0, total: 0 });
+  });
+
+  it('reload refreshes the counts too, and filtering does not refetch them', () => {
+    expect(counts).toHaveBeenCalledTimes(1);
+    store.setStatus('approved');
+    expect(counts).toHaveBeenCalledTimes(1);
+    store.reload();
+    expect(counts).toHaveBeenCalledTimes(2);
   });
 
   it('loads on construction and again on every filter / page change', () => {

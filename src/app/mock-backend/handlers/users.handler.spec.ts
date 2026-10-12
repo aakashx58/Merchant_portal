@@ -60,4 +60,14 @@ describe('users handler', () => {
     expect(users.find((u) => u.id === 'u-sales2')?.roles).toEqual(['reviewer']);
     patch('sales');
   });
+
+  it('does not let an admin change their own role (they would lock themselves out)', () => {
+    const r = handleUsers(
+      new HttpRequest('PATCH', '/users/u-admin/role', { role: 'sales' }),
+      '/users/u-admin/role',
+      admin,
+    );
+    expect(r?.status).toBe(409);
+    expect(admin.roles).toEqual(['admin']);
+  });
 });

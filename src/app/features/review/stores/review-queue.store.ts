@@ -1,6 +1,6 @@
-import { computed, inject, Injectable } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { PermissionEnum } from '../../../core/constants/permission.enum';
-import { Application } from '../../../core/models/application.model';
+import { Application, StatusCounts } from '../../../core/models/application.model';
 import { ApplicationQuery, ApplicationsService } from '../../../core/services/applications.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { DialogService } from '../../../core/services/dialog.service';
@@ -26,13 +26,16 @@ export class ReviewQueueStore extends ListStore<Application, ApplicationQuery> {
     { key: 'actions', header: 'Action' },
   ]);
 
+  /** Same server-side counts as the dashboard, so both pages always agree. */
+  readonly counts = signal<StatusCounts | null>(null);
+
   readonly kpis = computed(() => {
-    const items = this.applications()?.items ?? [];
+    const counts = this.counts();
     return {
-      pending: items.filter((a) => a.status === 'submitted').length,
-      approved: items.filter((a) => a.status === 'approved').length,
-      rejected: items.filter((a) => a.status === 'rejected').length,
-      total: this.applications()?.total ?? 0,
+      pending: counts?.submitted ?? 0,
+      approved: counts?.approved ?? 0,
+      rejected: counts?.rejected ?? 0,
+      total: counts?.total ?? 0,
     };
   });
 
@@ -43,10 +46,23 @@ export class ReviewQueueStore extends ListStore<Application, ApplicationQuery> {
       'Failed to load review queue',
     );
     this.load();
+    this.loadCounts();
   }
 
   protected fetch(query: ApplicationQuery) {
     return this.api.list(query);
+  }
+
+  loadCounts() {
+    this.api.counts().subscribe({
+      next: (counts) => this.counts.set(counts),
+      error: () => this.counts.set(null),
+    });
+  }
+
+  override reload() {
+    super.reload();
+    this.loadCounts();
   }
 
   setStatus(status: ApplicationQuery['status']) {

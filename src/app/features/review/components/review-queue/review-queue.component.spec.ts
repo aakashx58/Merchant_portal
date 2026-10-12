@@ -20,13 +20,14 @@ const row = (id: string, status: string) => ({
 
 describe('ReviewQueueComponent', () => {
   let list: ReturnType<typeof vi.fn>;
+  let counts: ReturnType<typeof vi.fn>;
 
   const render = async () => {
     TestBed.configureTestingModule({
       imports: [ReviewQueueComponent],
       providers: [
         provideRouter([]),
-        { provide: ApplicationsService, useValue: { list } },
+        { provide: ApplicationsService, useValue: { list, counts } },
         { provide: AuthService, useValue: { can: () => true } },
         { provide: DialogService, useValue: { openSideSheet: vi.fn() } },
       ],
@@ -39,6 +40,9 @@ describe('ReviewQueueComponent', () => {
   };
 
   beforeEach(() => {
+    counts = vi
+      .fn()
+      .mockReturnValue(of({ draft: 0, submitted: 2, approved: 1, rejected: 0, total: 12 }));
     list = vi.fn().mockReturnValue(
       of({
         items: [row('1', 'submitted'), row('2', 'approved'), row('3', 'submitted')],
@@ -55,10 +59,11 @@ describe('ReviewQueueComponent', () => {
     expect(el.querySelectorAll('tr[mat-row]').length).toBe(3);
   });
 
-  it('shows the KPI cards from the loaded data', async () => {
+  it('shows the KPI cards from the server counts', async () => {
     const el = await render();
-    const values = Array.from(el.querySelectorAll('.kpi-value')).map((n) => n.textContent?.trim());
+    const values = Array.from(el.querySelectorAll('.stat-value')).map((n) => n.textContent?.trim());
     expect(values).toEqual(['2', '1', '0', '12']);
+    // the 3 table rows do not matter: the cards show the server counts
   });
 
   it('has a status dropdown instead of buttons and changing it reloads', async () => {

@@ -81,19 +81,22 @@ describe('applications collection', () => {
     expect((r.body as Application).status).toBe('draft');
   });
 
-  it('counts by status are admin-only and add up to the total', () => {
+  it('counts by status are scoped to what each role may see and add up to the total', () => {
     const counts = (u: MockUser) =>
       handleApplicationsCollection(
         new HttpRequest('GET', '/applications/counts'),
         '/applications/counts',
         u,
-      )!;
-    expect(counts(user('u-sales')).status).toBe(403);
-    const body = counts(user('u-admin')).body as Record<string, number>;
-    expect(body['draft'] + body['submitted'] + body['approved'] + body['rejected']).toBe(
-      body['total'],
+      )!.body as Record<string, number>;
+    const admin = counts(user('u-admin'));
+    expect(admin['total']).toBe(applications.length);
+    expect(admin['draft'] + admin['submitted'] + admin['approved'] + admin['rejected']).toBe(
+      admin['total'],
     );
-    expect(body['total']).toBe(applications.length);
+    const own = applications.filter((a) => a.ownerId === 'u-sales').length;
+    expect(counts(user('u-sales'))['total']).toBe(own);
+    const assigned = applications.filter((a) => a.assigneeId === 'u-reviewer').length;
+    expect(counts(user('u-reviewer'))['total']).toBe(assigned);
   });
 
   it('check-tax-id reports a taken value and excludes the current draft', () => {

@@ -35,4 +35,10 @@ import { DashboardStore } from '../stores/dashboard.store';
 })
 export class DashboardComponent {
   protected readonly store = inject(DashboardStore);
+  protected readonly statusIcons = {
+    draft: 'edit_note',
+    submitted: 'pending_actions',
+    approved: 'check_circle',
+    rejected: 'cancel',
+  };
 }

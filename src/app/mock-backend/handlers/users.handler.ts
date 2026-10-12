@@ -53,6 +53,7 @@ export function handleUsers(req: HttpRequest<unknown>, path: string, user: MockU
     if (match[2] && req.method === 'PATCH') {
       const role = (req.body as { role?: string })?.role as RoleEnum;
       if (!Object.values(RoleEnum).includes(role)) return fail(400, 'Invalid role');
+      if (target.id === user.id) return fail(409, 'You cannot change your own role');
       target.roles = [role];
       return ok(toUser(target));
     }

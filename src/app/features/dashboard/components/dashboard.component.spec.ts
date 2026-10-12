@@ -96,23 +96,25 @@ describe('DashboardComponent', () => {
     expect(el.textContent).toContain('No applications found.');
   });
 
-  describe('status counts (admin)', () => {
-    it('are hidden without the permission', async () => {
+  describe('status counts', () => {
+    it('are hidden when they could not be loaded', async () => {
+      counts.mockReturnValue(throwError(() => new Error('x')));
       const el = await render();
       expect(el.querySelector('.stat-grid')).toBeNull();
     });
 
-    it('show one card per status plus total, and clicking a card filters the table', async () => {
-      perms.add(PermissionEnum.dashboard_counts);
+    it('show one card per status plus total, and are display-only (not filters)', async () => {
       const el = await render();
       expect(el.querySelectorAll('.stat-card').length).toBe(5);
-      expect(el.querySelector('.stat-card.total .stat-value')?.textContent).toContain('10');
-      const submitted = Array.from(el.querySelectorAll<HTMLButtonElement>('button.stat-card')).find(
-        (b) => b.textContent?.includes('Submitted'),
-      )!;
-      submitted.click();
-      expect(TestBed.inject(DashboardStore).query().status).toBe('submitted');
-      expect(list).toHaveBeenLastCalledWith(expect.objectContaining({ status: 'submitted' }));
+      expect(el.querySelectorAll('button.stat-card').length).toBe(0);
+      const values = Array.from(el.querySelectorAll('.stat-value')).map((n) =>
+        n.textContent?.trim(),
+      );
+      expect(values).toEqual(['1', '2', '3', '4', '10']);
+      list.mockClear();
+      el.querySelector<HTMLElement>('.stat-card')!.click();
+      expect(list).not.toHaveBeenCalled();
+      expect(TestBed.inject(DashboardStore).query().status).toBe('');
     });
   });
 
@@ -128,7 +130,6 @@ describe('DashboardComponent', () => {
   });
 
   it('has no basic accessibility problems', async () => {
-    perms.add(PermissionEnum.dashboard_counts);
     expect(a11yProblems(await render())).toEqual([]);
   });
 });

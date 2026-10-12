@@ -170,10 +170,14 @@
   }
 }
 
-// Count cards: <section class="stat-grid"><button class="stat-card"><span class="stat-label"/><span class="stat-value"/></button></section>
+// Count cards, shared by the dashboard and the review queue:
+// <section class="stat-grid"><div class="stat-card">
+//   <div class="stat-head"><span class="stat-label"/><mat-icon class="stat-icon"/></div>
+//   <span class="stat-value"/><span class="stat-hint"/> (hint optional)
+// </div></section>
 .stat-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
   gap: 12px;
   margin-bottom: 20px;
 }
@@ -186,21 +190,12 @@
   border: 1px solid var(--mat-sys-outline-variant);
   border-radius: 12px;
   background: var(--mat-sys-surface);
-  color: inherit;
-  font: inherit;
-  text-align: left;
 
-  &:is(button) {
-    cursor: pointer;
-
-    &:hover {
-      border-color: var(--mat-sys-primary);
-    }
-  }
-
-  &.active {
-    border-color: var(--mat-sys-primary);
-    box-shadow: 0 0 0 1px var(--mat-sys-primary);
+  .stat-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
   }
 
   .stat-label {
@@ -211,8 +206,31 @@
     color: var(--mat-sys-on-surface-variant);
   }
 
+  .stat-icon {
+    color: var(--mat-sys-primary);
+  }
+
   .stat-value {
     font-size: 1.75rem;
     font-weight: 600;
+  }
+
+  .stat-hint {
+    font-size: 0.75rem;
+    color: var(--mat-sys-on-surface-variant);
+  }
+}
+
+@media (max-width: 600px) {
+  .page-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .stat-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .stat-card .stat-value {
+    font-size: 1.5rem;
   }
 }

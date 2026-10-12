@@ -72,7 +72,13 @@ export function handleApplicationsCollection(
   }
 
   if (path === '/applications/counts' && req.method === 'GET') {
-    if (!can(user, PermissionEnum.dashboard_counts)) return fail(403, 'Forbidden');
+    // Same visibility rule as the list: every role gets counts of the applications it may see.
+    if (
+      !can(user, PermissionEnum.application_view_own) &&
+      !can(user, PermissionEnum.application_view_assigned) &&
+      !can(user, PermissionEnum.application_view_all)
+    )
+      return fail(403, 'Forbidden');
     const counts = { draft: 0, submitted: 0, approved: 0, rejected: 0, total: 0 };
     for (const application of applications.filter((a) => canSee(user, a))) {
       counts[application.status]++;

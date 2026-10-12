@@ -59,7 +59,7 @@ export class UserManagementStore extends ListStore<User, UserQuery> {
         this.toast.show('Role updated');
         this.reload();
       },
-      error: () => this.toast.show('Failed to update role'),
+      error: (err) => this.toast.show(err?.error?.message ?? 'Failed to update role'),
     });
   }
 }

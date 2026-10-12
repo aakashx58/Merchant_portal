@@ -89,22 +89,20 @@ describe('DashboardStore', () => {
   });
 
   describe('status counts', () => {
-    it('are not requested without the dashboard_counts permission', () => {
+    it('are loaded for every role (the server scopes them to what that user may see)', () => {
       const store = create();
-      expect(counts).not.toHaveBeenCalled();
-      expect(store.counts()).toBeNull();
+      expect(counts).toHaveBeenCalledTimes(1);
+      expect(store.counts()?.total).toBe(10);
     });
 
-    it('load on construction and refresh on reload when permitted', () => {
-      perms.add(PermissionEnum.dashboard_counts);
+    it('refresh on reload', () => {
       const store = create();
-      expect(store.counts()?.total).toBe(10);
+      expect(counts).toHaveBeenCalledTimes(1);
       store.reload();
       expect(counts).toHaveBeenCalledTimes(2);
     });
 
     it('stay hidden when the request fails', () => {
-      perms.add(PermissionEnum.dashboard_counts);
       counts.mockReturnValue(throwError(() => new Error('x')));
       expect(create().counts()).toBeNull();
     });

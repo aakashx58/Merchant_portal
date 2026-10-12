@@ -19,7 +19,7 @@ manage assignments and users. It runs against a built-in mock backend, so no ser
 
 ## Features
 
-- **Dashboard:** server-side paging, sorting, search and status filter; loading, error and retry states; status counts for admins.
+- **Dashboard:** server-side paging, sorting, search and status filter; loading, error and retry states; status count cards for every role, scoped to the applications that role may see.
 - **New application wizard:** five steps (Business, Contacts, Financial, Documents, Review) with reactive forms, field validation, and a unique tax-ID check.
 - **Draft auto-save:** debounced, versioned, keeps your form on failure, and saves when you leave the page.
 - **Application detail and review:** sectioned view with a history timeline; approve/reject controls only for the assigned reviewer.
@@ -64,7 +64,7 @@ Fake users from the mock backend (password for all: `password`). No real data is
 | --- | --- |
 | SALES | Create and edit their own applications, view their own applications |
 | REVIEWER | View applications assigned to them, record an approve/reject decision with risk level and note, reveal sensitive fields |
-| ADMIN | View all applications, assign reviewers, manage users, see status counts and the audit log, reveal sensitive fields |
+| ADMIN | View all applications, assign reviewers, manage users, see the audit log, reveal sensitive fields |
 
 The role to permission map is in `src/app/core/config/role-permissions.config.ts`.
 Admins cannot record review decisions; that is reserved for the assigned reviewer.
@@ -174,7 +174,7 @@ the dev build injects inline scripts.
 
 ## Testing
 
-`npm test` runs Vitest through the Angular builder (255 tests, 35 files):
+`npm test` runs Vitest through the Angular builder (265 tests):
 
 - Stores: list state, wizard form, auto-save debounce, submit
 - Validators and the `ApiService` retry and timeout behaviour
@@ -200,7 +200,7 @@ the dev build injects inline scripts.
 
 ## Status and roadmap
 
-Done: all required features above, dashboard counts, auth refresh interceptor, lint clean, 255 passing tests.
+Done: all required features above, dashboard counts, auth refresh interceptor, lint clean, 265 passing tests.
 
 Still open:
 

@@ -36,7 +36,7 @@ describe('UserManagementComponent', () => {
       providers: [
         provideRouter([]),
         { provide: UserService, useValue: { list, updateRole: vi.fn().mockReturnValue(of({})) } },
-        { provide: AuthService, useValue: { can: () => true } },
+        { provide: AuthService, useValue: { can: () => true, user: () => ({ id: 'u1' }) } },
         { provide: DialogService, useValue: { openSideSheet: vi.fn() } },
         { provide: ToastService, useValue: { show: vi.fn() } },
       ],
