@@ -13,6 +13,7 @@ manage assignments and users. It runs against a built-in mock backend, so no ser
 - [Project structure](#project-structure)
 - [How it works](#how-it-works)
 - [Security](#security)
+- [Mock API](#mock-api)
 - [Testing](#testing)
 - [Conventions](#conventions)
 - [Status and roadmap](#status-and-roadmap)
@@ -39,32 +40,32 @@ npm install
 npm start                 # http://localhost:4200
 ```
 
-| Command | What it does |
-| --- | --- |
-| `npm start` | Dev server with the mock backend |
-| `npm run build` | Production build (`dist/techkraft`) |
-| `npx ng build --configuration staging` | Staging build |
-| `npm test` | Unit tests (Vitest) |
-| `npm run lint:check` / `npm run lint:format` | Lint / lint and fix |
-| `npm run prettier:check` / `npm run prettier:format` | Check / apply formatting |
+| Command                                              | What it does                        |
+| ---------------------------------------------------- | ----------------------------------- |
+| `npm start`                                          | Dev server with the mock backend    |
+| `npm run build`                                      | Production build (`dist/techkraft`) |
+| `npx ng build --configuration staging`               | Staging build                       |
+| `npm test`                                           | Unit tests (Vitest)                 |
+| `npm run lint:check` / `npm run lint:format`         | Lint / lint and fix                 |
+| `npm run prettier:check` / `npm run prettier:format` | Check / apply formatting            |
 
 ## Demo accounts
 
 Fake users from the mock backend (password for all: `password`). No real data is used anywhere.
 
-| Username | Role |
-| --- | --- |
-| `sales`, `sales2` | SALES |
+| Username                | Role     |
+| ----------------------- | -------- |
+| `sales`, `sales2`       | SALES    |
 | `reviewer`, `reviewer2` | REVIEWER |
-| `admin` | ADMIN |
+| `admin`                 | ADMIN    |
 
 ## Roles and permissions
 
-| Role | Can do |
-| --- | --- |
-| SALES | Create and edit their own applications, view their own applications |
+| Role     | Can do                                                                                                                  |
+| -------- | ----------------------------------------------------------------------------------------------------------------------- |
+| SALES    | Create and edit their own applications, view their own applications                                                     |
 | REVIEWER | View applications assigned to them, record an approve/reject decision with risk level and note, reveal sensitive fields |
-| ADMIN | View all applications, assign reviewers, manage users, see the audit log, reveal sensitive fields |
+| ADMIN    | View all applications, assign reviewers, manage users, see the audit log, reveal sensitive fields                       |
 
 The role to permission map is in `src/app/core/config/role-permissions.config.ts`.
 Admins cannot record review decisions; that is reserved for the assigned reviewer.
@@ -125,13 +126,13 @@ component -> store -> XxxService (extends ApiService) -> HttpClient -> intercept
 
 ### Error handling
 
-| Layer | Behaviour |
-| --- | --- |
+| Layer                    | Behaviour                                                                                  |
+| ------------------------ | ------------------------------------------------------------------------------------------ |
 | `http-error.interceptor` | Maps the status to a message and toasts it, unless the request is marked `handledInline()` |
-| `ListStore` | Load errors go to `error()`; the table shows an error state with Retry |
-| Store mutations | Success and failure are toasted (assign reviewer, change role, submit application) |
-| `GlobalErrorHandler` | Last resort for uncaught exceptions: logs and toasts |
-| Routes | `/unauthorized` (403), `/error` (500), `**` (404) |
+| `ListStore`              | Load errors go to `error()`; the table shows an error state with Retry                     |
+| Store mutations          | Success and failure are toasted (assign reviewer, change role, submit application)         |
+| `GlobalErrorHandler`     | Last resort for uncaught exceptions: logs and toasts                                       |
+| Routes                   | `/unauthorized` (403), `/error` (500), `**` (404)                                          |
 
 ### Environments
 
@@ -172,9 +173,33 @@ Angular's production build can run without `'unsafe-inline'` if `ngCspNonce` is 
 and the server returns a fresh nonce per response. The policy is not applied in the dev server because
 the dev build injects inline scripts.
 
+## Mock API
+
+`src/app/mock-backend/` is an HTTP interceptor with in-memory data (36 applications, 5 users, 200 audit
+entries). It is active when `mockBackend: true` in the environment and applies the same permission rules
+a real API would. All routes are under `/api`.
+
+| Route                                                | Who                   | Notes                                                                                          |
+| ---------------------------------------------------- | --------------------- | ---------------------------------------------------------------------------------------------- |
+| `POST /auth/login`, `/auth/refresh`, `/auth/logout`  | public / token        | Refresh tokens rotate and work once                                                            |
+| `GET /users`                                         | assign permission     | Plain reviewer list; with `page` it is a paged list and needs `user_manage`                    |
+| `GET /users/:id`, `PATCH /users/:id/role`            | `user_manage`         | A user cannot change their own role                                                            |
+| `GET /applications`                                  | anyone who can view   | Scoped: sales see their own, reviewers their assigned, admins all. Paging, sort, `q`, `status` |
+| `GET /applications/counts`                           | anyone who can view   | Counts by status for the applications that user may see                                        |
+| `GET /applications/check-tax-id`                     | signed in             | Unique tax-ID check for the wizard                                                             |
+| `POST /applications`, `PUT /:id`, `POST /:id/submit` | sales / admin (owner) | `PUT` needs `If-Match` with the current version                                                |
+| `PUT /applications/:id/assignment`                   | admin                 | Only to a reviewer                                                                             |
+| `POST /applications/:id/decision`                    | assigned reviewer     | Needs note and risk level; `Idempotency-Key` makes a retry safe                                |
+| `POST /applications/:id/reveal`                      | reveal permission     | Returns the real value and writes an audit entry                                               |
+| `GET /audit-logs`                                    | admin                 | Paging, sort and filters                                                                       |
+
+To simulate problems, edit `src/app/mock-backend/mock-toggles.ts`: `latencyMs` (default 300), `slow`
+(5 s responses), `force500` (every request fails) and `refreshFails` (token refresh is rejected, which
+signs the user out). Data resets on reload; tokens live in `sessionStorage`.
+
 ## Testing
 
-`npm test` runs Vitest through the Angular builder (265 tests):
+`npm test` runs Vitest through the Angular builder (268 tests, 37 files):
 
 - Stores: list state, wizard form, auto-save debounce, submit
 - Validators and the `ApiService` retry and timeout behaviour
@@ -200,13 +225,12 @@ the dev build injects inline scripts.
 
 ## Status and roadmap
 
-Done: all required features above, dashboard counts, auth refresh interceptor, lint clean, 265 passing tests.
+Done: all required features above, dashboard counts, auth refresh interceptor, lint clean, 268 passing tests.
 
 Still open:
 
 - Real-time status updates with Socket.IO and a polling fallback (on hold)
 - Apply the CSP in a production build (documented, not set)
 - Move tokens out of `sessionStorage` into an httpOnly cookie (needs a real backend)
-- `AuthService` uses a hard-coded `/api` prefix instead of the environment `apiBaseUrl`
 - Mock role changes live in memory and reset on reload
 - Manual click-through of every role in a browser before submitting

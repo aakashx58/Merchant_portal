@@ -7,10 +7,11 @@ describe('DocumentsStepComponent', () => {
   let fixture: ReturnType<typeof TestBed.createComponent<DocumentsStepComponent>>;
   let component: DocumentsStepComponent;
 
-  const createFormGroup = (fb: FormBuilder): FormGroup => fb.group({
-    documentType: ['', Validators.required],
-    document: [null as File | null, Validators.required],
-  });
+  const createFormGroup = (fb: FormBuilder): FormGroup =>
+    fb.group({
+      documentType: ['', Validators.required],
+      document: [null as File | null, Validators.required],
+    });
 
   const documentTypes = [
     { value: 'business_license', label: 'Business license' },

@@ -13,7 +13,14 @@ interface DocumentType {
 
 @Component({
   selector: 'app-documents-step',
-  imports: [ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatIconModule, MatInputModule, MatSelectModule],
+  imports: [
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatSelectModule,
+  ],
   templateUrl: './documents-step.component.html',
   styleUrl: './documents-step.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

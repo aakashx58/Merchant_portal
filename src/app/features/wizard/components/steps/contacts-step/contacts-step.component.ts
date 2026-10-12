@@ -7,7 +7,13 @@ import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-contacts-step',
-  imports: [ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatIconModule, MatInputModule],
+  imports: [
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+  ],
   templateUrl: './contacts-step.component.html',
   styleUrl: './contacts-step.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -7,16 +7,18 @@ describe('ContactsStepComponent', () => {
   let fixture: ReturnType<typeof TestBed.createComponent<ContactsStepComponent>>;
   let component: ContactsStepComponent;
 
-  const createFormGroup = (fb: FormBuilder): FormGroup => fb.group({
-    additionalContacts: fb.array<FormGroup>([]),
-  });
+  const createFormGroup = (fb: FormBuilder): FormGroup =>
+    fb.group({
+      additionalContacts: fb.array<FormGroup>([]),
+    });
 
-  const createContactFormGroup = (fb: FormBuilder): FormGroup => fb.group({
-    name: ['', Validators.required],
-    role: ['', Validators.required],
-    phone: ['', Validators.required],
-    email: ['', [Validators.required, Validators.email]],
-  });
+  const createContactFormGroup = (fb: FormBuilder): FormGroup =>
+    fb.group({
+      name: ['', Validators.required],
+      role: ['', Validators.required],
+      phone: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+    });
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -76,7 +78,9 @@ describe('ContactsStepComponent', () => {
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement;
-    expect(compiled.querySelector('.contacts-section h3')?.textContent).toContain('Additional Contacts');
+    expect(compiled.querySelector('.contacts-section h3')?.textContent).toContain(
+      'Additional Contacts',
+    );
     expect(compiled.querySelector('.section-hint')?.textContent).toContain('optional');
     expect(compiled.querySelector('button')?.textContent).toContain('Add Contact');
   });
@@ -113,7 +117,9 @@ describe('ContactsStepComponent', () => {
     fixture.detectChanges();
 
     const spy = vi.spyOn(component.contactRemoved, 'emit');
-    const deleteBtn = fixture.nativeElement.querySelectorAll('button[aria-label="Remove contact"]')[1];
+    const deleteBtn = fixture.nativeElement.querySelectorAll(
+      'button[aria-label="Remove contact"]',
+    )[1];
     deleteBtn.click();
     expect(spy).toHaveBeenCalledWith(1);
   });

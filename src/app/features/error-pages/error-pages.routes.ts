@@ -10,7 +10,6 @@ export const ROUTES: Routes = [
   {
     path: 'not-found',
     title: 'Not Found - TechKraft',
-    loadComponent: () =>
-      import('./not-found/not-found.component').then((m) => m.NotFoundComponent),
+    loadComponent: () => import('./not-found/not-found.component').then((m) => m.NotFoundComponent),
   },
 ];

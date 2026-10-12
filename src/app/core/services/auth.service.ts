@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, finalize, map, Observable, shareReplay, tap, throwError } from 'rxjs';
+import { ENVIRONMENT } from '../config/environment.token';
 import { PermissionEnum } from '../constants/permission.enum';
 import { User } from '../models/user.model';
 import { hasPermission } from '../utils/permission.utils';
@@ -17,6 +18,7 @@ interface Tokens {
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
+  private readonly apiBase = inject(ENVIRONMENT).apiBaseUrl;
 
   private readonly session = signal<User | null>(
     JSON.parse(sessionStorage.getItem(SESSION_KEY) ?? 'null'),
@@ -37,13 +39,13 @@ export class AuthService {
 
   login(username: string, password: string): Observable<User> {
     return this.http
-      .post<User>('/api/auth/login', { username, password })
+      .post<User>(`${this.apiBase}/auth/login`, { username, password })
       .pipe(tap((user) => this.setSession(user)));
   }
 
   refresh(): Observable<string> {
     return (this.inflightRefresh ??= this.http
-      .post<Tokens>('/api/auth/refresh', { refreshToken: this.session()?.refreshToken })
+      .post<Tokens>(`${this.apiBase}/auth/refresh`, { refreshToken: this.session()?.refreshToken })
       .pipe(
         tap((t) => this.setSession({ ...this.session()!, ...t })),
         map((t) => t.token),
@@ -57,7 +59,7 @@ export class AuthService {
   }
 
   logout(): void {
-    this.http.post('/api/auth/logout', {}).subscribe({
+    this.http.post(`${this.apiBase}/auth/logout`, {}).subscribe({
       next: () => {
         this.setSession(null);
         this.router.navigate(['/login']);

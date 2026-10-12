@@ -6,11 +6,12 @@ import { describe, it, expect, beforeEach } from 'vitest';
 describe('BusinessInfoStepComponent', () => {
   let fixture: ReturnType<typeof TestBed.createComponent<BusinessInfoStepComponent>>;
 
-  const createFormGroup = (fb: FormBuilder): FormGroup => fb.group({
-    businessName: ['', Validators.required],
-    contactName: ['', Validators.required],
-    email: ['', [Validators.required, Validators.email]],
-  });
+  const createFormGroup = (fb: FormBuilder): FormGroup =>
+    fb.group({
+      businessName: ['', Validators.required],
+      contactName: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+    });
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

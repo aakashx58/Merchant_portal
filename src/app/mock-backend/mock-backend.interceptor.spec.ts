@@ -6,6 +6,8 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { AuthService } from '../core/services/auth.service';
 import { authInterceptor } from '../core/interceptors/auth.interceptor';
 import { Application, Page } from '../core/models/application.model';
+import { environment } from '../../environments/environment';
+import { provideEnvironment } from '../core/config/environment.token';
 import { mockBackendInterceptor } from './mock-backend.interceptor';
 import { mockToggles } from './mock-toggles';
 
@@ -28,6 +30,7 @@ describe('mock backend rules', () => {
       providers: [
         provideRouter([{ path: 'login', children: [] }]),
         provideHttpClient(withInterceptors([authInterceptor, mockBackendInterceptor])),
+        provideEnvironment(environment),
       ],
     });
     http = TestBed.inject(HttpClient);

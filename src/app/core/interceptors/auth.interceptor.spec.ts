@@ -5,6 +5,8 @@ import { provideRouter } from '@angular/router';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { AuthService } from '../services/auth.service';
 import { RoleEnum } from '../constants/role.enum';
+import { environment } from '../../../environments/environment';
+import { provideEnvironment } from '../config/environment.token';
 import { authInterceptor } from './auth.interceptor';
 
 describe('authInterceptor', () => {
@@ -18,6 +20,7 @@ describe('authInterceptor', () => {
         provideRouter([{ path: 'login', children: [] }]),
         provideHttpClient(withInterceptors([authInterceptor])),
         provideHttpClientTesting(),
+        provideEnvironment(environment),
       ],
     });
     http = TestBed.inject(HttpClient);

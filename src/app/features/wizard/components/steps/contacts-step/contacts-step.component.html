@@ -8,15 +8,21 @@
           <div class="contact-card" [formGroupName]="$index">
             <div class="contact-header">
               <h4>Contact #{{ $index + 1 }}</h4>
-              <button type="button" mat-icon-button color="warn" (click)="removeContact($index)" aria-label="Remove contact">
+              <button
+                type="button"
+                mat-icon-button
+                color="warn"
+                (click)="removeContact($index)"
+                aria-label="Remove contact"
+              >
                 <mat-icon>delete</mat-icon>
               </button>
             </div>
             <div class="contact-fields">
               <div class="field">
-                <label for="contact-name-{{$index}}">Name</label>
+                <label for="contact-name-{{ $index }}">Name</label>
                 <input
-                  id="contact-name-{{$index}}"
+                  id="contact-name-{{ $index }}"
                   type="text"
                   formControlName="name"
                   autocomplete="name"
@@ -24,7 +30,7 @@
                 />
               </div>
               <div class="field">
-                <label for="contact-role-{{$index}}">Role</label>
+                <label for="contact-role-{{ $index }}">Role</label>
                 <input
                   type="text"
                   formControlName="role"
@@ -33,16 +39,11 @@
                 />
               </div>
               <div class="field">
-                <label for="contact-phone-{{$index}}">Phone</label>
-                <input
-                  type="tel"
-                  formControlName="phone"
-                  autocomplete="tel"
-                  class="field-input"
-                />
+                <label for="contact-phone-{{ $index }}">Phone</label>
+                <input type="tel" formControlName="phone" autocomplete="tel" class="field-input" />
               </div>
               <div class="field">
-                <label for="contact-email-{{$index}}">Email</label>
+                <label for="contact-email-{{ $index }}">Email</label>
                 <input
                   type="email"
                   formControlName="email"

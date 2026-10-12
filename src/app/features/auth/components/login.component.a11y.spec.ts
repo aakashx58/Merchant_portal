@@ -49,13 +49,13 @@ describe('LoginComponent Accessibility', () => {
 
     const usernameInput = fixture.nativeElement.querySelector('#username');
     const passwordInput = fixture.nativeElement.querySelector('#password');
-    
+
     expect(hasAttribute(usernameInput, 'id', 'username')).toBe(true);
     expect(hasAttribute(passwordInput, 'id', 'password')).toBe(true);
-    
+
     const usernameLabel = fixture.nativeElement.querySelector('label[for="username"]');
     const passwordLabel = fixture.nativeElement.querySelector('label[for="password"]');
-    
+
     expect(usernameLabel).toBeTruthy();
     expect(passwordLabel).toBeTruthy();
   });
@@ -76,12 +76,12 @@ describe('LoginComponent Accessibility', () => {
     const usernameInput = fixture.nativeElement.querySelector('#username');
     const passwordInput = fixture.nativeElement.querySelector('#password');
     const submitBtn = fixture.nativeElement.querySelector('button[type="submit"]');
-    
+
     usernameInput.value = 'testuser';
     usernameInput.dispatchEvent(new Event('input'));
     passwordInput.value = 'password123';
     passwordInput.dispatchEvent(new Event('input'));
-    
+
     submitBtn.click();
     fixture.detectChanges();
 
@@ -102,7 +102,7 @@ describe('LoginComponent Accessibility', () => {
 
     const usernameInput = fixture.nativeElement.querySelector('#username');
     const passwordInput = fixture.nativeElement.querySelector('#password');
-    
+
     expect(hasAttribute(usernameInput, 'autocomplete', 'off')).toBe(true);
     expect(hasAttribute(passwordInput, 'autocomplete', 'new-password')).toBe(true);
   });
@@ -113,7 +113,7 @@ describe('LoginComponent Accessibility', () => {
 
     const usernameInput = fixture.nativeElement.querySelector('#username');
     const passwordInput = fixture.nativeElement.querySelector('#password');
-    
+
     // Angular reactive forms use formControlName for validation
     expect(hasAttribute(usernameInput, 'formControlName', 'username')).toBe(true);
     expect(hasAttribute(passwordInput, 'formControlName', 'password')).toBe(true);
@@ -125,7 +125,7 @@ describe('LoginComponent Accessibility', () => {
 
     const title = fixture.nativeElement.querySelector('mat-card-title');
     const subtitle = fixture.nativeElement.querySelector('mat-card-subtitle');
-    
+
     expect(title).toBeTruthy();
     expect(subtitle).toBeTruthy();
     expect(title.textContent).toContain('TechKraft Portal');
@@ -136,14 +136,14 @@ describe('LoginComponent Accessibility', () => {
     fixture.detectChanges();
 
     const focusableElements = fixture.nativeElement.querySelectorAll(
-      'input, button, [tabindex]:not([tabindex="-1"])'
+      'input, button, [tabindex]:not([tabindex="-1"])',
     );
-    
+
     expect(focusableElements.length).toBeGreaterThan(0);
-    
+
     const usernameInput = fixture.nativeElement.querySelector('#username');
     const passwordInput = fixture.nativeElement.querySelector('#password');
-    
+
     expect(usernameInput).toBeTruthy();
     expect(passwordInput).toBeTruthy();
   });

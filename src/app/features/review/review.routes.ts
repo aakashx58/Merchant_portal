@@ -8,6 +8,8 @@ export const ROUTES: Routes = [
     title: 'Review Queue - TechKraft',
     canActivate: [permissionGuard(PermissionEnum.application_view_assigned)],
     loadComponent: () =>
-      import('./components/review-queue/review-queue.component').then((m) => m.ReviewQueueComponent),
+      import('./components/review-queue/review-queue.component').then(
+        (m) => m.ReviewQueueComponent,
+      ),
   },
 ];
